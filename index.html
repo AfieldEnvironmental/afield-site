@@ -1077,7 +1077,8 @@
   #topFeather {
     position: fixed;
     top: 0; left: 0; right: 0;
-    height: 28vh;
+    height: calc(28vh + env(safe-area-inset-top, 0px));
+    padding-top: env(safe-area-inset-top, 0px);
     pointer-events: none;
     z-index: 11;
     background: linear-gradient(to bottom, rgba(234,254,139,1) 0%, rgba(234,254,139,0.9) 18%, rgba(234,254,139,0.35) 38%, transparent 58%);
@@ -1250,9 +1251,12 @@
   #mobileHero {
     display: flex !important;
     flex-direction: column !important;
+    justify-content: space-between !important;
     padding-top: 88px;
     background: transparent;
-    min-height: 100vh;
+    min-height: 100dvh;
+    min-height: 100vh; /* fallback */
+    min-height: 100dvh;
     height: auto;
     box-sizing: border-box;
     overflow: visible;
@@ -1340,7 +1344,7 @@
   </nav>
 
   <!-- Mobile hamburger -->
-  <button id="hamburger" aria-label="Menu" onclick="(function(h,n){h.classList.toggle('open');n.classList.toggle('open');})(this,document.getElementById('mobileNav'));" style="display:none; position:fixed; top:20px; right:20px; z-index:300; background:none; border:none; cursor:pointer; padding:12px; flex-direction:column; gap:5px; -webkit-tap-highlight-color:transparent;">
+  <button id="hamburger" aria-label="Menu" onclick="(function(h,n){var open=n.style.display==='flex';n.style.display=open?'none':'flex';h.classList.toggle('open',!open);})(this,document.getElementById('mobileNav'));" style="display:none; position:fixed; top:20px; right:20px; z-index:300; background:none; border:none; cursor:pointer; padding:12px; flex-direction:column; gap:5px; -webkit-tap-highlight-color:transparent;">
     <span class="ham-line"></span>
     <span class="ham-line"></span>
     <span class="ham-line"></span>
@@ -1406,8 +1410,8 @@
       <!-- Video: large, centred, content fills space -->
       <div style="width:100vw; height:58vh; overflow:visible; position:relative;">
         <video autoplay loop muted playsinline style="position:absolute; top:50%; left:50%; transform:translate(-66%,-50%); width:137%; height:137%; object-fit:cover;">
-          <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779123021/Comp_7_1_mfnfzp.webm" type="video/webm">
           <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1778234968/Full_colour_ysofg3.mp4" type="video/mp4">
+          <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779123021/Comp_7_1_mfnfzp.webm" type="video/webm">
         </video>
       </div>
       <!-- Text: fills remaining ~45% -->
@@ -2352,8 +2356,8 @@
   <h2 class="mobile-section-heading">Wilding<br>Grants</h2>
   <div class="mobile-section-video">
     <video autoplay muted loop playsinline>
-      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779119582/Comp_9_vxhiwi.webm" type="video/webm">
       <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1776255323/Screen_Recording_2026-04-15_at_13.13.26_si2xcd.mov" type="video/mp4">
+      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779119582/Comp_9_vxhiwi.webm" type="video/webm">
     </video>
   </div>
   <div class="cs-inner" style="align-items:flex-start; padding-right:72vw; position:relative; z-index:3;">
@@ -2372,8 +2376,8 @@
   <h2 class="mobile-section-heading">Arts<br>Grants</h2>
   <div class="mobile-section-video">
     <video autoplay muted loop playsinline>
-      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779119380/Comp_9_1_mg7xvq.webm" type="video/webm">
       <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1776255323/Screen_Recording_2026-04-15_at_13.13.26_si2xcd.mov" type="video/mp4">
+      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779119380/Comp_9_1_mg7xvq.webm" type="video/webm">
     </video>
   </div>
   <div class="cs-inner" style="align-items:flex-start; padding-right:72vw; position:relative; z-index:3;">
