@@ -1120,9 +1120,9 @@
   }
   .mobile-section-video {
     display: block !important;
-    width: 100vw !important;
-    height: 58vh !important;
+    width: 100% !important;
     max-width: 100vw !important;
+    height: 52vw !important;
     max-height: none !important;
     margin: 0 0 6vw 0 !important;
     overflow: hidden !important;
@@ -1408,7 +1408,7 @@
     <!-- Mobile-only hero -->
     <div id="mobileHero" style="display:none;">
       <!-- Video: large, centred, content fills space -->
-      <div style="width:100vw; height:58vh; overflow:visible; position:relative;">
+      <div style="width:100vw; height:44dvh; height:44vh; overflow:hidden; position:relative;">
         <video autoplay loop muted playsinline style="position:absolute; top:50%; left:50%; transform:translate(-66%,-50%); width:137%; height:137%; object-fit:cover;">
           <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1778234968/Full_colour_ysofg3.mp4" type="video/mp4">
           <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779123021/Comp_7_1_mfnfzp.webm" type="video/webm">
@@ -3893,10 +3893,7 @@
     mobileNav.appendChild(b);
   });
 
-  hamburger.addEventListener('click', function(){
-    hamburger.classList.toggle('open');
-    mobileNav.classList.toggle('open');
-  });
+  // click handled by inline onclick on the button
 })();
 </script>
 <script>
