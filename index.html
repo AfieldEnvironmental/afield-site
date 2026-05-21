@@ -143,15 +143,24 @@
 
     /* ── NAV ── */
     nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: max(28px, env(safe-area-inset-top, 28px)) 48px 28px 3vw;
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
       z-index: 10;
+      /* Background floods notch zone — topFeather gradient sits above this on desktop */
+      background: transparent;
+      /* ONLY the safe-area inset here — pushes background up behind notch */
+      padding: 0;
+      padding-top: env(safe-area-inset-top, 0px);
+    }
+
+    /* Inner wrapper carries all actual content padding */
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 28px 48px 28px 3vw;
     }
 
     .logo {
@@ -1003,16 +1012,22 @@
     min-height: 100svh !important; /* iOS 16+: stable, excludes address bar */
   }
 
-  /* NAV — push below iOS status bar / notch */
+  /* NAV — safe-area flood on nav itself, content padding on .nav-inner */
   #dotNav { display: none !important; }
   #hamburger { display: flex !important; }
   nav {
-    padding: 8px 4vw;
-    padding-top: max(8px, env(safe-area-inset-top, 8px));
-    transition: padding 0.3s ease;
-    background: transparent !important;
+    /* Only safe-area inset here — background colour fills behind notch */
+    padding: 0 !important;
+    padding-top: env(safe-area-inset-top, 0px) !important;
+    background: #EAFE8B !important; /* solid yellow floods notch zone */
+    transition: none;
   }
-  nav.scrolled { padding: 8px 5vw !important; padding-top: max(8px, env(safe-area-inset-top, 8px)) !important; }
+  .nav-inner {
+    /* All real content padding lives here, logo/links sit below the notch */
+    padding: 8px 4vw !important;
+    transition: padding 0.3s ease;
+  }
+  nav.scrolled .nav-inner { padding: 8px 5vw !important; }
   .logo svg { height: 54px !important; transition: height 0.3s ease; }
   nav.scrolled .logo svg { height: 40px !important; }
   .ham-line { display: block; width: 22px; height: 1.5px; background: #1a1a0e; transition: all 0.3s ease; }
@@ -1391,47 +1406,50 @@
 
   <div id="transOverlay" style="position:fixed;inset:0;z-index:100;opacity:0;pointer-events:none;background:#EAFE8B;"></div>
   <nav>
-    <!-- LOGO -->
-    <a class="logo" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">
-      <svg id="logoSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 92.5 75.8" style="height:92px;width:auto;display:block;overflow:visible;">
-        <defs>
-          <linearGradient id="logoGrad" x1="100%" y1="0%" x2="0%" y2="100%">
-            <stop id="logoStop1" offset="0%" stop-color="#ff6b35" stop-opacity="1"/>
-            <stop id="logoStop2" offset="100%" stop-color="#ff6b35" stop-opacity="0"/>
-          </linearGradient>
-        </defs>
-        <!-- Shape with gradient fill -->
-        <polygon points="75.4 19.8 63.4 .8 .9 22 2.4 58.1 26.2 65.4 58 75 91.6 45.3 75.4 19.8" fill="url(#logoGrad)"/>
-        <!-- Text paths -->
-        <path d="M20.9,42.5l-.2.5-.8.9-1.5.6h-.7l-.9-.3-.4-.2-.6-.9v-.5l.2-.6.8-.8,1.3-.4h.9l1.1.3.5.3.4.4v.7h0ZM23.4,43v-5.5l-.7-1.7-1.9-1.3-1.6-.4h-2.2l-1.6.5-1.1.7-.9.9,1.8,1.8.7-.6.6-.4.8-.3h1.5l1,.3.8.5.2.5v1h0c0,0-1.6-.6-1.6-.6h-1.6l-2.3.6-1.8,1.8-.4,1.6v1.5l1.4,2,1.2.7,1.6.5h1.5l2.2-1.1.3-.3,1,1.5,2-1.5-1-1.5v-1.3h0Z"/>
-        <polygon points="31.1 28.7 29.1 29.3 27.7 31.4 27.7 34.6 25.5 34.6 25.5 37.1 27.7 37.1 27.7 46.8 30.2 46.8 30.2 37.1 33.2 37.1 33.2 34.6 30.2 34.6 30.2 32.1 30.7 31.5 31.3 31.2 31.8 31.2 33.8 31.7 34.5 29.2 32.1 28.7 31.1 28.7"/>
-        <polygon points="36.5 36.2 36.5 38.8 36.5 46.8 39 46.8 39 34.3 36.5 34.3 36.5 36.2"/>
-        <rect x="36.1" y="28.9" width="3.3" height="3.4"/>
-        <path d="M44.1,39.4l.2-.8,1-1.4,1.2-.6h1.3l1.2.7,1,1.4.3.8h-6.1ZM50.6,35.3l-2.4-1.2h-2.1l-2.4,1.2-1.6,2.1-.5,1.8v2.7l.5,1.7,1.6,2.1,2.4,1.2h2l2.1-.5,1.8-1.2-1.3-2-1.5.9-1.4.4h-1.2l-1.2-.6-1-1.4-.2-.6h8.7v-2.9l-.6-1.6-1.6-2.1h0Z"/>
-        <polygon points="55.1 31.9 55.1 34.3 55.1 46.8 57.7 46.8 57.7 28.9 55.1 28.9 55.1 31.9"/>
-        <path d="M68.4,39.4v3.3l-.6.9-1.3.9h-1.3l-1.3-.6-1-1.4-.2-.8v-2.1l.2-.9,1-1.4,1.2-.7h1.4l.8.3.8.5.4.5v1.6h0ZM68.4,34.8h-.2c0-.1-1.4-.7-1.4-.7h-2.1l-2.4,1.2-1.6,2.1-.5,1.8v2.7l.5,1.7,1.6,2.2,2.5,1.2h2.2l1.4-.9v.7h2.5v-17.9h-2.5v5.9h0Z"/>
-      </svg>
-    </a>
+    <!-- nav-inner: carries content padding; nav itself only has safe-area-inset-top -->
+    <div class="nav-inner">
+      <!-- LOGO -->
+      <a class="logo" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">
+        <svg id="logoSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 92.5 75.8" style="height:92px;width:auto;display:block;overflow:visible;">
+          <defs>
+            <linearGradient id="logoGrad" x1="100%" y1="0%" x2="0%" y2="100%">
+              <stop id="logoStop1" offset="0%" stop-color="#ff6b35" stop-opacity="1"/>
+              <stop id="logoStop2" offset="100%" stop-color="#ff6b35" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <!-- Shape with gradient fill -->
+          <polygon points="75.4 19.8 63.4 .8 .9 22 2.4 58.1 26.2 65.4 58 75 91.6 45.3 75.4 19.8" fill="url(#logoGrad)"/>
+          <!-- Text paths -->
+          <path d="M20.9,42.5l-.2.5-.8.9-1.5.6h-.7l-.9-.3-.4-.2-.6-.9v-.5l.2-.6.8-.8,1.3-.4h.9l1.1.3.5.3.4.4v.7h0ZM23.4,43v-5.5l-.7-1.7-1.9-1.3-1.6-.4h-2.2l-1.6.5-1.1.7-.9.9,1.8,1.8.7-.6.6-.4.8-.3h1.5l1,.3.8.5.2.5v1h0c0,0-1.6-.6-1.6-.6h-1.6l-2.3.6-1.8,1.8-.4,1.6v1.5l1.4,2,1.2.7,1.6.5h1.5l2.2-1.1.3-.3,1,1.5,2-1.5-1-1.5v-1.3h0Z"/>
+          <polygon points="31.1 28.7 29.1 29.3 27.7 31.4 27.7 34.6 25.5 34.6 25.5 37.1 27.7 37.1 27.7 46.8 30.2 46.8 30.2 37.1 33.2 37.1 33.2 34.6 30.2 34.6 30.2 32.1 30.7 31.5 31.3 31.2 31.8 31.2 33.8 31.7 34.5 29.2 32.1 28.7 31.1 28.7"/>
+          <polygon points="36.5 36.2 36.5 38.8 36.5 46.8 39 46.8 39 34.3 36.5 34.3 36.5 36.2"/>
+          <rect x="36.1" y="28.9" width="3.3" height="3.4"/>
+          <path d="M44.1,39.4l.2-.8,1-1.4,1.2-.6h1.3l1.2.7,1,1.4.3.8h-6.1ZM50.6,35.3l-2.4-1.2h-2.1l-2.4,1.2-1.6,2.1-.5,1.8v2.7l.5,1.7,1.6,2.1,2.4,1.2h2l2.1-.5,1.8-1.2-1.3-2-1.5.9-1.4.4h-1.2l-1.2-.6-1-1.4-.2-.6h8.7v-2.9l-.6-1.6-1.6-2.1h0Z"/>
+          <polygon points="55.1 31.9 55.1 34.3 55.1 46.8 57.7 46.8 57.7 28.9 55.1 28.9 55.1 31.9"/>
+          <path d="M68.4,39.4v3.3l-.6.9-1.3.9h-1.3l-1.3-.6-1-1.4-.2-.8v-2.1l.2-.9,1-1.4,1.2-.7h1.4l.8.3.8.5.4.5v1.6h0ZM68.4,34.8h-.2c0-.1-1.4-.7-1.4-.7h-2.1l-2.4,1.2-1.6,2.1-.5,1.8v2.7l.5,1.7,1.6,2.2,2.5,1.2h2.2l1.4-.9v.7h2.5v-17.9h-2.5v5.9h0Z"/>
+        </svg>
+      </a>
 
-    <!-- NAV LINKS -->
-    <ul class="nav-links">
-      <li class="dropdown">
+      <!-- NAV LINKS -->
+      <ul class="nav-links">
+        <li class="dropdown">
 
-        <div class="dropdown-menu">
-          <p class="dropdown-body">14 Fieldgate Street<br>London E1 1ES<br>+44 (0)20 7123 4567</p>
-          <div class="dropdown-partners">
-            <div class="dropdown-partners-label">Working with</div>
-            <div class="partner-item">Figma</div>
-            <div class="partner-item">Notion</div>
-            <div class="partner-item">Stripe</div>
-            <div class="partner-item">Linear</div>
-            <div class="partner-item">Vercel</div>
-            <div class="partner-item">Arc</div>
+          <div class="dropdown-menu">
+            <p class="dropdown-body">14 Fieldgate Street<br>London E1 1ES<br>+44 (0)20 7123 4567</p>
+            <div class="dropdown-partners">
+              <div class="dropdown-partners-label">Working with</div>
+              <div class="partner-item">Figma</div>
+              <div class="partner-item">Notion</div>
+              <div class="partner-item">Stripe</div>
+              <div class="partner-item">Linear</div>
+              <div class="partner-item">Vercel</div>
+              <div class="partner-item">Arc</div>
+            </div>
           </div>
-        </div>
-      </li>
+        </li>
 
-    </ul>
+      </ul>
+    </div><!-- /nav-inner -->
   </nav>
 
   <!-- Mobile hamburger -->
