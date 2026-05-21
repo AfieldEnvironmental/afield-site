@@ -146,7 +146,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 28px 48px 28px 3vw;
+      padding: max(28px, env(safe-area-inset-top, 28px)) 48px 28px 3vw;
       position: fixed;
       top: 0;
       left: 0;
@@ -938,6 +938,39 @@
     animation: none;
   }
 
+  /* ─── Safe-area insets — all fixed overlay panels ─── */
+  /* Detail panels: logo top, back button bottom, scroll container */
+  #sectionWildingDetail > div[style*="top:28px"],
+  #sectionArtDetail > div[style*="top:28px"] {
+    top: max(28px, calc(env(safe-area-inset-top, 0px) + 16px)) !important;
+  }
+  /* Back buttons inside detail + policy panels */
+  #sectionWildingDetail > button,
+  #sectionArtDetail > button,
+  #touch-cookies-content > button,
+  #touch-privacy-content > button {
+    bottom: max(5vw, calc(env(safe-area-inset-bottom, 0px) + 20px)) !important;
+    left: max(3vw, calc(env(safe-area-inset-left, 0px) + 16px)) !important;
+  }
+  /* Scroll containers inside detail panels — clear notch at top */
+  #wildingDetailScroll,
+  #artDetailScroll {
+    padding-top: max(5vw, calc(env(safe-area-inset-top, 0px) + 28px)) !important;
+    padding-bottom: max(120px, calc(env(safe-area-inset-bottom, 0px) + 80px)) !important;
+  }
+  /* Cookie / privacy panel scroll containers */
+  #touch-cookies-content > div,
+  #touch-privacy-content > div {
+    top: max(5vw, calc(env(safe-area-inset-top, 0px) + 28px)) !important;
+    bottom: max(calc(5vw + 60px), calc(env(safe-area-inset-bottom, 0px) + 80px)) !important;
+  }
+  /* Cookie banner — fixed bottom, clear iOS home indicator */
+  #cookieBanner {
+    padding-bottom: max(16px, env(safe-area-inset-bottom, 16px)) !important;
+    padding-left:  max(28px, env(safe-area-inset-left,  28px)) !important;
+    padding-right: max(28px, env(safe-area-inset-right, 28px)) !important;
+  }
+
   </style>
 
 
@@ -1207,25 +1240,35 @@
   }
   /* Bottom spacer — real DOM element so scrollHeight is reliably extended */
   .mobile-scroll-spacer { display: block !important; height: 120px !important; flex-shrink: 0 !important; }
-  /* Logo — smaller on mobile overlays so it clears the heading */
+  /* Logo — smaller on mobile overlays so it clears the heading + notch */
   #sectionWildingDetail > div:first-child,
-  #sectionArtDetail > div:first-child { left: 5vw !important; top: 16px !important; }
+  #sectionArtDetail > div:first-child {
+    left: 5vw !important;
+    top: max(16px, calc(env(safe-area-inset-top, 0px) + 8px)) !important;
+  }
   #sectionWildingDetail > div:first-child svg,
   #sectionArtDetail > div:first-child svg { height: 52px !important; width: auto !important; }
-  /* Top fade mask — hides scroll content passing behind the logo */
+  /* Top fade mask — grows to cover notch area */
   #sectionWildingDetail::before, #sectionArtDetail::before {
     content: '' !important;
     position: fixed !important;
     top: 0 !important; left: 0 !important; right: 0 !important;
-    height: 84px !important;
+    height: max(84px, calc(env(safe-area-inset-top, 0px) + 72px)) !important;
     background: linear-gradient(to bottom, #EAFE8B 60%, transparent 100%) !important;
     z-index: 20 !important;
     pointer-events: none !important;
   }
-  /* Back button — fixed so it stays above scrolling content */
-  /* :not([onclick*="sectionTouch"]) excludes the "Get in touch →" button which also contains hideDetail */
+  /* Back button — fixed above scroll, clears home indicator */
+  /* :not([onclick*="sectionTouch"]) excludes the "Get in touch →" button */
   #sectionWildingDetail button[onclick*="hideDetail"]:not([onclick*="sectionTouch"]),
-  #sectionArtDetail button[onclick*="hideDetail"]:not([onclick*="sectionTouch"]) { position: fixed !important; bottom: 6vw !important; left: 5vw !important; z-index: 60 !important; background: #EAFE8B !important; padding: 4px 8px 4px 0 !important; }
+  #sectionArtDetail button[onclick*="hideDetail"]:not([onclick*="sectionTouch"]) {
+    position: fixed !important;
+    bottom: max(6vw, calc(env(safe-area-inset-bottom, 0px) + 20px)) !important;
+    left: max(5vw, calc(env(safe-area-inset-left, 0px) + 16px)) !important;
+    z-index: 60 !important;
+    background: #EAFE8B !important;
+    padding: 4px 8px 4px 0 !important;
+  }
 
   /* GRANTS DETAIL OVERLAYS — body text matches site mobile body, indented except first para */
   #wildingDetailScroll p:not(:first-child),
@@ -1316,7 +1359,20 @@
 </script>
 <script>document.documentElement.classList.add("js-loading");</script>
 <style>
-  #formStatus { display:none; position:fixed; top:20px; left:50%; transform:translateX(-50%); z-index:999; background:#1a1a0e; color:#EAFE8B; font-family:'GT Cinetype',sans-serif; font-size:14px; padding:12px 28px; letter-spacing:0.04em; }
+  #formStatus {
+    display: none;
+    position: fixed;
+    top: max(20px, calc(env(safe-area-inset-top, 0px) + 12px));
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 999;
+    background: #1a1a0e;
+    color: #EAFE8B;
+    font-family: 'GT Cinetype', sans-serif;
+    font-size: 14px;
+    padding: 12px 28px;
+    letter-spacing: 0.04em;
+  }
 </style>
 <div id="formStatus"></div>
 <script>
