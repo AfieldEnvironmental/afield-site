@@ -1083,29 +1083,28 @@
     min-height: 100svh !important; /* iOS 16+: stable, excludes address bar */
   }
 
-  /* NAV — tall enough to always extend past Safari address bar */
+  /* NAV */
   #dotNav { display: none !important; }
   #hamburger { display: flex !important; }
+
+  /*
+   * topFeather is a desktop-only gradient overlay for section transitions.
+   * On mobile it creates semi-transparent zones where scrolled content bleeds
+   * through — hide it and let the nav's solid background do the job alone.
+   */
+  #topFeather { display: none !important; }
+
   nav {
     padding: 0 !important;
+    padding-top: env(safe-area-inset-top, 0px) !important;
     background: #EAFE8B !important;
     transition: none;
-    /*
-     * min-height: Safari address bar is ~52px, status bar ~20px = ~72px total.
-     * Notched iPhones: env(safe-area-inset-top) ≈ 47-59px.
-     * We use max() so on all devices the nav is at least 88px tall,
-     * guaranteeing it covers the full address-bar zone below top:0.
-     */
-    min-height: max(88px, calc(env(safe-area-inset-top, 0px) + 52px)) !important;
-    /* Flex column with content anchored to bottom — logo sits just
-       below the address bar, yellow fills everything above it */
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: flex-end !important;
+    /* No min-height tricks — logo sits naturally just below the safe area.
+       Safari address bar overlays the top of the page (normal browser behaviour);
+       the solid yellow background fills behind it. */
   }
   .nav-inner {
     padding: 8px 4vw !important;
-    flex-shrink: 0;
   }
   nav.scrolled .nav-inner { padding: 8px 5vw !important; }
   .logo svg { height: 54px !important; transition: height 0.3s ease; }
@@ -1405,8 +1404,7 @@
     display: flex !important;
     flex-direction: column !important;
     justify-content: space-between !important;
-    /* Match nav min-height so hero content starts right below the nav */
-    padding-top: max(104px, calc(env(safe-area-inset-top, 0px) + 68px));
+    padding-top: max(88px, calc(env(safe-area-inset-top, 0px) + 68px));
     background: transparent;
     /* Progressive viewport height: svh is stable regardless of address bar */
     min-height: calc(var(--vh, 1vh) * 100);
@@ -1539,7 +1537,7 @@
   </nav>
 
   <!-- Mobile hamburger -->
-  <button id="hamburger" aria-label="Menu" onclick="(function(h,n){var open=n.style.display==='flex';n.style.display=open?'none':'flex';h.classList.toggle('open',!open);})(this,document.getElementById('mobileNav'));" style="display:none; position:fixed; top:max(56px, calc(env(safe-area-inset-top, 0px) + 52px)); right:20px; z-index:300; background:none; border:none; cursor:pointer; padding:12px; flex-direction:column; gap:5px; -webkit-tap-highlight-color:transparent;">
+  <button id="hamburger" aria-label="Menu" onclick="(function(h,n){var open=n.style.display==='flex';n.style.display=open?'none':'flex';h.classList.toggle('open',!open);})(this,document.getElementById('mobileNav'));" style="display:none; position:fixed; top:max(20px, calc(env(safe-area-inset-top, 0px) + 12px)); right:20px; z-index:300; background:none; border:none; cursor:pointer; padding:12px; flex-direction:column; gap:5px; -webkit-tap-highlight-color:transparent;">
     <span class="ham-line"></span>
     <span class="ham-line"></span>
     <span class="ham-line"></span>
