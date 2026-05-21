@@ -1080,7 +1080,7 @@
     height: 28vh;
     pointer-events: none;
     z-index: 11;
-    background: linear-gradient(to bottom, rgba(234,254,139,1) 0%, rgba(234,254,139,1) 40%, rgba(234,254,139,0.5) 70%, transparent 100%);
+    background: linear-gradient(to bottom, rgba(234,254,139,1) 0%, rgba(234,254,139,0.9) 18%, rgba(234,254,139,0.35) 38%, transparent 58%);
   }
   nav { overflow: visible !important; position: fixed !important; z-index: 20 !important; }
 
@@ -1095,6 +1095,10 @@
   #textPanel      { background: transparent !important; }
   #sectionWilding { background: transparent !important; }
   #sectionArt     { background: transparent !important; }
+  #sectionWilding .mobile-section-video { background: #ff6b35; }
+  #sectionArt .mobile-section-video { background: #e2cefe; }
+  /* Prevent yellow body colour showing past last section */
+  #sectionTouch { padding-bottom: 20vw !important; }
   #sectionValues  { background: transparent !important; }
   #sectionPeople  { background: transparent !important; }
   #sectionTouch   { background: transparent !important; }
@@ -1403,6 +1407,7 @@
       <div style="width:100vw; height:58vh; overflow:visible; position:relative;">
         <video autoplay loop muted playsinline style="position:absolute; top:50%; left:50%; transform:translate(-66%,-50%); width:137%; height:137%; object-fit:cover;">
           <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779123021/Comp_7_1_mfnfzp.webm" type="video/webm">
+          <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1778234968/Full_colour_ysofg3.mp4" type="video/mp4">
         </video>
       </div>
       <!-- Text: fills remaining ~45% -->
@@ -2348,6 +2353,7 @@
   <div class="mobile-section-video">
     <video autoplay muted loop playsinline>
       <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779119582/Comp_9_vxhiwi.webm" type="video/webm">
+      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1776255323/Screen_Recording_2026-04-15_at_13.13.26_si2xcd.mov" type="video/mp4">
     </video>
   </div>
   <div class="cs-inner" style="align-items:flex-start; padding-right:72vw; position:relative; z-index:3;">
@@ -2367,6 +2373,7 @@
   <div class="mobile-section-video">
     <video autoplay muted loop playsinline>
       <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779119380/Comp_9_1_mg7xvq.webm" type="video/webm">
+      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1776255323/Screen_Recording_2026-04-15_at_13.13.26_si2xcd.mov" type="video/mp4">
     </video>
   </div>
   <div class="cs-inner" style="align-items:flex-start; padding-right:72vw; position:relative; z-index:3;">
