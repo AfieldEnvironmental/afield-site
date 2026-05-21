@@ -1083,20 +1083,29 @@
     min-height: 100svh !important; /* iOS 16+: stable, excludes address bar */
   }
 
-  /* NAV — safe-area flood on nav itself, content padding on .nav-inner */
+  /* NAV — tall enough to always extend past Safari address bar */
   #dotNav { display: none !important; }
   #hamburger { display: flex !important; }
   nav {
-    /* Only safe-area inset here — background colour fills behind notch */
     padding: 0 !important;
-    padding-top: env(safe-area-inset-top, 0px) !important;
-    background: #EAFE8B !important; /* solid yellow floods notch zone */
+    background: #EAFE8B !important;
     transition: none;
+    /*
+     * min-height: Safari address bar is ~52px, status bar ~20px = ~72px total.
+     * Notched iPhones: env(safe-area-inset-top) ≈ 47-59px.
+     * We use max() so on all devices the nav is at least 88px tall,
+     * guaranteeing it covers the full address-bar zone below top:0.
+     */
+    min-height: max(88px, calc(env(safe-area-inset-top, 0px) + 52px)) !important;
+    /* Flex column with content anchored to bottom — logo sits just
+       below the address bar, yellow fills everything above it */
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-end !important;
   }
   .nav-inner {
-    /* All real content padding lives here, logo/links sit below the notch */
     padding: 8px 4vw !important;
-    transition: padding 0.3s ease;
+    flex-shrink: 0;
   }
   nav.scrolled .nav-inner { padding: 8px 5vw !important; }
   .logo svg { height: 54px !important; transition: height 0.3s ease; }
@@ -1396,7 +1405,8 @@
     display: flex !important;
     flex-direction: column !important;
     justify-content: space-between !important;
-    padding-top: max(88px, calc(env(safe-area-inset-top, 0px) + 68px));
+    /* Match nav min-height so hero content starts right below the nav */
+    padding-top: max(104px, calc(env(safe-area-inset-top, 0px) + 68px));
     background: transparent;
     /* Progressive viewport height: svh is stable regardless of address bar */
     min-height: calc(var(--vh, 1vh) * 100);
@@ -1529,7 +1539,7 @@
   </nav>
 
   <!-- Mobile hamburger -->
-  <button id="hamburger" aria-label="Menu" onclick="(function(h,n){var open=n.style.display==='flex';n.style.display=open?'none':'flex';h.classList.toggle('open',!open);})(this,document.getElementById('mobileNav'));" style="display:none; position:fixed; top:max(20px, calc(env(safe-area-inset-top, 0px) + 12px)); right:20px; z-index:300; background:none; border:none; cursor:pointer; padding:12px; flex-direction:column; gap:5px; -webkit-tap-highlight-color:transparent;">
+  <button id="hamburger" aria-label="Menu" onclick="(function(h,n){var open=n.style.display==='flex';n.style.display=open?'none':'flex';h.classList.toggle('open',!open);})(this,document.getElementById('mobileNav'));" style="display:none; position:fixed; top:max(56px, calc(env(safe-area-inset-top, 0px) + 52px)); right:20px; z-index:300; background:none; border:none; cursor:pointer; padding:12px; flex-direction:column; gap:5px; -webkit-tap-highlight-color:transparent;">
     <span class="ham-line"></span>
     <span class="ham-line"></span>
     <span class="ham-line"></span>
