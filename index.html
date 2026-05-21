@@ -2,12 +2,83 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-  <title>Test Site</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, shrink-to-fit=no"/>
+  <!-- Prevent iOS auto-linking phone numbers / emails -->
+  <meta name="format-detection" content="telephone=no, email=no, address=no"/>
+  <!-- Home screen / full-screen mode -->
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <!-- black-translucent = status bar overlays content (needs viewport-fit=cover) -->
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <title>Afield</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=Manrope:wght@300;400;700;800&display=swap" rel="stylesheet">
   <style>
+    /* ── Mobile-first reset ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* Safe-area shorthand variables */
+    :root {
+      --vh: 1vh;
+      --sat: env(safe-area-inset-top,    0px);
+      --sar: env(safe-area-inset-right,  0px);
+      --sab: env(safe-area-inset-bottom, 0px);
+      --sal: env(safe-area-inset-left,   0px);
+    }
+
+    html {
+      /* Stop Safari zooming text on orientation change */
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+      /* Disable rubber-band overscroll on root */
+      overscroll-behavior: none;
+      height: 100%;
+    }
+
+    body {
+      /* Stable viewport height — svh never jumps with address bar */
+      min-height: 100vh;
+      min-height: calc(var(--vh) * 100);
+      min-height: 100svh;
+      /* No sideways drift */
+      overflow-x: hidden;
+      /* Kill Android overscroll glow + pull-to-refresh */
+      overscroll-behavior-y: none;
+      /* Eliminates 300ms tap delay globally */
+      touch-action: manipulation;
+    }
+
+    /* Touch normalization — remove tap flash + delay on all interactive elements */
+    a, button, [role="button"], input, label, select, textarea {
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Input de-styling — removes Safari rounded inputs, inset shadows, OS chrome */
+    input, textarea, select {
+      -webkit-appearance: none;
+      appearance: none;
+      border-radius: 0;
+      /* Keep font-size ≥16px so iOS doesn't auto-zoom on focus */
+      font-size: max(16px, 1em);
+    }
+    input[type="search"] { -webkit-appearance: textfield; }
+    input[type="search"]::-webkit-search-decoration,
+    input[type="search"]::-webkit-search-cancel-button { -webkit-appearance: none; }
+
+    /* Images never overflow their container */
+    img, video, svg, canvas { display: block; max-width: 100%; }
+    img { vertical-align: middle; height: auto; }
+
+    /* Respect reduced-motion preference */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
 
     @font-face {
       font-family: 'GT Cinetype';
@@ -1404,6 +1475,11 @@
 })();
 </script>
 
+  <!-- Safe-area fill strip: covers notch/status-bar zone with solid bg colour.
+       Height = env(safe-area-inset-top), so 0px on devices without a notch.
+       z-index 9999 — sits above absolutely everything. pointer-events:none so
+       it never blocks taps. Background is updated by JS when section bg changes. -->
+  <div id="safeAreaFill" aria-hidden="true" style="position:fixed; top:0; left:0; right:0; height:env(safe-area-inset-top, 0px); background:#EAFE8B; z-index:9999; pointer-events:none;"></div>
   <div id="transOverlay" style="position:fixed;inset:0;z-index:100;opacity:0;pointer-events:none;background:#EAFE8B;"></div>
   <nav>
     <!-- nav-inner: carries content padding; nav itself only has safe-area-inset-top -->
@@ -4530,6 +4606,25 @@ if(window.innerWidth <= 768){
     console.warn('Airtable fetch failed:', err);
   });
 
+})();
+</script>
+
+<script>
+/* Safe-area fill strip — mirrors body background so notch zone always
+   matches the current section colour as the page scrolls. */
+(function () {
+  var fill = document.getElementById('safeAreaFill');
+  if (!fill) return;
+
+  /* Sync immediately */
+  function syncFill() {
+    fill.style.background = document.body.style.backgroundColor || '#EAFE8B';
+  }
+  syncFill();
+
+  /* Watch for any change to body's inline background-color */
+  var obs = new MutationObserver(syncFill);
+  obs.observe(document.body, { attributes: true, attributeFilter: ['style'] });
 })();
 </script>
 
