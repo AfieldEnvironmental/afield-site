@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
   <title>Test Site</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=Manrope:wght@300;400;700;800&display=swap" rel="stylesheet">
@@ -964,20 +964,34 @@
 
   /* Fill entire screen with bg colour — no brown showing */
   html { background: #EAFE8B !important; }
-  body { min-height: 100vh !important; }
+  body {
+    min-height: 100vh !important;
+    min-height: calc(var(--vh, 1vh) * 100) !important;
+    min-height: 100svh !important; /* iOS 16+: stable, excludes address bar */
+  }
 
-  /* NAV */
+  /* NAV — push below iOS status bar / notch */
   #dotNav { display: none !important; }
   #hamburger { display: flex !important; }
-  nav { padding: 8px 4vw; transition: padding 0.3s ease; background: transparent !important; }
-  nav.scrolled { padding: 8px 5vw !important; }
+  nav {
+    padding: 8px 4vw;
+    padding-top: max(8px, env(safe-area-inset-top, 8px));
+    transition: padding 0.3s ease;
+    background: transparent !important;
+  }
+  nav.scrolled { padding: 8px 5vw !important; padding-top: max(8px, env(safe-area-inset-top, 8px)) !important; }
   .logo svg { height: 54px !important; transition: height 0.3s ease; }
   nav.scrolled .logo svg { height: 40px !important; }
   .ham-line { display: block; width: 22px; height: 1.5px; background: #1a1a0e; transition: all 0.3s ease; }
   #hamburger.open .ham-line:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
   #hamburger.open .ham-line:nth-child(2) { opacity: 0; }
   #hamburger.open .ham-line:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
-  #mobileNav { padding: 80px 5vw 5vw 5vw; background: #EAFE8B; }
+  #mobileNav {
+    padding: 80px 5vw 5vw 5vw;
+    padding-top: max(80px, calc(env(safe-area-inset-top, 0px) + 60px));
+    padding-bottom: max(5vw, env(safe-area-inset-bottom, 0px));
+    background: #EAFE8B;
+  }
   #mobileNav.open { display: flex !important; }
   .mobile-nav-btn { font-family: "GT Cinetype", sans-serif; font-size: 45px; font-weight: 400; letter-spacing: 0.01em; text-transform: uppercase; color: #1a1a0e; background: none; border: none; cursor: pointer; padding: 4px 0; opacity: 0.4; text-align: left !important; display: flex; align-items: center; gap: 0.35em; width: 100%; }
   .mobile-nav-btn.active { opacity: 1; font-weight: 700; }
@@ -1073,10 +1087,11 @@
 
   /* First/large paragraphs — same indent as body text */
 
-  /* TOP FEATHER — masks top 15% of page */
+  /* TOP FEATHER — masks top 15% of page, accounts for notch/status bar */
   #topFeather {
     position: fixed;
     top: 0; left: 0; right: 0;
+    height: calc(28dvh + env(safe-area-inset-top, 0px));
     height: calc(28vh + env(safe-area-inset-top, 0px));
     padding-top: env(safe-area-inset-top, 0px);
     pointer-events: none;
@@ -1252,11 +1267,12 @@
     display: flex !important;
     flex-direction: column !important;
     justify-content: space-between !important;
-    padding-top: 88px;
+    padding-top: max(88px, calc(env(safe-area-inset-top, 0px) + 68px));
     background: transparent;
+    /* Progressive viewport height: svh is stable regardless of address bar */
+    min-height: calc(var(--vh, 1vh) * 100);
     min-height: 100dvh;
-    min-height: 100vh; /* fallback */
-    min-height: 100dvh;
+    min-height: 100svh;
     height: auto;
     box-sizing: border-box;
     overflow: visible;
@@ -1279,6 +1295,25 @@
 </head>
 <body>
 <div id="topFeather"></div>
+<script>
+// Browser detection — add classes to <html> for targeted CSS
+(function() {
+  var ua = navigator.userAgent;
+  var isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+  var isSafari = /^((?!chrome|android).)*safari/i.test(ua);
+  if (isIOS) document.documentElement.classList.add('is-ios');
+  if (isSafari || isIOS) document.documentElement.classList.add('is-safari');
+
+  // --vh custom property: real inner height, avoids address bar jump
+  function setVH() {
+    var vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', vh + 'px');
+  }
+  setVH();
+  window.addEventListener('resize', setVH);
+  window.addEventListener('orientationchange', function() { setTimeout(setVH, 150); });
+})();
+</script>
 <script>document.documentElement.classList.add("js-loading");</script>
 <style>
   #formStatus { display:none; position:fixed; top:20px; left:50%; transform:translateX(-50%); z-index:999; background:#1a1a0e; color:#EAFE8B; font-family:'GT Cinetype',sans-serif; font-size:14px; padding:12px 28px; letter-spacing:0.04em; }
@@ -1344,14 +1379,14 @@
   </nav>
 
   <!-- Mobile hamburger -->
-  <button id="hamburger" aria-label="Menu" onclick="(function(h,n){var open=n.style.display==='flex';n.style.display=open?'none':'flex';h.classList.toggle('open',!open);})(this,document.getElementById('mobileNav'));" style="display:none; position:fixed; top:20px; right:20px; z-index:300; background:none; border:none; cursor:pointer; padding:12px; flex-direction:column; gap:5px; -webkit-tap-highlight-color:transparent;">
+  <button id="hamburger" aria-label="Menu" onclick="(function(h,n){var open=n.style.display==='flex';n.style.display=open?'none':'flex';h.classList.toggle('open',!open);})(this,document.getElementById('mobileNav'));" style="display:none; position:fixed; top:max(20px, calc(env(safe-area-inset-top, 0px) + 12px)); right:20px; z-index:300; background:none; border:none; cursor:pointer; padding:12px; flex-direction:column; gap:5px; -webkit-tap-highlight-color:transparent;">
     <span class="ham-line"></span>
     <span class="ham-line"></span>
     <span class="ham-line"></span>
   </button>
 
   <!-- Mobile nav overlay -->
-  <div id="mobileNav" style="display:none; position:fixed; inset:0; z-index:250; padding:80px 5vw 5vw 5vw; flex-direction:column; justify-content:flex-start; gap:8px;">
+  <div id="mobileNav" style="display:none; position:fixed; inset:0; z-index:250; padding:80px 5vw 5vw 5vw; padding-top:max(80px, calc(env(safe-area-inset-top, 0px) + 60px)); padding-bottom:max(5vw, env(safe-area-inset-bottom, 0px)); flex-direction:column; justify-content:flex-start; gap:8px;">
   </div>
 
 
@@ -1374,13 +1409,13 @@
   <!-- Fixed videos — pinned, fade with their section -->
   <div id="fixedVideoWilding" class="fixed-video-pin">
     <video autoplay loop muted playsinline style="width:100%; height:100%; object-fit:cover; object-position:center center;">
-      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779119908/Comp_8_1_zi9dny.mp4" type="video/mp4">
+      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/f_mp4,q_auto/v1779119908/Comp_8_1_zi9dny.webm" type="video/mp4">
       <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779119908/Comp_8_1_zi9dny.webm" type="video/webm">
     </video>
   </div>
   <div id="fixedVideoArt" class="fixed-video-pin">
     <video autoplay loop muted playsinline style="width:100%; height:100%; object-fit:cover; object-position:center center;">
-      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779119582/Comp_9_vxhiwi.mp4" type="video/mp4">
+      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/f_mp4,q_auto/v1779119582/Comp_9_vxhiwi.webm" type="video/mp4">
       <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779119582/Comp_9_vxhiwi.webm" type="video/webm">
     </video>
   </div>
@@ -1401,16 +1436,16 @@
     <!-- Desktop hero video -->
     <div id="heroVideo" style="position:absolute; left:0; top:0; bottom:0; right:0; z-index:1; overflow:hidden; background:transparent;">
       <video autoplay loop muted playsinline style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(1.15);width:100%;height:100%;object-fit:cover;">
+        <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/f_mp4,q_auto/v1779123021/Comp_7_1_mfnfzp.webm" type="video/mp4">
         <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779123021/Comp_7_1_mfnfzp.webm" type="video/webm">
-        <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1778234968/Full_colour_ysofg3.mp4" type="video/mp4">
       </video>
     </div>
     <!-- Mobile-only hero -->
     <div id="mobileHero" style="display:none;">
       <!-- Video: large, centred, content fills space -->
-      <div style="width:100vw; height:44dvh; height:44vh; overflow:hidden; position:relative;">
+      <div style="width:100vw; height:calc(var(--vh, 1vh) * 44); height:44svh; overflow:hidden; position:relative;">
         <video autoplay loop muted playsinline style="position:absolute; top:50%; left:50%; transform:translate(-66%,-50%); width:137%; height:137%; object-fit:cover;">
-          <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1778234968/Full_colour_ysofg3.mp4" type="video/mp4">
+          <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/f_mp4,q_auto/v1779123021/Comp_7_1_mfnfzp.webm" type="video/mp4">
           <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779123021/Comp_7_1_mfnfzp.webm" type="video/webm">
         </video>
       </div>
@@ -2356,7 +2391,7 @@
   <h2 class="mobile-section-heading">Wilding<br>Grants</h2>
   <div class="mobile-section-video">
     <video autoplay muted loop playsinline>
-      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779119908/Comp_8_1_zi9dny.mp4" type="video/mp4">
+      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/f_mp4,q_auto/v1779119908/Comp_8_1_zi9dny.webm" type="video/mp4">
       <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779119908/Comp_8_1_zi9dny.webm" type="video/webm">
     </video>
   </div>
@@ -2376,7 +2411,7 @@
   <h2 class="mobile-section-heading">Arts<br>Grants</h2>
   <div class="mobile-section-video">
     <video autoplay muted loop playsinline>
-      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779119582/Comp_9_vxhiwi.mp4" type="video/mp4">
+      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/f_mp4,q_auto/v1779119582/Comp_9_vxhiwi.webm" type="video/mp4">
       <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779119582/Comp_9_vxhiwi.webm" type="video/webm">
     </video>
   </div>
