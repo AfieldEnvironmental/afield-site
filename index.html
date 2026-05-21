@@ -10,6 +10,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <!-- black-translucent = status bar overlays content (needs viewport-fit=cover) -->
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <!-- Browser chrome colour — Android Chrome tints the address bar to match -->
+  <meta name="theme-color" content="#EAFE8B"/>
   <title>Afield</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=Manrope:wght@300;400;700;800&display=swap" rel="stylesheet">
@@ -1096,11 +1098,23 @@
 
   nav {
     padding: 0 !important;
-    /* No padding-top here — visualViewport JS sets nav.style.top on iOS so the
-       nav always tracks the bottom edge of the address bar. On non-iOS the nav
-       stays at top:0 and the hardware notch is covered by #safeAreaFill. */
+    /*
+     * padding-top: safe-area covers the hardware notch on Android and
+     * any non-iOS device where the visualViewport JS doesn't run.
+     * On iOS, the JS overrides this with paddingTop:'0' once it sets
+     * nav.style.top = visualViewport.offsetTop (which already includes
+     * the notch height in the layout-viewport offset it returns).
+     */
+    padding-top: env(safe-area-inset-top, 0px) !important;
     background: #EAFE8B !important;
     transition: none;
+    /* GPU-composited layer: eliminates the rendering lag that causes
+       fixed elements to "jump" when the iOS Safari address bar animates. */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: transform;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
   }
   .nav-inner {
     padding: 8px 4vw !important;
@@ -4639,33 +4653,52 @@ if(window.innerWidth <= 768){
 /*
  * iOS Safari address bar gap fix — visualViewport tracking
  *
- * Problem: In Safari with viewport-fit=cover, position:fixed elements are
- * anchored to the layout viewport (= physical screen top). The Safari address
- * bar sits ON TOP of this area and env(safe-area-inset-top) covers only the
- * hardware notch — NOT the address bar. Result: a gap between the address bar
- * and the nav where scrolled page content peeks through.
+ * Root cause (viewport-fit=cover):
+ *   position:fixed elements are anchored to the layout viewport, which equals
+ *   the physical screen top. The address bar is browser chrome that sits OVER
+ *   this zone. env(safe-area-inset-top) only covers the hardware notch, not
+ *   the address bar. So the visible page content behind the address bar is
+ *   whatever the body/html background is at that scroll position — creating a
+ *   visible "gap" of a different colour above the nav as the bar hides.
  *
- * Fix: window.visualViewport.offsetTop tells us the exact pixel distance from
- * physical-screen-top to the visible content area (= notch + address bar).
- * We set nav.style.top to this value so the nav always anchors flush to the
- * bottom of the address bar. As the bar slides away on scroll, the nav
- * smoothly tracks it upward. #safeAreaFill covers the remaining notch zone.
+ * Fix strategy — two-part:
+ *   1. Anchor nav.style.top at the hardware-notch bottom (= env(safe-area-inset-top)).
+ *      This extends the nav's yellow background UP to cover the notch-to-address-bar
+ *      zone, so when the address bar hides it reveals yellow nav — not body content.
+ *   2. Set nav.style.paddingTop = (visualViewport.offsetTop - notch) so the logo/
+ *      content sits just below the address bar bottom, not behind it.
+ *   As the address bar animates away, paddingTop shrinks toward 0 and the logo
+ *   slides smoothly up — no flash, no gap.
  */
 (function () {
   var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
   if (!isIOS || !window.visualViewport) return;
 
-  var nav        = document.querySelector('nav');
-  var hamburger  = document.getElementById('hamburger');
+  var nav       = document.querySelector('nav');
+  var hamburger = document.getElementById('hamburger');
   if (!nav) return;
+
+  /* Read hardware notch height from the CSS variable we set in :root */
+  function getNotch() {
+    var raw = getComputedStyle(document.documentElement).getPropertyValue('--sat').trim();
+    return parseFloat(raw) || 0;
+  }
 
   function syncNav() {
     var offset = Math.round(window.visualViewport.offsetTop) || 0;
+    var notch  = getNotch();
 
-    /* Position nav flush with bottom of address bar */
-    nav.style.top = offset + 'px';
+    /*
+     * nav.top = notch → nav background floods from notch downward, covering
+     * the address-bar zone with yellow so nothing peeks through when it hides.
+     *
+     * nav.paddingTop = (offset - notch) → pushes the logo/content below the
+     * address bar bottom (= offset from screen top). Shrinks to 0 as bar hides.
+     */
+    nav.style.top        = notch + 'px';
+    nav.style.paddingTop = Math.max(0, offset - notch) + 'px';
 
-    /* Keep hamburger vertically centred inside the nav zone */
+    /* Hamburger sits at the visible nav top (= address bar bottom + small gap) */
     if (hamburger) {
       hamburger.style.top = (offset + 8) + 'px';
     }
@@ -4674,7 +4707,7 @@ if(window.innerWidth <= 768){
   window.visualViewport.addEventListener('scroll', syncNav, { passive: true });
   window.visualViewport.addEventListener('resize', syncNav, { passive: true });
 
-  /* Run immediately (DOM ready) and once more after first paint */
+  /* Run immediately and after first paint to catch the initial state */
   syncNav();
   window.addEventListener('load', function () { setTimeout(syncNav, 50); });
 })();
