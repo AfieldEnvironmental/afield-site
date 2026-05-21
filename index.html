@@ -1336,7 +1336,7 @@
   </nav>
 
   <!-- Mobile hamburger -->
-  <button id="hamburger" aria-label="Menu" style="display:none; position:fixed; top:20px; right:20px; z-index:300; background:none; border:none; cursor:pointer; padding:4px; flex-direction:column; gap:5px;">
+  <button id="hamburger" aria-label="Menu" onclick="(function(h,n){h.classList.toggle('open');n.classList.toggle('open');})(this,document.getElementById('mobileNav'));" style="display:none; position:fixed; top:20px; right:20px; z-index:300; background:none; border:none; cursor:pointer; padding:12px; flex-direction:column; gap:5px; -webkit-tap-highlight-color:transparent;">
     <span class="ham-line"></span>
     <span class="ham-line"></span>
     <span class="ham-line"></span>
