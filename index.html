@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
   <!-- Prevent iOS auto-linking phone numbers / emails -->
   <meta name="format-detection" content="telephone=no, email=no, address=no"/>
   <!-- Home screen / full-screen mode -->
@@ -1105,7 +1105,9 @@
        relative to the visual viewport — no JS, no env() tricks needed. */
     position: sticky !important;
     top: 0 !important;
-    padding: 0 !important;
+    /* env(safe-area-inset-top) fills the status-bar notch area with yellow
+       now that viewport-fit=cover lets the page extend to the screen edge. */
+    padding: env(safe-area-inset-top, 0px) 0 0 0 !important;
     background: #EAFE8B !important;
     transition: none;
     -webkit-transform: none;
@@ -1548,7 +1550,7 @@
   </nav>
 
   <!-- Mobile hamburger -->
-  <button id="hamburger" aria-label="Menu" onclick="(function(h,n){var open=n.style.display==='flex';n.style.display=open?'none':'flex';h.classList.toggle('open',!open);})(this,document.getElementById('mobileNav'));" style="display:none; position:fixed; top:14px; right:20px; z-index:300; background:none; border:none; cursor:pointer; padding:12px; flex-direction:column; gap:5px; -webkit-tap-highlight-color:transparent;">
+  <button id="hamburger" aria-label="Menu" onclick="(function(h,n){var open=n.style.display==='flex';n.style.display=open?'none':'flex';h.classList.toggle('open',!open);})(this,document.getElementById('mobileNav'));" style="display:none; position:fixed; top:max(14px, calc(env(safe-area-inset-top, 0px) + 10px)); right:20px; z-index:300; background:none; border:none; cursor:pointer; padding:12px; flex-direction:column; gap:5px; -webkit-tap-highlight-color:transparent;">
     <span class="ham-line"></span>
     <span class="ham-line"></span>
     <span class="ham-line"></span>
