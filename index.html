@@ -56,6 +56,14 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    /* Belt-and-braces: hide all native video controls/UI so the autoplaying
+       background videos never show a play button, time bar, AirPlay etc. */
+    video::-webkit-media-controls,
+    video::-webkit-media-controls-enclosure,
+    video::-webkit-media-controls-panel,
+    video::-webkit-media-controls-play-button,
+    video::-webkit-media-controls-start-playback-button { display: none !important; -webkit-appearance: none !important; }
+
     /* Input de-styling — removes Safari rounded inputs, inset shadows, OS chrome.
        Scoped to TEXT-LIKE inputs only; a blanket rule on `input` also strips
        the native rendering off checkboxes and radios, making them invisible. */
@@ -735,11 +743,13 @@
 
     /* Cycler — fixed bottom-left, appears with Purpose body copy */
     #missionCycler {
-      position: fixed;
-      bottom: 5vw;
-      left: 3vw;
-      top: auto;       /* lock to bottom-anchored — prevents Safari from inferring top:0 */
-      right: auto;
+      /* !important on positioning so no later cascade rule can quietly
+         shift the cycler back to absolute/relative/static. */
+      position: fixed !important;
+      bottom: 5vw !important;
+      left: 3vw !important;
+      top: auto !important;
+      right: auto !important;
       width: clamp(200px, 42vw, 700px);
       height: calc(clamp(36px, 9.5vh, 130px) * 3);
       overflow: hidden;
@@ -1159,7 +1169,7 @@
     background: #EAFE8B;
   }
   #mobileNav.open { display: flex !important; }
-  .mobile-nav-btn { font-family: "GT Cinetype", sans-serif; font-size: 45px; font-weight: 400; letter-spacing: 0.01em; text-transform: uppercase; color: #1a1a0e; background: none; border: none; cursor: pointer; padding: 4px 0; opacity: 0.4; text-align: left !important; display: flex; align-items: center; gap: 0.35em; width: 100%; }
+  .mobile-nav-btn { font-family: "GT Cinetype", sans-serif; font-size: 32px; font-weight: 400; letter-spacing: 0.01em; text-transform: uppercase; color: #1a1a0e; background: none; border: none; cursor: pointer; padding: 4px 0; opacity: 0.4; text-align: left !important; display: flex; align-items: center; gap: 0.35em; width: 100%; }
   .mobile-nav-btn.active { opacity: 1; font-weight: 700; }
   .mobile-nav-btn::before { content: ''; display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #1a1a0e; opacity: 0; flex-shrink: 0; }
   .mobile-nav-btn.active::before { opacity: 1; }
@@ -1651,9 +1661,8 @@
     <div id="mobileHero" style="display:none;">
       <!-- Video: large, centred, content fills space -->
       <div style="width:100vw; height:calc(var(--vh, 1vh) * 44); height:44svh; overflow:hidden; position:relative;">
-        <video autoplay loop muted playsinline style="position:absolute; top:50%; left:50%; transform:translate(-66%,-50%); width:137%; height:137%; object-fit:cover;">
-          <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/f_mp4,q_auto/v1779123021/Comp_7_1_mfnfzp.webm" type="video/mp4">
-          <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779123021/Comp_7_1_mfnfzp.webm" type="video/webm">
+        <video autoplay loop muted playsinline disablepictureinpicture disableremoteplayback preload="auto" style="position:absolute; top:50%; left:50%; transform:translate(-66%,-50%); width:137%; height:137%; object-fit:cover; pointer-events:none;">
+          <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779438673/Comp_7-hevc-safari_dpbflz.mp4" type="video/mp4">
         </video>
       </div>
       <!-- Text: fills remaining ~45% -->
