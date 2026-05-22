@@ -2070,18 +2070,24 @@
   .fixed-video-pin {
     position: fixed;
     top: -80px;
-    left: 50%;
-    transform: translateX(-50%);
+    /* Centred via left:0/right:0 + margin:auto INSTEAD of left:50% +
+       translateX(-50%). On Safari desktop, position:fixed + transform
+       promotes the element to its own composited GPU layer, and Safari
+       caches those layers aggressively — a cached frame of the outgoing
+       video kept painting on top of the incoming video during section
+       transitions. Removing the transform means no GPU layer promotion,
+       no cached frame leakage. */
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
     width: clamp(600px, 100vw, 1600px);
     bottom: 0;
     pointer-events: none;
     z-index: 2;
     opacity: 0;
     /* Sequence fades so the OUTGOING video has time to fully fade out
-       (0.35s) BEFORE the incoming one starts fading in. Eliminates the
-       brief moment where both #fixedVideoWilding and #fixedVideoArt are
-       both visibly painted at intermediate opacities during a section
-       transition. */
+       (0.35s) BEFORE the incoming one starts fading in. */
     transition: opacity 0.35s ease-out;
   }
 
