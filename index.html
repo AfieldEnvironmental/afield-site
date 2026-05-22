@@ -73,21 +73,13 @@
               backface-visibility: hidden;
     }
 
-    /* Art video file has solid black around the polygon artwork (no alpha
-       channel encoded). mix-blend-mode:screen makes those black pixels
-       effectively transparent — black + anything = anything in screen
-       blend mode — so the page background shows through.
-
-       IMPORTANT: applied to the CONTAINER (#fixedVideoArt and the mobile
-       wrapper) NOT the <video> element. The container creates its own
-       stacking context (position:fixed + z-index), which would trap
-       blend-mode on a child element. Applied at the container level,
-       the blend reaches up to the body. */
-    #fixedVideoArt,
-    #sectionArt .mobile-section-video {
-      mix-blend-mode: screen;
-      isolation: auto;
-    }
+    /* mix-blend-mode experiments reverted. The Art video file has solid
+       black around the polygon (no alpha channel) and there's no CSS
+       blend mode that cleanly knocks out the black against a yellow
+       page bg without also washing out the polygon artwork itself.
+       The proper fix is to re-encode the Art video with an alpha
+       channel (VP9 WebM with alpha=1, or HEVC with alpha). Until then
+       the black bg is part of the video. */
 
     /* Belt-and-braces: hide all native video controls/UI so the autoplaying
        background videos never show a play button, time bar, AirPlay etc.
