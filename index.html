@@ -3281,15 +3281,42 @@
     { sectionId: 'sectionPeople',  elIds: ['fixedHeadingPeople'] },
   ];
 
+  /* Track pending hide timers per element so rapid toggles don't leave
+     elements permanently hidden. */
+  var hideTimers = {};
+
   function showOnly(activeIds){
-    ['missionCycler','fixedHeadingWilding','fixedHeadingArt','fixedHeadingValues','fixedHeadingPeople','fixedVideoWilding','fixedVideoArt']
-      .forEach(function(id){
-        var el = document.getElementById(id);
-        if(el) el.classList.remove('visible');
-      });
+    var allIds = ['missionCycler','fixedHeadingWilding','fixedHeadingArt','fixedHeadingValues','fixedHeadingPeople','fixedVideoWilding','fixedVideoArt'];
+
+    // Active set first → cleared visibility hidden BEFORE adding .visible
+    // so any pending hide from a previous transition doesn't keep it dark.
     activeIds.forEach(function(id){
       var el = document.getElementById(id);
-      if(el) el.classList.add('visible');
+      if(!el) return;
+      if (hideTimers[id]) { clearTimeout(hideTimers[id]); hideTimers[id] = null; }
+      el.style.visibility = '';      // reset inline visibility
+      el.classList.add('visible');
+    });
+
+    // Anything NOT in activeIds gets .visible removed AND scheduled to
+    // become visibility:hidden after the fade-out completes (400ms is
+    // a safe buffer past the 350ms CSS opacity transition). This makes
+    // sure the outgoing video element is no longer in the paint stack
+    // when the incoming starts fading in — eliminating the "doubled
+    // video" Safari was painting during the cross-fade.
+    allIds.forEach(function(id){
+      if (activeIds.indexOf(id) !== -1) return;
+      var el = document.getElementById(id);
+      if(!el) return;
+      el.classList.remove('visible');
+      if (hideTimers[id]) clearTimeout(hideTimers[id]);
+      hideTimers[id] = setTimeout(function(){
+        // Only hide if it's still inactive (user hasn't scrolled back in)
+        if (!el.classList.contains('visible')) {
+          el.style.visibility = 'hidden';
+        }
+        hideTimers[id] = null;
+      }, 600);  // > longest fade-out (cycler 500ms) so no element is cut mid-fade
     });
   }
 
