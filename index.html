@@ -63,8 +63,15 @@
     /* No black bg on any <video> element — browsers default to black
        which shows during load or when the video has letterbox/pillarbox
        from object-fit. Use transparent so the section colour shows
-       through instead. */
-    video { background: transparent !important; }
+       through instead. -webkit-backface-visibility:hidden tells
+       Safari to treat the video as an element that can be transparent
+       (without this, mobile Safari fills with black during load). */
+    video {
+      background: transparent !important;
+      background-color: transparent !important;
+      -webkit-backface-visibility: hidden;
+              backface-visibility: hidden;
+    }
 
     /* Belt-and-braces: hide all native video controls/UI so the autoplaying
        background videos never show a play button, time bar, AirPlay etc.
@@ -4681,11 +4688,18 @@ if(window.innerWidth <= 768){
         if (f['Card Announcement'] && ps[1]) ps[1].innerHTML = '<strong>' + f['Card Announcement'] + '</strong>';
         if (f['Card Body']         && ps[2]) ps[2].innerHTML = f['Card Body'];
 
-        // Video URL
-        if (f['Video URL']) {
-          var src = section.querySelector('.mobile-section-video video source');
-          if (src) { src.src = f['Video URL']; src.closest('video').load(); }
-        }
+        /* Video URL override REMOVED (Gemini caught this — same class of
+           bug as the cycler-words Airtable overwrite). This block was
+           re-pointing the FIRST <source> of each section's mobile video
+           to whatever URL was in Airtable's "Video URL" field, AFTER
+           our codec-detection JS had carefully trimmed sources. Net
+           effect: the type="video/mp4; codecs=hvc1" hint stayed in
+           place but the URL became a non-HEVC file, so Safari either
+           failed to decode (showing black) or played the wrong file
+           with no alpha. Also caused the "stacked videos" effect on
+           desktop when the script ran while the previous video was
+           still rendering. Videos are now hard-coded in HTML with
+           proper multi-source codec ordering. */
       }
 
       // Detail overlay scroll content
