@@ -775,21 +775,16 @@
       z-index: 4;
       pointer-events: none;
       opacity: 0;
-      /* No translateZ(0) and no will-change:transform.
-         On Safari, transform:translateZ(0) + position:fixed promotes the
-         element to a composited layer that gets anchored to the document
-         (its containing block) instead of the viewport — making the
-         cycler drift downward as the user scrolls. Pure 2D translateY
-         is fine and keeps the element correctly viewport-fixed. */
+      /* NO transform whatsoever on the cycler itself. On Safari,
+         position:fixed + transform (even transitioning to identity)
+         can cause the element to be treated as document-anchored
+         rather than viewport-anchored. Fade in/out via opacity ONLY. */
       will-change: opacity;
-      transform: translateY(60px);
-      transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-                  transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+      transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     #missionCycler.visible {
       opacity: 1;
-      transform: translateY(0);
     }
 
     #missionTrack {
