@@ -1097,14 +1097,15 @@
 
   nav {
     padding: 0 !important;
-    /* Without viewport-fit=cover, position:fixed top:0 sits naturally below
-       the address bar — no JS or env() tricks needed. GPU-composited for
-       smooth rendering during the address bar show/hide animation. */
     background: #EAFE8B !important;
     transition: none;
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
     will-change: transform;
+    /* Extend yellow upward beyond the nav's own box — this covers the brief
+       strip of page content that appears above position:fixed top:0 during
+       iOS Safari's address-bar show/hide animation. */
+    box-shadow: 0 -300px 0 300px #EAFE8B;
   }
   .nav-inner {
     padding: 8px 4vw !important;
@@ -1540,7 +1541,7 @@
   </nav>
 
   <!-- Mobile hamburger -->
-  <button id="hamburger" aria-label="Menu" onclick="(function(h,n){var open=n.style.display==='flex';n.style.display=open?'none':'flex';h.classList.toggle('open',!open);})(this,document.getElementById('mobileNav'));" style="display:none; position:fixed; top:max(20px, calc(env(safe-area-inset-top, 0px) + 12px)); right:20px; z-index:300; background:none; border:none; cursor:pointer; padding:12px; flex-direction:column; gap:5px; -webkit-tap-highlight-color:transparent;">
+  <button id="hamburger" aria-label="Menu" onclick="(function(h,n){var open=n.style.display==='flex';n.style.display=open?'none':'flex';h.classList.toggle('open',!open);})(this,document.getElementById('mobileNav'));" style="display:none; position:fixed; top:16px; right:20px; z-index:300; background:none; border:none; cursor:pointer; padding:12px; flex-direction:column; gap:5px; -webkit-tap-highlight-color:transparent;">
     <span class="ham-line"></span>
     <span class="ham-line"></span>
     <span class="ham-line"></span>
