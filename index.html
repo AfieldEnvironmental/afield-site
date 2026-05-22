@@ -791,8 +791,11 @@
       z-index: 4;
       pointer-events: none;
       opacity: 0;
-      will-change: opacity;
-      transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+      /* Gentle slide-in: rises 30px while fading in for a softer entrance. */
+      transform: translateY(30px);
+      will-change: opacity, transform;
+      transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+                  transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
       /* Soft fade on top + bottom of the cycler. WebKit needs the
          -webkit-mask-repeat/-size properties or the gradient mask
          silently no-ops on Safari. */
@@ -806,6 +809,7 @@
 
     #missionCycler.visible {
       opacity: 1;
+      transform: translateY(0);
     }
 
     #missionTrack {
@@ -2086,17 +2090,17 @@
     pointer-events: none;
     z-index: 2;
     opacity: 0;
-    /* NO opacity transition. The outgoing video gets a separate transition
-       via JS (display:none after 50ms) and the incoming snaps to full
-       opacity instantly. This eliminates any window during which BOTH
-       videos have non-zero opacity — Safari desktop was painting them
-       both during even tiny overlap windows. */
-    transition: none;
+    /* Soft cross-fade restored. The "stacking" we were chasing turned
+       out to be intentional artwork in the video file itself — not a
+       transition bug — so we can safely fade videos in/out again.
+       Outgoing fades first, incoming starts after a 0.25s delay so the
+       brief overlap window is short. */
+    transition: opacity 0.4s ease-out;
   }
 
   .fixed-video-pin.visible {
     opacity: 1;
-    transition: none;
+    transition: opacity 0.55s ease-in 0.25s;
   }
 
   /* Sticky elements */
@@ -3336,11 +3340,12 @@
           if (vid) { try { vid.pause(); } catch(e){} }
         }
         hideTimers[id] = null;
-        // Headings/videos snap in/out instantly (no CSS transition) — hide
-        // after 50ms which is just a microtask delay to let the DOM settle
-        // after the .visible class flip. Cycler still gets the longer 600ms
-        // to allow for its 500ms opacity fade.
-      }, id === 'missionCycler' ? 600 : 50);
+        // Hide just AFTER each element's fade-out completes so the soft
+        // cross-fade is preserved without leaving a stale layer behind.
+        // - videos: 0.4s fade-out → 500ms hide
+        // - headings: 0.3s fade-out → 500ms hide (one number for both)
+        // - cycler: 0.5s fade-out → 600ms hide
+      }, id === 'missionCycler' ? 600 : 500);
     });
   }
 
