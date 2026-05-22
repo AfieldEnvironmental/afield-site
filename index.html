@@ -1187,6 +1187,11 @@
   #hamburger.open .ham-line:nth-child(2) { opacity: 0; }
   #hamburger.open .ham-line:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
   #mobileNav {
+    /* box-sizing:border-box makes height:100lvh INCLUDE the padding —
+       without this, padding is added ON TOP of the height, pushing the
+       background past the viewport bottom and leaving an uncovered gap.
+       This was why the yellow wasn't extending edge-to-edge. */
+    box-sizing: border-box !important;
     padding: 80px 5vw 5vw 5vw;
     padding-top: max(80px, calc(env(safe-area-inset-top, 0px) + 60px));
     padding-bottom: max(5vw, env(safe-area-inset-bottom, 0px));
@@ -1691,7 +1696,9 @@
   <!-- Fixed videos — pinned, fade with their section -->
   <div id="fixedVideoWilding" class="fixed-video-pin">
     <video autoplay loop muted playsinline disablepictureinpicture disableremoteplayback preload="auto" style="width:100%; height:100%; object-fit:cover; object-position:center center; pointer-events:none;">
-      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779444552/Comp_9-hevc-safari_cygpav.mp4" type="video/mp4">
+      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779444552/Comp_9-hevc-safari_cygpav.mp4" type='video/mp4; codecs="hvc1"'>
+      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779119908/Comp_8_1_zi9dny.webm" type="video/webm">
+      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/f_mp4,q_auto/v1779119908/Comp_8_1_zi9dny.webm" type="video/mp4">
     </video>
   </div>
   <div id="fixedVideoArt" class="fixed-video-pin">
@@ -1716,8 +1723,16 @@
     </div>
     <!-- Desktop hero video -->
     <div id="heroVideo" style="position:absolute; left:0; top:0; bottom:0; right:0; z-index:1; overflow:hidden; background:transparent;">
-      <video autoplay loop muted playsinline style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(1.15);width:100%;height:100%;object-fit:cover;">
-        <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779438673/Comp_7-hevc-safari_dpbflz.mp4" type="video/mp4">
+      <video autoplay loop muted playsinline disablepictureinpicture disableremoteplayback preload="auto" style="position:absolute;top:50%;left:calc(50% + 150px);transform:translate(-50%,-50%) scale(1.15);width:100%;height:100%;object-fit:cover;pointer-events:none;">
+        <!-- Source order = browser-picks-first-it-can-play. The `type` attribute
+             with codec hint stops the browser fetching files it can't decode:
+             - Safari: hvc1 HEVC (efficient, native)
+             - Chrome / Firefox: skip HEVC (no decode), pick WebM (VP9)
+             - Anything else: H.264 MP4 fallback
+             Result: no flash of black, no double-fetch. -->
+        <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779438673/Comp_7-hevc-safari_dpbflz.mp4" type='video/mp4; codecs="hvc1"'>
+        <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779123021/Comp_7_1_mfnfzp.webm" type="video/webm">
+        <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/f_mp4,q_auto/v1779123021/Comp_7_1_mfnfzp.webm" type="video/mp4">
       </video>
     </div>
     <!-- Mobile-only hero -->
@@ -1725,7 +1740,9 @@
       <!-- Video: large, centred, content fills space -->
       <div style="width:100vw; height:calc(var(--vh, 1vh) * 44); height:44svh; overflow:hidden; position:relative;">
         <video autoplay loop muted playsinline disablepictureinpicture disableremoteplayback preload="auto" style="position:absolute; top:50%; left:50%; transform:translate(-66%,-50%); width:137%; height:137%; object-fit:cover; pointer-events:none;">
-          <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779438673/Comp_7-hevc-safari_dpbflz.mp4" type="video/mp4">
+          <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779438673/Comp_7-hevc-safari_dpbflz.mp4" type='video/mp4; codecs="hvc1"'>
+          <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779123021/Comp_7_1_mfnfzp.webm" type="video/webm">
+          <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/f_mp4,q_auto/v1779123021/Comp_7_1_mfnfzp.webm" type="video/mp4">
         </video>
       </div>
       <!-- Text: fills remaining ~45% -->
@@ -2669,7 +2686,9 @@
   <h2 class="mobile-section-heading">Wilding<br>Grants</h2>
   <div class="mobile-section-video">
     <video autoplay muted loop playsinline disablepictureinpicture disableremoteplayback preload="auto" style="pointer-events:none;">
-      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779444552/Comp_9-hevc-safari_cygpav.mp4" type="video/mp4">
+      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779444552/Comp_9-hevc-safari_cygpav.mp4" type='video/mp4; codecs="hvc1"'>
+      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779119908/Comp_8_1_zi9dny.webm" type="video/webm">
+      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/f_mp4,q_auto/v1779119908/Comp_8_1_zi9dny.webm" type="video/mp4">
     </video>
   </div>
   <div class="cs-inner" style="align-items:flex-start; padding-right:72vw; position:relative; z-index:3;">
@@ -3551,13 +3570,26 @@
 
           // When we reach the last copy's start, silently reset to equivalent position in second copy
           if(current >= words.length * (COPIES - 1)){
-            // Do the jump after the transition settles
+            // Wait for the current 0.6s transition to fully complete, THEN do
+            // the reset. Use 650ms (was 600) to be safely past the transition
+            // end. Use double-rAF + forced reflow to guarantee the browser
+            // commits transition:none + position jump as a single uncommitted
+            // batch before re-enabling the transition for the next tick —
+            // otherwise the browser may animate the 28-word jump-back, which
+            // is the visible stutter.
             setTimeout(function(){
               track.style.transition = 'none';
               current -= words.length * (COPIES - 2);
               update();
-              setTimeout(function(){ track.style.transition = 'transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1)'; }, 20);
-            }, 600);
+              // Force a synchronous layout so the no-transition jump is
+              // committed before we re-enable the transition.
+              /* eslint-disable no-unused-expressions */ track.offsetHeight;
+              requestAnimationFrame(function(){
+                requestAnimationFrame(function(){
+                  track.style.transition = 'transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1)';
+                });
+              });
+            }, 650);
           }
 
           update();
