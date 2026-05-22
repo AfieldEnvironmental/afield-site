@@ -1383,11 +1383,17 @@
   }
   .mobile-section-video {
     display: block !important;
-    width: 100% !important;
-    max-width: 100vw !important;
-    height: 52vw !important;
+    /* Wider than viewport + negative left margin = visually shifted left
+       by ~50px while still covering the full viewport width (overflow
+       clipped by parent's overflow-x:clip on body/html). */
+    width: calc(100% + 50px) !important;
+    max-width: none !important;
+    margin-left: -50px !important;
+    /* Larger: 52vw → 75vw — gives grant videos significantly more presence
+       on the mobile page. */
+    height: 75vw !important;
     max-height: none !important;
-    margin: 0 0 6vw 0 !important;
+    margin-bottom: 6vw !important;
     overflow: hidden !important;
     position: relative !important;
     order: 2 !important;
@@ -1396,15 +1402,11 @@
     position: absolute !important;
     top: 50% !important;
     left: 50% !important;
-    /* Centred translate(-50%, -50%). The previous -66% horizontal offset
-       was a hero-specific tweak that got copy-pasted here, pushing the
-       video left by ~40% of the container width and leaving the orange
-       #sectionWilding / purple #sectionArt placeholder bg visible on
-       the right edge. Reset to centred so the video fills properly. */
     transform: translate(-50%, -50%) !important;
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
+    background: transparent !important;
   }
   #sectionWilding, #sectionArt { min-height: auto !important; display: flex !important; flex-direction: column !important; }
   #sectionWilding .mobile-section-video, #sectionArt .mobile-section-video { order: 1 !important; }
@@ -3280,9 +3282,30 @@
       if(!sec) return;
       var top = sec.offsetTop;
       var bot = top + sec.offsetHeight;
-      // People heading requires more scroll into the section before appearing
-      var enterOffset = m.sectionId === 'sectionPeople' ? vh * 0.3 : vh * 0.1;
-      var exitOffset  = m.sectionId === 'sectionPeople' ? vh * 0.35 : m.sectionId === 'sectionArt' ? vh * 0.85 : vh * 0.65;
+      /* Tuned thresholds:
+         - enterOffset: how much of the section must be in view before its
+           pinned elements appear. Higher = appear later (further into scroll).
+         - exitOffset: how close to the section bottom before pinned elements
+           leave. Higher = leave earlier.
+         People heading needs the user to be well into the section before it
+         appears, so its enter threshold is the largest.
+         Wilding / Art videos felt mistimed: Art was exiting at 0.85vh which
+         meant it disappeared while there was still ~half a viewport of Art
+         section copy still to read. Pulled Art's exit back in line with
+         Wilding's so both videos hold for the same proportion of their
+         section. Also bumped Wilding/Art enter slightly so the video
+         doesn't pop in while the section header is barely on screen. */
+      var enterOffset, exitOffset;
+      if (m.sectionId === 'sectionPeople') {
+        enterOffset = vh * 0.3;
+        exitOffset  = vh * 0.35;
+      } else if (m.sectionId === 'sectionWilding' || m.sectionId === 'sectionArt') {
+        enterOffset = vh * 0.25;  // was 0.1 — wait until section is properly in view
+        exitOffset  = vh * 0.45;  // was 0.65 (Wilding) / 0.85 (Art) — both stay longer & match
+      } else {
+        enterOffset = vh * 0.1;
+        exitOffset  = vh * 0.65;
+      }
       if(scrollY + vh > top + enterOffset && scrollY < bot - exitOffset){
         active = m;
       }
@@ -4363,6 +4386,43 @@ function declineCookies(){
 
 
 <script>
+/* Browser codec detection — runs IMMEDIATELY before browsers commit to
+   downloading any video source. For every <video> with multiple <source>s
+   we explicitly trim the list to only sources the current browser can
+   decode, in our preferred order (HEVC for Safari, WebM for Chromium/
+   Firefox, H.264 MP4 as last resort). Belt-and-braces on top of the
+   `type=` hints — guarantees iOS Safari loads HEVC and Chrome loads
+   WebM, with no chance of fetching+failing on the wrong codec first
+   (which is what was leaving black frames behind). */
+(function(){
+  var probe = document.createElement('video');
+  var canHEVC = (probe.canPlayType('video/mp4; codecs="hvc1"') !== '') ||
+                (probe.canPlayType('video/mp4; codecs="hev1"') !== '');
+  var canWebM = probe.canPlayType('video/webm; codecs="vp9"') !== '' ||
+                probe.canPlayType('video/webm') !== '';
+
+  document.querySelectorAll('video').forEach(function(v){
+    var sources = Array.prototype.slice.call(v.querySelectorAll('source'));
+    if (sources.length <= 1) return;
+
+    // Pick the highest-preference source the browser can play
+    var chosen = null;
+    sources.forEach(function(s){
+      if (chosen) return;
+      var type = (s.type || '').toLowerCase();
+      if (/hvc1|hev1/.test(type) && canHEVC)     chosen = s;
+      else if (/webm/.test(type) && canWebM)     chosen = s;
+      else if (type === 'video/mp4' && !chosen)  chosen = s;  // fallback
+    });
+    if (!chosen) chosen = sources[0];
+
+    // Remove every other <source> so the browser only ever fetches one
+    sources.forEach(function(s){ if (s !== chosen) s.parentNode.removeChild(s); });
+    // Force the video element to re-evaluate its (now single) source
+    try { v.load(); } catch (e) {}
+  });
+})();
+
 // Video fade-in on load
 document.querySelectorAll('#heroVideo video, #sectionWilding video, #sectionArt video').forEach(function(v){
   if(v.readyState >= 3){
