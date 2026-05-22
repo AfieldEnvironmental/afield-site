@@ -762,14 +762,15 @@
 
     /* Cycler — fixed bottom-left, appears with Purpose body copy */
     #missionCycler {
-      /* JS-positioned: position:absolute + scroll handler that sets top on
-         every scroll/resize tick. This bypasses every documented Safari
-         quirk with position:fixed (containing-block traps, GPU layer
-         anchoring, transition-induced doc-anchoring etc.) by simply
-         computing the viewport-bottom position in JS each frame.
-         See "anchorCyclerToViewport" script lower in the file. */
-      position: absolute !important;
+      /* Back to genuine position:fixed now that the real bug (Airtable
+         overwriting the cycler's DOM via Section 5 — Gemini's catch) is
+         resolved. JS-driven scroll positioning was causing desktop scroll
+         judder, and isn't needed since the cycler was never actually
+         drifting — the words were just unactivatable phantoms. */
+      position: fixed !important;
+      bottom: 5vw !important;
       left: 3vw !important;
+      top: auto !important;
       right: auto !important;
       width: clamp(200px, 42vw, 700px);
       height: calc(clamp(36px, 9.5vh, 130px) * 3);
@@ -777,7 +778,7 @@
       z-index: 4;
       pointer-events: none;
       opacity: 0;
-      will-change: opacity, top;
+      will-change: opacity;
       transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1);
       /* Soft fade on top + bottom of the cycler. WebKit needs the
          -webkit-mask-repeat/-size properties or the gradient mask
@@ -1387,9 +1388,14 @@
     position: absolute !important;
     top: 50% !important;
     left: 50% !important;
-    transform: translate(-66%, -50%) !important;
-    width: 137% !important;
-    height: 137% !important;
+    /* Centred translate(-50%, -50%). The previous -66% horizontal offset
+       was a hero-specific tweak that got copy-pasted here, pushing the
+       video left by ~40% of the container width and leaving the orange
+       #sectionWilding / purple #sectionArt placeholder bg visible on
+       the right edge. Reset to centred so the video fills properly. */
+    transform: translate(-50%, -50%) !important;
+    width: 100% !important;
+    height: 100% !important;
     object-fit: cover !important;
   }
   #sectionWilding, #sectionArt { min-height: auto !important; display: flex !important; flex-direction: column !important; }
@@ -3641,45 +3647,11 @@
 })();
 </script>
 
-<script>
-/* anchorCyclerToViewport
-   The desktop cycler is position:absolute (not fixed) to escape every
-   Safari position:fixed quirk we've hit. This script keeps it glued to
-   the viewport's bottom-left as the user scrolls, by setting `top` to
-   (scrollY + viewport_height - cycler_height - bottom_offset) on every
-   scroll/resize event. Mobile cycler is hidden in CSS and unaffected. */
-(function(){
-  if (window.innerWidth <= 768) return;
-  var cycler = document.getElementById('missionCycler');
-  if (!cycler) return;
-
-  function update(){
-    if (window.innerWidth <= 768) { cycler.style.top = ''; return; }
-    var vh = window.innerHeight;
-    var vw = window.innerWidth;
-    var bottomGap = 0.05 * vw;            // matches the CSS bottom: 5vw
-    var ch = cycler.offsetHeight || 0;
-    var top = window.scrollY + vh - bottomGap - ch;
-    cycler.style.top = top + 'px';
-  }
-
-  // rAF-throttled scroll for smoothness without thrash
-  var ticking = false;
-  function onScroll(){
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(function(){ update(); ticking = false; });
-  }
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', update);
-
-  // Initial position + retries while font/layout settle
-  update();
-  setTimeout(update, 100);
-  setTimeout(update, 500);
-  setTimeout(update, 1200);
-})();
-</script>
+<!-- anchorCyclerToViewport script removed.
+     Was setting cycler.style.top on every scroll tick as a Safari position:fixed
+     workaround — turned out the cycler was never actually drifting (it was the
+     Airtable phantom-DOM bug, fixed in commit 25b4f71). The scroll handler was
+     causing visible scroll judder on desktop, so deleted. -->
 
 
 
