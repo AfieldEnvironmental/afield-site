@@ -8,15 +8,9 @@
 const fs   = require('fs');
 const path = require('path');
 
-/* Tables that have an "Order" column get sorted; "Site Config" is just
-   key/value pairs and has no Order field, so it's fetched unsorted. */
-const TABLES = [
-  { name: 'Site Config',  sort: false },
-  { name: 'Grants',       sort: true  },
-  { name: 'Values',       sort: true  },
-  { name: 'Team',         sort: true  },
-  { name: 'Cycler Words', sort: true  },
-];
+/* The script tries to sort by an "Order" column first; if a table doesn't
+   have that column Airtable returns 422 and we retry without the sort. */
+const TABLES = ['Site Config', 'Grants', 'Values', 'Team', 'Cycler Words'];
 const TOKEN  = process.env.AIRTABLE_TOKEN;
 const BASE   = process.env.AIRTABLE_BASE;
 
@@ -26,27 +20,33 @@ if (!TOKEN || !BASE) {
   process.exit(1);
 }
 
-async function fetchTable(name, sort) {
+async function rawFetch(name, withSort) {
   let url = 'https://api.airtable.com/v0/' + BASE + '/' + encodeURIComponent(name);
-  if (sort) url += '?sort[0][field]=Order&sort[0][direction]=asc';
+  if (withSort) url += '?sort[0][field]=Order&sort[0][direction]=asc';
+  const res = await fetch(url, { headers: { Authorization: 'Bearer ' + TOKEN } });
+  return { res, body: await res.text() };
+}
 
-  const res = await fetch(url, {
-    headers: { Authorization: 'Bearer ' + TOKEN }
-  });
-
+async function fetchTable(name) {
+  /* Try with Order sort first. If the table doesn't have an Order field,
+     Airtable returns 422 UNKNOWN_FIELD_NAME — retry without the sort. */
+  let { res, body } = await rawFetch(name, true);
+  if (res.status === 422 && body.indexOf('UNKNOWN_FIELD_NAME') !== -1) {
+    process.stdout.write('(no Order col, unsorted) ');
+    ({ res, body } = await rawFetch(name, false));
+  }
   if (!res.ok) {
-    const body = await res.text();
     throw new Error('Airtable "' + name + '" failed: ' + res.status + ' ' + body);
   }
-  return res.json();
+  return JSON.parse(body);
 }
 
 (async () => {
   const data = {};
-  for (const t of TABLES) {
-    process.stdout.write('  fetching "' + t.name + '"... ');
-    data[t.name] = await fetchTable(t.name, t.sort);
-    console.log('✓ ' + ((data[t.name].records || []).length) + ' records');
+  for (const name of TABLES) {
+    process.stdout.write('  fetching "' + name + '"... ');
+    data[name] = await fetchTable(name);
+    console.log('✓ ' + ((data[name].records || []).length) + ' records');
   }
 
   const outDir = path.join(__dirname, '..', 'data');
