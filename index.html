@@ -41,8 +41,9 @@
       min-height: 100vh;
       min-height: calc(var(--vh) * 100);
       min-height: 100svh;
-      /* No sideways drift */
-      overflow-x: hidden;
+      /* No overflow-x:hidden on body — it silently breaks position:sticky
+         on child elements in iOS Safari. If horizontal-scroll bleed appears,
+         apply overflow-x:clip to a wrapper div or to <main>, never the body. */
       /* Kill Android overscroll glow + pull-to-refresh */
       overscroll-behavior-y: none;
       /* Eliminates 300ms tap delay globally */
@@ -1105,9 +1106,13 @@
        relative to the visual viewport — no JS, no env() tricks needed. */
     position: sticky !important;
     top: 0 !important;
-    /* env(safe-area-inset-top) fills the status-bar notch area with yellow
-       now that viewport-fit=cover lets the page extend to the screen edge. */
-    padding: env(safe-area-inset-top, 0px) 0 0 0 !important;
+    /* env(safe-area-inset-top) fills the status-bar notch area with yellow.
+       Split into explicit rules — Safari has a parsing bug where env() inside
+       the padding shorthand mixed with 0 values can be dropped entirely. */
+    padding-top: env(safe-area-inset-top, 0px) !important;
+    padding-right: 0 !important;
+    padding-bottom: 0 !important;
+    padding-left: 0 !important;
     background: #EAFE8B !important;
     transition: none;
     -webkit-transform: none;
@@ -1238,7 +1243,9 @@
     z-index: 11;
     background: linear-gradient(to bottom, rgba(234,254,139,1) 0%, rgba(234,254,139,0.9) 18%, rgba(234,254,139,0.35) 38%, transparent 58%);
   }
-  nav { overflow: visible !important; position: fixed !important; z-index: 20 !important; }
+  /* nav positioning is set above (position:sticky). Do NOT override to fixed
+     here — fixed causes the iOS Safari address-bar jitter gap that sticky avoids. */
+  nav { overflow: visible !important; z-index: 20 !important; }
 
   /* VALUES — single column stack */
   .cs-values-grid { display: flex !important; flex-direction: column !important; gap: 8vw !important; }
@@ -1500,7 +1507,10 @@
        Height = env(safe-area-inset-top), so 0px on devices without a notch.
        z-index 9999 — sits above absolutely everything. pointer-events:none so
        it never blocks taps. Background is updated by JS when section bg changes. -->
-  <div id="safeAreaFill" aria-hidden="true" style="position:fixed; top:0; left:0; right:0; height:env(safe-area-inset-top, 0px); background:#EAFE8B; z-index:9999; pointer-events:none;"></div>
+  <!-- #safeAreaFill removed: position:fixed div had the same iOS Safari
+       jitter bug as the old fixed nav (detached from top during scroll,
+       exposing background). The sticky nav now handles the notch via
+       padding-top: env(safe-area-inset-top). -->
   <div id="transOverlay" style="position:fixed;inset:0;z-index:100;opacity:0;pointer-events:none;background:#EAFE8B;"></div>
   <nav>
     <!-- nav-inner: carries content padding; nav itself only has safe-area-inset-top -->
@@ -4584,24 +4594,7 @@ if(window.innerWidth <= 768){
 })();
 </script>
 
-<script>
-/* Safe-area fill strip — mirrors body background so notch zone always
-   matches the current section colour as the page scrolls. */
-(function () {
-  var fill = document.getElementById('safeAreaFill');
-  if (!fill) return;
-
-  /* Sync immediately */
-  function syncFill() {
-    fill.style.background = document.body.style.backgroundColor || '#EAFE8B';
-  }
-  syncFill();
-
-  /* Watch for any change to body's inline background-color */
-  var obs = new MutationObserver(syncFill);
-  obs.observe(document.body, { attributes: true, attributeFilter: ['style'] });
-})();
-</script>
+<!-- safeAreaFill sync script removed along with its target div. -->
 
 
 </body>
