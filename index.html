@@ -73,13 +73,18 @@
               backface-visibility: hidden;
     }
 
-    /* mix-blend-mode experiments reverted. The Art video file has solid
-       black around the polygon (no alpha channel) and there's no CSS
-       blend mode that cleanly knocks out the black against a yellow
-       page bg without also washing out the polygon artwork itself.
-       The proper fix is to re-encode the Art video with an alpha
-       channel (VP9 WebM with alpha=1, or HEVC with alpha). Until then
-       the black bg is part of the video. */
+    /* Knock out the Art video's solid black bg using an SVG colour-matrix
+       filter (defined inline in body as #knockoutBlack). The matrix
+       sets alpha = 10*(R+G+B) - 1, so:
+         - Pure black RGB(0,0,0) → alpha -1 → clamped to 0 (transparent)
+         - Anything with even slight brightness → alpha clamps to 1 (opaque)
+       This gives proper transparency without the wash-out side effects
+       of mix-blend-mode, and without needing to re-encode the video. */
+    #fixedVideoArt video,
+    #sectionArt .mobile-section-video video {
+      -webkit-filter: url(#knockoutBlack);
+              filter: url(#knockoutBlack);
+    }
 
     /* Belt-and-braces: hide all native video controls/UI so the autoplaying
        background videos never show a play button, time bar, AirPlay etc.
@@ -1581,6 +1586,23 @@
 </style>
 </head>
 <body>
+<!-- SVG filter that converts black pixels of a video to transparent.
+     The alpha-row matrix (10 10 10 0 -1) sets alpha = 10*(R+G+B) - 1,
+     so pure black (RGB sum 0) gets alpha -1 (clamped to 0 = transparent)
+     while anything with even modest brightness clamps to 1 (opaque).
+     Used to knock out the solid black bg of the Art Grants video file
+     without re-encoding for alpha. -->
+<svg width="0" height="0" style="position:absolute;pointer-events:none;" aria-hidden="true">
+  <defs>
+    <filter id="knockoutBlack" color-interpolation-filters="sRGB">
+      <feColorMatrix type="matrix" values="
+        1 0 0 0 0
+        0 1 0 0 0
+        0 0 1 0 0
+        10 10 10 0 -1"/>
+    </filter>
+  </defs>
+</svg>
 <div id="topFeather"></div>
 <script>
 // Browser detection — add classes to <html> for targeted CSS
