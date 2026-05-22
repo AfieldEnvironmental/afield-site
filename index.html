@@ -1430,19 +1430,20 @@
     position: absolute !important;
     top: 50% !important;
     left: 50% !important;
-    /* Scale 1.9x so the polygon focal point (which was sitting at ~50%
-       of the visible container width) fills ~95% of it. translate(-50%,-50%)
-       still centres the element; scale(1.9) zooms in around the
-       transform-origin, which we bias slightly to the right (65% center)
-       because the focal point of each grant video lives there. The
-       container has overflow:hidden so the scaled-up edges are clipped
-       cleanly. Container size & text layout are unchanged. */
-    transform: translate(-50%, -50%) scale(1.9) !important;
-    transform-origin: 65% center !important;
+    /* object-fit:contain (not cover) preserves the ENTIRE video frame —
+       no part of the polygon artwork ever gets cropped by the video-fit
+       step. Then transform:scale brings it back up to the size the user
+       wanted. Net effect: polygon at ~same visual size as before, but
+       NOTHING important is sliced off by container edges.
+
+       transform-origin slightly RIGHT of centre matches where the focal
+       point lives in both source files. */
+    transform: translate(-50%, -50%) scale(1.7) !important;
+    transform-origin: 60% center !important;
     width: 100% !important;
     height: 100% !important;
-    object-fit: cover !important;
-    object-position: 65% center !important;
+    object-fit: contain !important;
+    object-position: 60% center !important;
     background: transparent !important;
   }
   #sectionWilding, #sectionArt { min-height: auto !important; display: flex !important; flex-direction: column !important; }
