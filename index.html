@@ -728,13 +728,17 @@
       transform: translateY(60px);
       transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
                   transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%);
-      mask-image: linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%);
+      /* mask-image + position:fixed + transform = Safari rendering bug (element vanishes).
+         overflow:hidden already clips the ghost words; the soft edges aren't critical. */
+      will-change: opacity, transform;
+      -webkit-transform: translateY(60px) translateZ(0);
+      transform: translateY(60px) translateZ(0);
     }
 
     #missionCycler.visible {
       opacity: 1;
-      transform: translateY(0);
+      -webkit-transform: translateY(0) translateZ(0);
+      transform: translateY(0) translateZ(0);
     }
 
     #missionTrack {
@@ -1096,16 +1100,19 @@
   #topFeather { display: none !important; }
 
   nav {
+    /* sticky eliminates the iOS Safari fixed-element animation-lag gap entirely.
+       The element stays in flow and the browser compositor handles positioning
+       relative to the visual viewport — no JS, no env() tricks needed. */
+    position: sticky !important;
+    top: 0 !important;
     padding: 0 !important;
     background: #EAFE8B !important;
     transition: none;
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-    will-change: transform;
-    /* Extend yellow upward beyond the nav's own box — this covers the brief
-       strip of page content that appears above position:fixed top:0 during
-       iOS Safari's address-bar show/hide animation. */
-    box-shadow: 0 -300px 0 300px #EAFE8B;
+    -webkit-transform: none;
+    transform: none;
+    will-change: auto;
+    box-shadow: none;
+    z-index: 20 !important;
   }
   .nav-inner {
     padding: 8px 4vw !important;
@@ -1408,7 +1415,7 @@
     display: flex !important;
     flex-direction: column !important;
     justify-content: space-between !important;
-    padding-top: max(88px, calc(env(safe-area-inset-top, 0px) + 68px));
+    padding-top: 20px; /* nav is sticky (in flow), no large offset needed */
     background: transparent;
     /* Progressive viewport height: svh is stable regardless of address bar */
     min-height: calc(var(--vh, 1vh) * 100);
@@ -1541,7 +1548,7 @@
   </nav>
 
   <!-- Mobile hamburger -->
-  <button id="hamburger" aria-label="Menu" onclick="(function(h,n){var open=n.style.display==='flex';n.style.display=open?'none':'flex';h.classList.toggle('open',!open);})(this,document.getElementById('mobileNav'));" style="display:none; position:fixed; top:16px; right:20px; z-index:300; background:none; border:none; cursor:pointer; padding:12px; flex-direction:column; gap:5px; -webkit-tap-highlight-color:transparent;">
+  <button id="hamburger" aria-label="Menu" onclick="(function(h,n){var open=n.style.display==='flex';n.style.display=open?'none':'flex';h.classList.toggle('open',!open);})(this,document.getElementById('mobileNav'));" style="display:none; position:fixed; top:14px; right:20px; z-index:300; background:none; border:none; cursor:pointer; padding:12px; flex-direction:column; gap:5px; -webkit-tap-highlight-color:transparent;">
     <span class="ham-line"></span>
     <span class="ham-line"></span>
     <span class="ham-line"></span>
@@ -4217,55 +4224,9 @@ function declineCookies(){
 });
 </script>
 
-<script>
-// Scroll guard: on Wilding/Art pages, wheel scrolls the text column before advancing
-// Requires scrolling 60px past bottom before page advances (buffer zone)
-(function(){
-  var BUFFER = 60; // px of over-scroll needed before advancing page
-  var overscroll = { sectionWilding: 0, sectionArt: 0 };
-
-  ['sectionWilding', 'sectionArt'].forEach(function(sid){
-    var section = document.getElementById(sid);
-    if(!section) return;
-
-    section.addEventListener('wheel', function(e){
-      // Find the scrollable inner div (first div with overflow-y:auto inside top:160px container)
-      var container = section.querySelector('[style*="top:160px"]');
-      var txt = container ? container.querySelector('[style*="overflow-y:auto"]') : null;
-      if(!txt) return;
-
-      var atBottom = txt.scrollHeight - txt.scrollTop - txt.clientHeight < 5;
-      var atTop = txt.scrollTop < 5;
-      var scrollable = txt.scrollHeight > txt.clientHeight + 5;
-
-      if(e.deltaY > 0) {
-        if(!atBottom || !scrollable) {
-          // Still text to scroll — consume event
-          if(!atBottom) {
-            e.stopPropagation();
-            txt.scrollTop += e.deltaY;
-            overscroll[sid] = 0;
-          }
-        } else {
-          // At bottom — accumulate overscroll buffer
-          overscroll[sid] = (overscroll[sid] || 0) + e.deltaY;
-          if(overscroll[sid] < BUFFER) {
-            e.stopPropagation(); // block page advance until buffer exceeded
-          } else {
-            overscroll[sid] = 0; // let page advance
-          }
-        }
-      } else if(e.deltaY < 0 && atTop) {
-        overscroll[sid] = 0;
-      } else if(e.deltaY < 0 && !atTop) {
-        e.stopPropagation();
-        txt.scrollTop += e.deltaY;
-        overscroll[sid] = 0;
-      }
-    }, { capture: true });
-  });
-})();
-</script>
+<!-- Scroll guard removed: the non-passive capture listener was causing Safari
+     desktop trackpad inertia to stop at the Art Grants section. Inner detail
+     text uses overflow-y:auto so it scrolls naturally without JS intervention. -->
 
 
 <script>
