@@ -4424,10 +4424,24 @@ if(window.innerWidth <= 768){
    ────────────────────────────────────────────────────────────────────── */
 (function () {
   /* ── helpers ── */
-  // Calls the Netlify proxy function — token stays server-side
+  /* Reads the static JSON produced at build time by GitHub Actions.
+     The Airtable token only ever exists inside the GitHub Actions runner —
+     it never reaches the browser. See scripts/fetch-airtable.js. */
+  var _dataPromise = null;
+  function loadAll() {
+    if (!_dataPromise) {
+      _dataPromise = fetch('./data/airtable.json', { cache: 'no-cache' })
+        .then(function (r) {
+          if (!r.ok) throw new Error('airtable.json fetch ' + r.status);
+          return r.json();
+        });
+    }
+    return _dataPromise;
+  }
   function get(table) {
-    return fetch('/.netlify/functions/airtable?table=' + encodeURIComponent(table))
-      .then(function (r) { return r.json(); });
+    return loadAll().then(function (data) {
+      return data[table] || { records: [] };
+    });
   }
 
   // Convert [P] paragraph and [LI] list markers back into HTML
