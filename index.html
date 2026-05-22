@@ -1716,9 +1716,10 @@
     </video>
   </div>
   <div id="fixedVideoArt" class="fixed-video-pin">
-    <video autoplay loop muted playsinline style="width:100%; height:100%; object-fit:cover; object-position:center center;">
-      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/f_mp4,q_auto/v1779119582/Comp_9_vxhiwi.webm" type="video/mp4">
+    <video autoplay loop muted playsinline disablepictureinpicture disableremoteplayback preload="auto" style="width:100%; height:100%; object-fit:cover; object-position:center center; pointer-events:none;">
+      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779446388/Comp_9_1-hevc-safari_gkuq9s.mp4" type='video/mp4; codecs="hvc1"'>
       <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779119582/Comp_9_vxhiwi.webm" type="video/webm">
+      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/f_mp4,q_auto/v1779119582/Comp_9_vxhiwi.webm" type="video/mp4">
     </video>
   </div>
 
@@ -1751,17 +1752,18 @@
     </div>
     <!-- Mobile-only hero -->
     <div id="mobileHero" style="display:none;">
-      <!-- Video: large, centred, content fills space -->
-      <div style="width:100vw; height:calc(var(--vh, 1vh) * 44); height:44svh; overflow:hidden; position:relative;">
+      <!-- Video: larger now (was 44svh → 56svh) so it fills more of the mobile hero -->
+      <div style="width:100vw; height:calc(var(--vh, 1vh) * 56); height:56svh; overflow:hidden; position:relative;">
         <video autoplay loop muted playsinline disablepictureinpicture disableremoteplayback preload="auto" style="position:absolute; top:50%; left:50%; transform:translate(-66%,-50%); width:137%; height:137%; object-fit:cover; pointer-events:none;">
           <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779438673/Comp_7-hevc-safari_dpbflz.mp4" type='video/mp4; codecs="hvc1"'>
           <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779123021/Comp_7_1_mfnfzp.webm" type="video/webm">
           <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/f_mp4,q_auto/v1779123021/Comp_7_1_mfnfzp.webm" type="video/mp4">
         </video>
       </div>
-      <!-- Text: fills remaining ~45% -->
-      <div style="padding:5vw 5vw 8vw 5vw;">
-        <h1 style="font-family:'GT Cinetype',sans-serif; font-size:clamp(46px,13vw,72px); font-weight:400; letter-spacing:-0.03em; line-height:1.05; color:#1a1a0e; margin:0 0 5vw 0;">Creative<br>responses to<br>environmental injustice.</h1>
+      <!-- Text: smaller hero copy (was clamp(46,13vw,72) → clamp(34,9.5vw,52)),
+           tighter margin so Continue sits closer beneath. -->
+      <div style="padding:4vw 5vw 5vw 5vw;">
+        <h1 style="font-family:'GT Cinetype',sans-serif; font-size:clamp(34px,9.5vw,52px); font-weight:400; letter-spacing:-0.03em; line-height:1.05; color:#1a1a0e; margin:0 0 3vw 0;">Creative<br>responses to<br>environmental injustice.</h1>
         <button onclick="document.getElementById('sectionPurpose').scrollIntoView({behavior:'smooth'})" style="font-family:'GT Cinetype',sans-serif; font-size:13px; letter-spacing:0.08em; text-transform:uppercase; color:#1a1a0e; background:none; border:none; cursor:pointer; padding:0;">Continue ↓</button>
       </div>
     </div>
@@ -2721,9 +2723,10 @@
   <!-- Mobile-only heading and video -->
   <h2 class="mobile-section-heading">Arts<br>Grants</h2>
   <div class="mobile-section-video">
-    <video autoplay muted loop playsinline>
-      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/f_mp4,q_auto/v1779119582/Comp_9_vxhiwi.webm" type="video/mp4">
+    <video autoplay muted loop playsinline disablepictureinpicture disableremoteplayback preload="auto" style="pointer-events:none;">
+      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779446388/Comp_9_1-hevc-safari_gkuq9s.mp4" type='video/mp4; codecs="hvc1"'>
       <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779119582/Comp_9_vxhiwi.webm" type="video/webm">
+      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/f_mp4,q_auto/v1779119582/Comp_9_vxhiwi.webm" type="video/mp4">
     </video>
   </div>
   <div class="cs-inner" style="align-items:flex-start; padding-right:72vw; position:relative; z-index:3;">
@@ -4212,9 +4215,13 @@
     b.textContent = label;
     b.setAttribute('data-state', state);
     b.addEventListener('click', function(){
-      // Close menu
-      hamburger.classList.remove('open');
+      // Hide the overlay so the user can see the page they're scrolling to.
+      // The menu's visibility is driven by inline style (display:flex/none)
+      // set by the hamburger toggle — just removing the .open class wasn't
+      // enough; need to explicitly set display:none.
+      mobileNav.style.display = 'none';
       mobileNav.classList.remove('open');
+      hamburger.classList.remove('open');
       // Scroll to section
       var states = ['main', 'textPanel', 'sectionWilding', 'sectionArt', 'sectionValues', 'sectionPeople', 'sectionTouch', 'sectionPolicies'];
       var target = document.getElementById(states[parseInt(state)]) || document.querySelector('main');
