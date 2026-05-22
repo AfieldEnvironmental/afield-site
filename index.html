@@ -1366,8 +1366,11 @@
   #textPanel      { background: transparent !important; }
   #sectionWilding { background: transparent !important; }
   #sectionArt     { background: transparent !important; }
-  #sectionWilding .mobile-section-video { background: #ff6b35; }
-  #sectionArt .mobile-section-video { background: #e2cefe; }
+  /* Section-coloured placeholder backgrounds removed — user wants no
+     bg colour behind the videos. Page background shows through if a
+     video frame ever briefly fails to paint. */
+  #sectionWilding .mobile-section-video { background: transparent !important; }
+  #sectionArt .mobile-section-video { background: transparent !important; }
   /* Prevent yellow body colour showing past last section */
   #sectionTouch { padding-bottom: 20vw !important; }
   #sectionValues  { background: transparent !important; }
