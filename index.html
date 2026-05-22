@@ -33,6 +33,8 @@
       text-size-adjust: 100%;
       /* Disable rubber-band overscroll on root */
       overscroll-behavior: none;
+      /* Safety net against horizontal page jitter from any wide child. */
+      overflow-x: clip;
       height: 100%;
     }
 
@@ -41,9 +43,11 @@
       min-height: 100vh;
       min-height: calc(var(--vh) * 100);
       min-height: 100svh;
-      /* No overflow-x:hidden on body — it silently breaks position:sticky
-         on child elements in iOS Safari. If horizontal-scroll bleed appears,
-         apply overflow-x:clip to a wrapper div or to <main>, never the body. */
+      /* overflow-x: clip is the modern equivalent of `hidden` that DOESN'T
+         break position:sticky on iOS Safari (unlike `hidden` which creates a
+         scroll container and traps sticky children). Prevents any wide child
+         element from causing horizontal page scroll/jitter. */
+      overflow-x: clip;
       /* Kill Android overscroll glow + pull-to-refresh */
       overscroll-behavior-y: none;
       /* Eliminates 300ms tap delay globally */
@@ -57,12 +61,27 @@
     }
 
     /* Belt-and-braces: hide all native video controls/UI so the autoplaying
-       background videos never show a play button, time bar, AirPlay etc. */
+       background videos never show a play button, time bar, AirPlay etc.
+       The OVERLAY play button (the big circle iOS Safari draws on top when
+       autoplay fails) is the most stubborn — covered by *-overlay-* rules. */
     video::-webkit-media-controls,
     video::-webkit-media-controls-enclosure,
     video::-webkit-media-controls-panel,
     video::-webkit-media-controls-play-button,
-    video::-webkit-media-controls-start-playback-button { display: none !important; -webkit-appearance: none !important; }
+    video::-webkit-media-controls-start-playback-button,
+    video::-webkit-media-controls-overlay-enclosure,
+    video::-webkit-media-controls-overlay-play-button,
+    video::-internal-media-controls-overlay-cast-button {
+      display: none !important;
+      -webkit-appearance: none !important;
+      appearance: none !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+    /* Disable native playback UI entirely on videos that should be background-only. */
+    video[autoplay][muted][playsinline] {
+      pointer-events: none;
+    }
 
     /* Input de-styling — removes Safari rounded inputs, inset shadows, OS chrome.
        Scoped to TEXT-LIKE inputs only; a blanket rule on `input` also strips
