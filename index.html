@@ -1756,14 +1756,14 @@
 
   <!-- Fixed videos — pinned, fade with their section -->
   <div id="fixedVideoWilding" class="fixed-video-pin">
-    <video autoplay loop muted playsinline disablepictureinpicture disableremoteplayback preload="auto" style="width:100%; height:100%; object-fit:cover; object-position:center center; pointer-events:none;">
+    <video autoplay loop muted playsinline disablepictureinpicture disableremoteplayback preload="auto" style="width:100%; height:100%; object-fit:cover; object-position:65% center; transform:scale(1.3); transform-origin:65% center; pointer-events:none;">
       <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779444552/Comp_9-hevc-safari_cygpav.mp4" type='video/mp4; codecs="hvc1"'>
       <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779119908/Comp_8_1_zi9dny.webm" type="video/webm">
       <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/f_mp4,q_auto/v1779119908/Comp_8_1_zi9dny.webm" type="video/mp4">
     </video>
   </div>
   <div id="fixedVideoArt" class="fixed-video-pin">
-    <video autoplay loop muted playsinline disablepictureinpicture disableremoteplayback preload="auto" style="width:100%; height:100%; object-fit:cover; object-position:center center; pointer-events:none;">
+    <video autoplay loop muted playsinline disablepictureinpicture disableremoteplayback preload="auto" style="width:100%; height:100%; object-fit:cover; object-position:65% center; transform:scale(1.3); transform-origin:65% center; pointer-events:none;">
       <!-- Safari: HEVC with alpha channel (transparent bg around polygon)
            Chrome/Firefox: VP9 WebM (also new edit; alpha varies)
            Older browsers: H.264 fallback -->
@@ -2107,6 +2107,9 @@
   /* Fixed pinned videos */
   .fixed-video-pin {
     position: fixed;
+    /* Clip the inner video when it's scaled up so it doesn't bleed
+       past the pin's bounds and over other page content. */
+    overflow: hidden;
     top: -80px;
     /* Centred via left:0/right:0 + margin:auto INSTEAD of left:50% +
        translateX(-50%). On Safari desktop, position:fixed + transform
