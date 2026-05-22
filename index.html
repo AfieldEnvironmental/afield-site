@@ -73,6 +73,18 @@
               backface-visibility: hidden;
     }
 
+    /* Art video file has solid black around the polygon artwork (no alpha
+       channel encoded). mix-blend-mode:screen makes those black pixels
+       effectively transparent — black + anything = anything in screen
+       blend mode — so the page background shows through. Side effect:
+       the polygon content itself becomes slightly lighter. If we ever
+       get a properly alpha-encoded version of this video (e.g. VP9 WebM
+       with alpha or HEVC with alpha), this rule can be removed. */
+    #fixedVideoArt video,
+    #sectionArt .mobile-section-video video {
+      mix-blend-mode: screen;
+    }
+
     /* Belt-and-braces: hide all native video controls/UI so the autoplaying
        background videos never show a play button, time bar, AirPlay etc.
        The OVERLAY play button (the big circle iOS Safari draws on top when
