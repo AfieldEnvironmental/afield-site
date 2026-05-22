@@ -2086,15 +2086,17 @@
     pointer-events: none;
     z-index: 2;
     opacity: 0;
-    /* Sequence fades so the OUTGOING video has time to fully fade out
-       (0.35s) BEFORE the incoming one starts fading in. */
-    transition: opacity 0.35s ease-out;
+    /* NO opacity transition. The outgoing video gets a separate transition
+       via JS (display:none after 50ms) and the incoming snaps to full
+       opacity instantly. This eliminates any window during which BOTH
+       videos have non-zero opacity — Safari desktop was painting them
+       both during even tiny overlap windows. */
+    transition: none;
   }
 
   .fixed-video-pin.visible {
     opacity: 1;
-    /* Incoming starts AFTER the outgoing has had time to fade. */
-    transition: opacity 0.5s ease-in 0.3s;
+    transition: none;
   }
 
   /* Sticky elements */
@@ -3334,7 +3336,11 @@
           if (vid) { try { vid.pause(); } catch(e){} }
         }
         hideTimers[id] = null;
-      }, 600);  // > longest fade-out (cycler 500ms) so no element is cut mid-fade
+        // Headings/videos snap in/out instantly (no CSS transition) — hide
+        // after 50ms which is just a microtask delay to let the DOM settle
+        // after the .visible class flip. Cycler still gets the longer 600ms
+        // to allow for its 500ms opacity fade.
+      }, id === 'missionCycler' ? 600 : 50);
     });
   }
 
