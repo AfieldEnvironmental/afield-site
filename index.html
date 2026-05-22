@@ -4036,73 +4036,42 @@
 })();
 </script>
 <script>
-(function(){
-  ['sectionWilding', 'sectionArt'].forEach(function(id){
-    var section = document.getElementById(id);
-    if(!section) return;
-
-    function checkOverflow(){
-      var textCol = section.querySelector('#wildingTextCol') || section.querySelector('.panel-body[style*="position:absolute"]') || section.querySelector('.cs-text');
-      if(!textCol) return;
-      var overflows = textCol.scrollHeight > textCol.clientHeight + 10;
-      textCol.style.overflowY = overflows ? 'auto' : 'hidden';
-      /* Contain inner scroll so wheel at boundary doesn't double-fire on page. */
-      textCol.style.overscrollBehavior = 'contain';
-    }
-
-    /* Wheel handler removed: { passive: false } blocks Safari trackpad inertial
-       scrolling, causing the page to stop dead at Art Grants. The textCol
-       already gets overflow-y:auto from checkOverflow() above — the browser
-       natively scrolls inner content before letting the wheel reach the page,
-       so the manual scrollTop += loop was redundant. */
-
-    var observer = new MutationObserver(function(){
-      var textCol = section.querySelector('#wildingTextCol') || section.querySelector('.panel-body[style*="position:absolute"]') || section.querySelector('.cs-text');
-      if(section.classList.contains('active')){
-        if(textCol) textCol.scrollTop = 0;
-        checkOverflow();
-      } else {
-        // Reset scroll when leaving so it's fresh on return
-        if(textCol) textCol.scrollTop = 0;
-      }
-    });
-    observer.observe(section, { attributes: true, attributeFilter: ['class'] });
-    window.addEventListener('resize', checkOverflow);
-  });
-})();
-</script>
+/* Wilding/Art overflow-management script removed for the same reason as
+   Values (above): checkOverflow() was setting overflow-y:auto +
+   overscroll-behavior:contain on the inner text column, trapping scroll
+   inside it once the wheel boundary was hit — without the wheel
+   handler that used to detect the boundary and release scroll to the
+   page. Letting the natural CSS take over so the page scrolls
+   continuously through these sections. */
 <script>
+/* Values section: entire overflow-management script removed.
+
+   Old behaviour: when the section became .active, checkOverflow() set
+   .cs-values-right to overflow-y:auto + overscroll-behavior:contain.
+   That made scroll TRAP inside the inner pane — when user reached the
+   bottom, contain blocked the scroll chain so the page wouldn't keep
+   scrolling. A wheel handler used to detect the boundary and "release"
+   scroll to the page, but that handler was removed (it used passive:
+   false which blocks Safari trackpad inertia). Leaving the overflow
+   setup behind without the release logic = scroll dead-stop.
+
+   Now: let the CSS default (.cs-values-right { overflow: visible })
+   stand, so the section is naturally tall and the page scrolls
+   continuously through it. No JS scroll management. */
 (function(){
   var section = document.getElementById('sectionValues');
   if(!section) return;
   if(window.innerWidth <= 768) return;
 
-  function checkOverflow(){
-    var right = section.querySelector('.cs-values-right');
-    if(!right) return;
-    right.style.overflowY = right.scrollHeight > right.clientHeight + 10 ? 'auto' : 'hidden';
-    right.style.overscrollBehavior = 'contain';
-  }
-
-  /* Wheel handler removed: { passive: false } blocks Safari trackpad inertia
-     and was causing the page to stop dead at Values. The .cs-values-right
-     pane has overflow-y:auto from checkOverflow() — native nested scroll
-     handles the inner-first, page-second behaviour without JS. */
-
+  // Keep only the active-state class observer (used elsewhere); no scroll/overflow side-effects.
   var observer = new MutationObserver(function(){
-    var right = section.querySelector('.cs-values-right');
     if(section.classList.contains('active')){
-      if(right) right.scrollTop = 0;
       section._readyToAdvance = false;
-      checkOverflow();
     } else {
-      if(right) right.scrollTop = 0;
       section._readyToAdvance = false;
     }
   });
   observer.observe(section, { attributes: true, attributeFilter: ['class'] });
-
-  window.addEventListener('resize', checkOverflow);
 })();
 </script>
 <script>
