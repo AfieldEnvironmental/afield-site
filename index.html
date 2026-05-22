@@ -680,7 +680,13 @@
       z-index: -1;
     }
 
-    main { animation: fadeUp 0.6s 0.15s ease both; }
+    /* fadeUp animation removed from <main> entirely.
+       Even with opacity-only keyframes, the mere presence of an `animation`
+       property on <main> causes Safari/Chrome to compute transform:
+       matrix(1,0,0,1,0,0) (identity but non-none) — which creates a
+       containing block for every position:fixed descendant. That made
+       #missionCycler scroll with main instead of staying at viewport bottom.
+       The page now uses opacity:1 by default; no entry animation. */
 
     .hero-text {
       transition: opacity 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
@@ -3411,7 +3417,12 @@
   var holdTimeout = null;
 
   function update(){
-    if(!lineH) lineH = els[0].offsetHeight || 110;
+    /* Always re-measure: if the first measurement happened while the cycler
+       was display:none (e.g. mobile media query), lineH got the 110 fallback
+       and was never refreshed, causing the wrong transform offset. */
+    var measured = els[0].offsetHeight;
+    if(measured) lineH = measured;
+    if(!lineH) lineH = 110;
     // Centre the active word in the window by offsetting by 1 line (one ghost above)
     track.style.transform = 'translateY(-' + ((current - 1) * lineH) + 'px)';
     els.forEach(function(el, i){
