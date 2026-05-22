@@ -1602,7 +1602,13 @@
     <button class="dot-btn" data-state="6" title="Get in touch"><span class="dot-circle"></span><span class="dot-label">Get in touch</span></button>
   </div>
 
-  <!-- Fixed headings — fade in/out per section via JS -->
+  <!-- Fixed headings & cycler — fade in/out per section via JS.
+       All position:fixed elements MUST live as direct children of <body> so
+       no ancestor can create a containing block (Safari is strict about this:
+       any ancestor with transform/will-change/filter/etc traps position:fixed). -->
+  <div id="missionCycler">
+    <div id="missionTrack"></div>
+  </div>
   <h2 id="fixedHeadingWilding" class="fixed-heading" style="line-height:1.0;">Wilding<br>Grants</h2>
   <h2 id="fixedHeadingArt" class="fixed-heading" style="line-height:0.95; max-width:clamp(200px,45vw,600px);">Arts<br>Grants</h2>
   <h2 id="fixedHeadingValues" class="fixed-heading">Our<br>Values</h2>
@@ -1638,8 +1644,7 @@
     <!-- Desktop hero video -->
     <div id="heroVideo" style="position:absolute; left:0; top:0; bottom:0; right:0; z-index:1; overflow:hidden; background:transparent;">
       <video autoplay loop muted playsinline style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(1.15);width:100%;height:100%;object-fit:cover;">
-        <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/f_mp4,q_auto/v1779123021/Comp_7_1_mfnfzp.webm" type="video/mp4">
-        <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779123021/Comp_7_1_mfnfzp.webm" type="video/webm">
+        <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779438673/Comp_7-hevc-safari_dpbflz.mp4" type="video/mp4">
       </video>
     </div>
     <!-- Mobile-only hero -->
@@ -1672,9 +1677,8 @@
   </div>
 
   <div id="textPanel" style="position:relative; min-height:100vh; display:flex; align-items:center; justify-content:flex-end; padding:0 220px 5vw 3vw; box-sizing:border-box; gap:4vw;">
-    <div id="missionCycler" style="align-self:center;">
-      <div id="missionTrack"></div>
-    </div>
+    <!-- #missionCycler moved to body root (see line ~1605) so its position:fixed
+         is truly viewport-anchored on Safari. -->
     <div class="panel-body" style="flex:0 0 clamp(280px,44vw,560px); width:clamp(280px,44vw,560px); align-self:center; order:2; box-sizing:border-box; padding-top:10vh;">
       <p class="reveal-on-scroll" style="font-family:'GT Cinetype',sans-serif; font-size:clamp(22px,3vw,48px); font-weight:400; line-height:1.2; letter-spacing:-0.02em; color:#1a1a0e; margin:0 0 1.6em 0;">Our purpose is to help redress environmental injustice, by supporting those most affected to lead research and action that shapes their local ecosystems. We do this by working with communities to rewild urban spaces; and by supporting artists to undertake environmental research.</p>
       <p class="reveal-on-scroll" style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); line-height:1.65; margin:0; max-width:60ch;">Climate change is deepening environmental inequity, which is rooted in historic injustices including colonialism and racism. We trust that communities are the experts, and concentrate our resources on low income individuals. We support research and local acts of imagination and care that we hope will create conditions for wider change. We value collaboration, dialogue and joy, and work in the spirit of mutuality with our grantees and with non-human species, listening to and learning from them.</p>
