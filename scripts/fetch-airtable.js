@@ -8,7 +8,15 @@
 const fs   = require('fs');
 const path = require('path');
 
-const TABLES = ['Site Config', 'Grants', 'Values', 'Team', 'Cycler Words'];
+/* Tables that have an "Order" column get sorted; "Site Config" is just
+   key/value pairs and has no Order field, so it's fetched unsorted. */
+const TABLES = [
+  { name: 'Site Config',  sort: false },
+  { name: 'Grants',       sort: true  },
+  { name: 'Values',       sort: true  },
+  { name: 'Team',         sort: true  },
+  { name: 'Cycler Words', sort: true  },
+];
 const TOKEN  = process.env.AIRTABLE_TOKEN;
 const BASE   = process.env.AIRTABLE_BASE;
 
@@ -18,13 +26,9 @@ if (!TOKEN || !BASE) {
   process.exit(1);
 }
 
-async function fetchTable(table) {
-  const url =
-    'https://api.airtable.com/v0/' +
-    BASE +
-    '/' +
-    encodeURIComponent(table) +
-    '?sort[0][field]=Order&sort[0][direction]=asc';
+async function fetchTable(name, sort) {
+  let url = 'https://api.airtable.com/v0/' + BASE + '/' + encodeURIComponent(name);
+  if (sort) url += '?sort[0][field]=Order&sort[0][direction]=asc';
 
   const res = await fetch(url, {
     headers: { Authorization: 'Bearer ' + TOKEN }
@@ -32,17 +36,17 @@ async function fetchTable(table) {
 
   if (!res.ok) {
     const body = await res.text();
-    throw new Error('Airtable "' + table + '" failed: ' + res.status + ' ' + body);
+    throw new Error('Airtable "' + name + '" failed: ' + res.status + ' ' + body);
   }
   return res.json();
 }
 
 (async () => {
   const data = {};
-  for (const table of TABLES) {
-    process.stdout.write('  fetching "' + table + '"... ');
-    data[table] = await fetchTable(table);
-    console.log('✓ ' + ((data[table].records || []).length) + ' records');
+  for (const t of TABLES) {
+    process.stdout.write('  fetching "' + t.name + '"... ');
+    data[t.name] = await fetchTable(t.name, t.sort);
+    console.log('✓ ' + ((data[t.name].records || []).length) + ' records');
   }
 
   const outDir = path.join(__dirname, '..', 'data');
