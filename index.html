@@ -1613,7 +1613,7 @@
   <main id="heroSection">
     <!-- Hero heading — bottom-left -->
     <div id="heroHeading" style="position:absolute; bottom:5vw; left:3vw; z-index:3;">
-      <h1 style="font-family:'GT Cinetype',sans-serif; font-size:clamp(52px,12vh,160px); font-weight:400; letter-spacing:-0.03em; line-height:1.08; color:#1a1a0e; text-transform:none; margin:0; white-space:nowrap;">
+      <h1 style="font-family:'GT Cinetype',sans-serif; font-size:clamp(44px,9.5vh,128px); font-weight:400; letter-spacing:-0.03em; line-height:1.08; color:#1a1a0e; text-transform:none; margin:0; white-space:nowrap;">
         <span class="hero-line" style="display:block; overflow:hidden;"><span class="hero-line-inner" style="display:block; animation: heroLineIn 0.7s 0.05s cubic-bezier(0.4,0,0.2,1) both;">Creative</span></span>
         <span class="hero-line" style="display:block; overflow:hidden;"><span class="hero-line-inner" style="display:block; animation: heroLineIn 0.7s 0.18s cubic-bezier(0.4,0,0.2,1) both;">responses to</span></span>
         <span class="hero-line" style="display:block; overflow:hidden;"><span class="hero-line-inner" style="display:block; animation: heroLineIn 0.7s 0.31s cubic-bezier(0.4,0,0.2,1) both;">environmental</span></span>
@@ -3901,30 +3901,13 @@
     var right = section.querySelector('.cs-values-right');
     if(!right) return;
     right.style.overflowY = right.scrollHeight > right.clientHeight + 10 ? 'auto' : 'hidden';
+    right.style.overscrollBehavior = 'contain';
   }
 
-  section.addEventListener('wheel', function(e){
-    if(!section.classList.contains('active')) return;
-    var right = section.querySelector('.cs-values-right');
-    if(!right) return;
-
-    var atTop    = right.scrollTop <= 1;
-    var atBottom = right.scrollTop + right.clientHeight >= right.scrollHeight - 2;
-    var scrollable = right.scrollHeight > right.clientHeight + 10;
-
-    if(scrollable && e.deltaY > 0 && !atBottom){
-      e.stopPropagation();
-      right.scrollTop += e.deltaY;
-      section._readyToAdvance = false;
-    } else if(scrollable && e.deltaY < 0 && !atTop){
-      e.stopPropagation();
-      right.scrollTop += e.deltaY;
-      section._readyToAdvance = false;
-    } else if(e.deltaY > 0){
-      // At bottom or not scrollable — allow advance
-      section._readyToAdvance = true;
-    }
-  }, { passive: false });
+  /* Wheel handler removed: { passive: false } blocks Safari trackpad inertia
+     and was causing the page to stop dead at Values. The .cs-values-right
+     pane has overflow-y:auto from checkOverflow() — native nested scroll
+     handles the inner-first, page-second behaviour without JS. */
 
   var observer = new MutationObserver(function(){
     var right = section.querySelector('.cs-values-right');
@@ -3956,23 +3939,9 @@
   });
   observer.observe(section, { attributes: true, attributeFilter: ['class'] });
 
-  // Intercept wheel — scroll section content first, advance page only at bottom
-  section.addEventListener('wheel', function(e){
-    if(!section.classList.contains('active')) return;
-    var overflows = section.scrollHeight > section.clientHeight + 10;
-    if(!overflows) return;
-
-    var atTop    = section.scrollTop <= 1;
-    var atBottom = section.scrollTop + section.clientHeight >= section.scrollHeight - 2;
-
-    if(e.deltaY > 0 && !atBottom){
-      e.stopPropagation();
-      section.scrollTop += e.deltaY;
-    } else if(e.deltaY < 0 && !atTop){
-      e.stopPropagation();
-      section.scrollTop += e.deltaY;
-    }
-  }, { passive: false });
+  /* Wheel handler removed for same reason as Wilding/Art/Values — non-passive
+     wheel listeners block Safari trackpad inertia. Native overflow handles
+     inner scrolling when the section itself becomes scrollable. */
 })();
 </script>
 <script>
