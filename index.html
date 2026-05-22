@@ -2035,13 +2035,19 @@
     pointer-events: none;
     opacity: 0;
     transform: translateY(60px);
-    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-                transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    /* Outgoing heading fades out in 0.3s. */
+    transition: opacity 0.3s ease-out,
+                transform 0.3s ease-out;
   }
 
   .fixed-heading.visible {
     opacity: 1;
     transform: translateY(0);
+    /* Incoming heading delayed 0.3s so the previous one is fully gone first.
+       Prevents two headings (e.g. "Wilding Grants" + "Arts Grants") being
+       visible at the same time during a section transition. */
+    transition: opacity 0.45s ease-in 0.3s,
+                transform 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.3s;
   }
 
   #fixedHeadingValues {
@@ -2061,11 +2067,18 @@
     pointer-events: none;
     z-index: 2;
     opacity: 0;
-    transition: opacity 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+    /* Sequence fades so the OUTGOING video has time to fully fade out
+       (0.35s) BEFORE the incoming one starts fading in. Eliminates the
+       brief moment where both #fixedVideoWilding and #fixedVideoArt are
+       both visibly painted at intermediate opacities during a section
+       transition. */
+    transition: opacity 0.35s ease-out;
   }
 
   .fixed-video-pin.visible {
     opacity: 1;
+    /* Incoming starts AFTER the outgoing has had time to fade. */
+    transition: opacity 0.5s ease-in 0.3s;
   }
 
   /* Sticky elements */
@@ -2715,7 +2728,7 @@
       <p class="reveal-on-scroll" style="font-family:'GT Cinetype',sans-serif; font-size:clamp(18px,2vw,28px); font-weight:400; line-height:1.35; letter-spacing:-0.01em; color:#1a1a0e; margin:0 0 1.4em 0;" class="mobile-large-text">Afield aims to address environmental injustices driven by structural inequalities in urban planning, land use and development. These failures result in biodiversity loss, degraded habitats, poor physical and mental health, and increased climate vulnerability, all of which disproportionately affects low-income communities.</p>
       <p class="reveal-on-scroll" style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); font-weight:400; line-height:1.65; color:#1a1a0e; margin:0 0 2em 0;"><strong>Afield will be launching the first round of its wilding grants in London in Autumn 2026.</strong></p>
       <p class="reveal-on-scroll" style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); font-weight:400; line-height:1.65; color:#1a1a0e; margin:0 0 2em 0;">Afield responds by funding and supporting individuals with ideas for transformative community-led urban wilding, providing up to three years' salary alongside mentorship, skills and networks. Our philosophy is a "mutual" framework: encouraging partnerships between humans and nature, supporting shared ecological spaces, and promoting reciprocal investment in ecosystems. Using data to prioritise neighbourhoods disproportionately impacted by injustice, Afield is initially focusing on selected London boroughs most impacted through injustice to support long-term, community-driven change.</p>
-      <button onclick="window.navigateToSection('sectionWildingDetail')" style="display:inline-flex; align-items:center; gap:8px; background:none; border:none; cursor:pointer; padding:0; font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); font-weight:700; color:#1a1a0e; letter-spacing:0.01em;">
+      <button onclick="window.navigateToSection('sectionWildingDetail')" style="display:inline-block; text-align:left; background:none; border:none; cursor:pointer; padding:0; font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); font-weight:700; color:#1a1a0e; letter-spacing:0.01em;">
         Read more about wilding grants →
       </button>
     </div>
@@ -2736,7 +2749,7 @@
       <p class="reveal-on-scroll" style="font-family:'GT Cinetype',sans-serif; font-size:clamp(18px,2vw,28px); font-weight:400; line-height:1.35; letter-spacing:-0.01em; color:#1a1a0e; margin:0 0 1.4em 0;" class="mobile-large-text">Afield provides grants to artists on low incomes, whose research contributes towards environmental knowledge and justice.</p>
       <p class="reveal-on-scroll" style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); font-weight:400; line-height:1.65; color:#1a1a0e; margin:0 0 2em 0;"><strong>Afield will be launching the first round of its arts grants in London in Winter 2026.</strong></p>
       <p class="reveal-on-scroll" style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); font-weight:400; line-height:1.65; color:#1a1a0e; margin:0 0 2em 0;">Afield's art programme supports artist research focusing on ecological care, interconnection, imagination, and repair. We nurture excellence in the arts and demonstrate the value of artistic contributions to ecological justice, publishing and sharing artworks that challenge failed ecological models and help create futures everyone can live in. Artists make a vital contribution to ecological research — they can work outside of, across, with, and against traditional disciplines, developing ideas that go beyond established scientific, technical and cultural frameworks. Afield is committed to bringing under-represented voices to ecological research.</p>
-      <button onclick="window.navigateToSection('sectionArtDetail')" style="display:inline-flex; align-items:center; gap:8px; background:none; border:none; cursor:pointer; padding:0; font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); font-weight:700; color:#1a1a0e; letter-spacing:0.01em;">
+      <button onclick="window.navigateToSection('sectionArtDetail')" style="display:inline-block; text-align:left; background:none; border:none; cursor:pointer; padding:0; font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); font-weight:700; color:#1a1a0e; letter-spacing:0.01em;">
         Read more about art grants →
       </button>
     </div>
