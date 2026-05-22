@@ -4634,27 +4634,19 @@ if(window.innerWidth <= 768){
       }
     });
 
-    /* ── 5. CYCLER WORDS ── */
-    var activeWords = (results[4].records || [])
-      .filter(function (r) { return r.fields.Active; })
-      .map(function (r) { return r.fields.Word; });
+    /* ── 5. CYCLER WORDS — DISABLED ──
+       Gemini caught this phantom-DOM bug: the original code below was
+       calling track.innerHTML = ... AFTER the cycler script had already
+       built its 6-copy loop and started animating. That destroyed every
+       element the animation script holds references to and pasted in raw
+       <div class="cycler-word"> elements with the wrong class name —
+       which the animation can't activate, leaving all words stuck at the
+       default 15% ghost opacity with no black active word.
 
-    if (activeWords.length) {
-      // Mobile cycler
-      var mob = document.querySelector('.mobile-purpose-cycler');
-      if (mob) {
-        mob.innerHTML = activeWords.map(function (w) {
-          return '<div class="mobile-cycle-word">' + w + '</div>';
-        }).join('');
-      }
-      // Desktop mission track
-      var track = document.getElementById('missionTrack');
-      if (track) {
-        track.innerHTML = activeWords.map(function (w) {
-          return '<div class="cycler-word">' + w + '</div>';
-        }).join('');
-      }
-    }
+       Until we re-architect the cycler to wait for Airtable before
+       building, the cycler words are hardcoded in the desktop/mobile
+       cycler scripts (Purpose, Places, Wilding, Knowledge, Practices,
+       Action, Art) which is correct anyway. */
 
   }).catch(function (err) {
     console.warn('Airtable fetch failed:', err);
