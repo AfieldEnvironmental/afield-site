@@ -1152,6 +1152,15 @@
   /* Hide reveal elements until JS runs */
   .js-loading .reveal-on-scroll { opacity: 0 !important; visibility: hidden !important; transform: translateY(40px) !important; }
 
+  /* Bump the smallest body copy by ~2px on MOBILE ONLY.
+     Targets every element that has the inline font-size:clamp(15px,1.1vw,18px)
+     value — covers secondary section paragraphs, Read-more CTAs, footer
+     text, detail-overlay body, etc. Desktop sizes unchanged. */
+  [style*="clamp(15px,1.1vw,18px)"],
+  [style*="clamp(15px, 1.1vw, 18px)"] {
+    font-size: clamp(17px, 4.5vw, 20px) !important;
+  }
+
   html, body { overflow-y: auto !important; height: auto !important; background: #EAFE8B; }
   body { background-color: #EAFE8B; transition: none !important; }
   * { text-align: left !important; }
@@ -1827,7 +1836,7 @@
          is truly viewport-anchored on Safari. -->
     <div class="panel-body" style="flex:0 0 clamp(280px,44vw,560px); width:clamp(280px,44vw,560px); align-self:center; order:2; box-sizing:border-box; padding-top:10vh;">
       <p class="reveal-on-scroll" style="font-family:'GT Cinetype',sans-serif; font-size:clamp(22px,3vw,48px); font-weight:400; line-height:1.2; letter-spacing:-0.02em; color:#1a1a0e; margin:0 0 1.6em 0;">Our purpose is to help redress environmental injustice, by supporting those most affected to lead research and action that shapes their local ecosystems. We do this by working with communities to rewild urban spaces; and by supporting artists to undertake environmental research.</p>
-      <p class="reveal-on-scroll" style="font-family:'GT Cinetype',sans-serif; font-size:clamp(17px,1.3vw,20px); line-height:1.65; margin:0; max-width:60ch;">Climate change is deepening environmental inequity, which is rooted in historic injustices including colonialism and racism. We trust that communities are the experts, and concentrate our resources on low income individuals. We support research and local acts of imagination and care that we hope will create conditions for wider change. We value collaboration, dialogue and joy, and work in the spirit of mutuality with our grantees and with non-human species, listening to and learning from them.</p>
+      <p class="reveal-on-scroll" style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); line-height:1.65; margin:0; max-width:60ch;">Climate change is deepening environmental inequity, which is rooted in historic injustices including colonialism and racism. We trust that communities are the experts, and concentrate our resources on low income individuals. We support research and local acts of imagination and care that we hope will create conditions for wider change. We value collaboration, dialogue and joy, and work in the spirit of mutuality with our grantees and with non-human species, listening to and learning from them.</p>
     </div>
   </div>
 <script>
@@ -2633,7 +2642,7 @@
 
   .bio-body {
     font-family: 'GT Cinetype', sans-serif;
-    font-size: clamp(17px, 1.3vw, 20px);
+    font-size: clamp(15px, 1.1vw, 18px);
     font-weight: 400;
     line-height: 1.65;
     color: #1a1a0e;
@@ -2773,9 +2782,9 @@
   <div class="cs-inner" style="align-items:flex-start; padding-right:72vw; position:relative; z-index:3;">
     <div style="width:100%;">
       <p class="reveal-on-scroll" style="font-family:'GT Cinetype',sans-serif; font-size:clamp(18px,2vw,28px); font-weight:400; line-height:1.35; letter-spacing:-0.01em; color:#1a1a0e; margin:0 0 1.4em 0;" class="mobile-large-text">Afield aims to address environmental injustices driven by structural inequalities in urban planning, land use and development. These failures result in biodiversity loss, degraded habitats, poor physical and mental health, and increased climate vulnerability, all of which disproportionately affects low-income communities.</p>
-      <p class="reveal-on-scroll" style="font-family:'GT Cinetype',sans-serif; font-size:clamp(17px,1.3vw,20px); font-weight:400; line-height:1.65; color:#1a1a0e; margin:0 0 2em 0;"><strong>Afield will be launching the first round of its wilding grants in London in Autumn 2026.</strong></p>
-      <p class="reveal-on-scroll" style="font-family:'GT Cinetype',sans-serif; font-size:clamp(17px,1.3vw,20px); font-weight:400; line-height:1.65; color:#1a1a0e; margin:0 0 2em 0;">Afield responds by funding and supporting individuals with ideas for transformative community-led urban wilding, providing up to three years' salary alongside mentorship, skills and networks. Our philosophy is a "mutual" framework: encouraging partnerships between humans and nature, supporting shared ecological spaces, and promoting reciprocal investment in ecosystems. Using data to prioritise neighbourhoods disproportionately impacted by injustice, Afield is initially focusing on selected London boroughs most impacted through injustice to support long-term, community-driven change.</p>
-      <button onclick="window.navigateToSection('sectionWildingDetail')" style="display:inline-block; text-align:left; background:none; border:none; cursor:pointer; padding:0; font-family:'GT Cinetype',sans-serif; font-size:clamp(17px,1.3vw,20px); font-weight:700; color:#1a1a0e; letter-spacing:0.01em;">
+      <p class="reveal-on-scroll" style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); font-weight:400; line-height:1.65; color:#1a1a0e; margin:0 0 2em 0;"><strong>Afield will be launching the first round of its wilding grants in London in Autumn 2026.</strong></p>
+      <p class="reveal-on-scroll" style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); font-weight:400; line-height:1.65; color:#1a1a0e; margin:0 0 2em 0;">Afield responds by funding and supporting individuals with ideas for transformative community-led urban wilding, providing up to three years' salary alongside mentorship, skills and networks. Our philosophy is a "mutual" framework: encouraging partnerships between humans and nature, supporting shared ecological spaces, and promoting reciprocal investment in ecosystems. Using data to prioritise neighbourhoods disproportionately impacted by injustice, Afield is initially focusing on selected London boroughs most impacted through injustice to support long-term, community-driven change.</p>
+      <button onclick="window.navigateToSection('sectionWildingDetail')" style="display:inline-block; text-align:left; background:none; border:none; cursor:pointer; padding:0; font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); font-weight:700; color:#1a1a0e; letter-spacing:0.01em;">
         Read more about wilding grants →
       </button>
     </div>
@@ -2794,9 +2803,9 @@
   <div class="cs-inner" style="align-items:flex-start; padding-right:72vw; position:relative; z-index:3;">
     <div style="width:100%;">
       <p class="reveal-on-scroll" style="font-family:'GT Cinetype',sans-serif; font-size:clamp(18px,2vw,28px); font-weight:400; line-height:1.35; letter-spacing:-0.01em; color:#1a1a0e; margin:0 0 1.4em 0;" class="mobile-large-text">Afield provides grants to artists on low incomes, whose research contributes towards environmental knowledge and justice.</p>
-      <p class="reveal-on-scroll" style="font-family:'GT Cinetype',sans-serif; font-size:clamp(17px,1.3vw,20px); font-weight:400; line-height:1.65; color:#1a1a0e; margin:0 0 2em 0;"><strong>Afield will be launching the first round of its arts grants in London in Winter 2026.</strong></p>
-      <p class="reveal-on-scroll" style="font-family:'GT Cinetype',sans-serif; font-size:clamp(17px,1.3vw,20px); font-weight:400; line-height:1.65; color:#1a1a0e; margin:0 0 2em 0;">Afield's art programme supports artist research focusing on ecological care, interconnection, imagination, and repair. We nurture excellence in the arts and demonstrate the value of artistic contributions to ecological justice, publishing and sharing artworks that challenge failed ecological models and help create futures everyone can live in. Artists make a vital contribution to ecological research — they can work outside of, across, with, and against traditional disciplines, developing ideas that go beyond established scientific, technical and cultural frameworks. Afield is committed to bringing under-represented voices to ecological research.</p>
-      <button onclick="window.navigateToSection('sectionArtDetail')" style="display:inline-block; text-align:left; background:none; border:none; cursor:pointer; padding:0; font-family:'GT Cinetype',sans-serif; font-size:clamp(17px,1.3vw,20px); font-weight:700; color:#1a1a0e; letter-spacing:0.01em;">
+      <p class="reveal-on-scroll" style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); font-weight:400; line-height:1.65; color:#1a1a0e; margin:0 0 2em 0;"><strong>Afield will be launching the first round of its arts grants in London in Winter 2026.</strong></p>
+      <p class="reveal-on-scroll" style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); font-weight:400; line-height:1.65; color:#1a1a0e; margin:0 0 2em 0;">Afield's art programme supports artist research focusing on ecological care, interconnection, imagination, and repair. We nurture excellence in the arts and demonstrate the value of artistic contributions to ecological justice, publishing and sharing artworks that challenge failed ecological models and help create futures everyone can live in. Artists make a vital contribution to ecological research — they can work outside of, across, with, and against traditional disciplines, developing ideas that go beyond established scientific, technical and cultural frameworks. Afield is committed to bringing under-represented voices to ecological research.</p>
+      <button onclick="window.navigateToSection('sectionArtDetail')" style="display:inline-block; text-align:left; background:none; border:none; cursor:pointer; padding:0; font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); font-weight:700; color:#1a1a0e; letter-spacing:0.01em;">
         Read more about art grants →
       </button>
     </div>
@@ -2826,7 +2835,7 @@
   </div>
 
   <!-- Back button — bottom-left, same style as Read more -->
-  <button onclick="window.hideDetail('sectionWildingDetail')" style="position:absolute; bottom:5vw; left:3vw; z-index:10; background:none; border:none; cursor:pointer; font-family:'GT Cinetype',sans-serif; font-size:clamp(17px,1.3vw,20px); font-weight:700; color:#1a1a0e; padding:0; letter-spacing:0.01em; display:flex; align-items:center; gap:6px;">← Back</button>
+  <button onclick="window.hideDetail('sectionWildingDetail')" style="position:absolute; bottom:5vw; left:3vw; z-index:10; background:none; border:none; cursor:pointer; font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); font-weight:700; color:#1a1a0e; padding:0; letter-spacing:0.01em; display:flex; align-items:center; gap:6px;">← Back</button>
 
   <!-- Body text — left:50%, top:28px, width matching Our Mission panel -->
   <div id="wildingDetailScroll" style="position:absolute; top:0; left:50%; transform:translateX(-50%); width:clamp(280px,44vw,640px); height:100%; overflow-y:auto; scrollbar-width:none; padding:5vw 0 120px; box-sizing:border-box;">
@@ -2835,24 +2844,24 @@
     <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(22px,3vw,48px); font-weight:400; line-height:1.2; letter-spacing:-0.02em; color:#1a1a0e; margin:0 0 1.6em 0;">Afield is tackling problems that are rooted in the structural inequalities underlying environmental injustice.</p>
 
     
-    <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(17px,1.3vw,20px); font-weight:400; line-height:1.65; color:#1a1a0e; margin:0 0 1.4em 0;">They result from failures of government, private development, land ownership and urban planning to provide healthy inner-city ecosystems. The result is that local communities and the wider urban ecology suffer from:</p>
-    <ul style="font-family:'GT Cinetype',sans-serif; font-size:clamp(17px,1.3vw,20px); line-height:1.65; color:#1a1a0e; padding-left:1.4em; margin:0 0 1.4em 0;">
+    <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); font-weight:400; line-height:1.65; color:#1a1a0e; margin:0 0 1.4em 0;">They result from failures of government, private development, land ownership and urban planning to provide healthy inner-city ecosystems. The result is that local communities and the wider urban ecology suffer from:</p>
+    <ul style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); line-height:1.65; color:#1a1a0e; padding-left:1.4em; margin:0 0 1.4em 0;">
       <li>A lack of biodiversity</li>
       <li>Habitat scarcity for all species</li>
       <li>Poor human (physical and mental) health and wellbeing arising from a lack of access to rich local ecosystems, and poor air quality</li>
       <li>Climate change vulnerability</li>
     </ul>
-    <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(17px,1.3vw,20px); font-weight:400; line-height:1.65; color:#1a1a0e; margin:0 0 1.4em 0;">These problems disproportionately affect poor communities. Environmental degradation reinforces social inequality and ecological decline. Therefore the areas of the highest need in cities are often those with the lowest capacity to solve the problems. Residents have less free time, greater financial burden, and there are fewer voluntary organisations.</p>
-    <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(17px,1.3vw,20px); font-weight:400; line-height:1.65; color:#1a1a0e; margin:0 0 1.4em 0;">Our framework for change is therefore one of:</p>
-    <ul style="font-family:'GT Cinetype',sans-serif; font-size:clamp(17px,1.3vw,20px); line-height:1.65; color:#1a1a0e; padding-left:1.4em; margin:0 0 1.4em 0;">
+    <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); font-weight:400; line-height:1.65; color:#1a1a0e; margin:0 0 1.4em 0;">These problems disproportionately affect poor communities. Environmental degradation reinforces social inequality and ecological decline. Therefore the areas of the highest need in cities are often those with the lowest capacity to solve the problems. Residents have less free time, greater financial burden, and there are fewer voluntary organisations.</p>
+    <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); font-weight:400; line-height:1.65; color:#1a1a0e; margin:0 0 1.4em 0;">Our framework for change is therefore one of:</p>
+    <ul style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); line-height:1.65; color:#1a1a0e; padding-left:1.4em; margin:0 0 1.4em 0;">
       <li><strong>Mutual partnerships:</strong> working together to benefit humans and other species</li>
       <li><strong>Mutual spaces:</strong> living together as part of an ecosystem, supported by governance such as long-term agreements or land ownership</li>
       <li><strong>Mutual investment:</strong> giving back as much as we take from ecosystems</li>
     </ul>
-    <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(17px,1.3vw,20px); font-weight:400; line-height:1.65; color:#1a1a0e; margin:0 0 1.4em 0;">Afield's approach is to support a small number of individuals with a visionary idea to create foundational, long-term, community-led wilding projects that benefit both humans and other species. We will support them to realise their ideas by funding up to three years of the London Living Wage, and providing a cohort programme of mentorship, peer support, technical skills, networking and learning based on our mutual framework.</p>
-    <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(17px,1.3vw,20px); font-weight:400; line-height:1.65; color:#1a1a0e; margin:0 0 1.4em 0;">To better understand how to focus our resources, we have commissioned a data map of London. This has led us to shortlist 10 London boroughs: Waltham Forest, Newham, Barking, Croydon, Brent, Ealing, Lambeth, Lewisham, Hackney and Islington.</p>
-    <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(17px,1.3vw,20px); font-weight:400; line-height:1.65; color:#1a1a0e; margin:0 0 1.4em 0;">We will work with existing local networks and partners in these places to encourage people to apply for this opportunity, or we may approach individuals directly. Our goal over the next five years is to support around 10 people on their way to wilding their community and neighbourhood.</p>
-    <button onclick="window.hideDetail('sectionWildingDetail'); setTimeout(function(){ document.getElementById('sectionTouch').scrollIntoView({behavior:'smooth'}); }, 420);" style="display:inline-flex; align-items:center; gap:8px; background:none; border:none; cursor:pointer; padding:0; font-family:'GT Cinetype',sans-serif; font-size:clamp(17px,1.3vw,20px); font-weight:700; color:#1a1a0e; letter-spacing:0.01em;">Get in touch →</button>
+    <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); font-weight:400; line-height:1.65; color:#1a1a0e; margin:0 0 1.4em 0;">Afield's approach is to support a small number of individuals with a visionary idea to create foundational, long-term, community-led wilding projects that benefit both humans and other species. We will support them to realise their ideas by funding up to three years of the London Living Wage, and providing a cohort programme of mentorship, peer support, technical skills, networking and learning based on our mutual framework.</p>
+    <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); font-weight:400; line-height:1.65; color:#1a1a0e; margin:0 0 1.4em 0;">To better understand how to focus our resources, we have commissioned a data map of London. This has led us to shortlist 10 London boroughs: Waltham Forest, Newham, Barking, Croydon, Brent, Ealing, Lambeth, Lewisham, Hackney and Islington.</p>
+    <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); font-weight:400; line-height:1.65; color:#1a1a0e; margin:0 0 1.4em 0;">We will work with existing local networks and partners in these places to encourage people to apply for this opportunity, or we may approach individuals directly. Our goal over the next five years is to support around 10 people on their way to wilding their community and neighbourhood.</p>
+    <button onclick="window.hideDetail('sectionWildingDetail'); setTimeout(function(){ document.getElementById('sectionTouch').scrollIntoView({behavior:'smooth'}); }, 420);" style="display:inline-flex; align-items:center; gap:8px; background:none; border:none; cursor:pointer; padding:0; font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); font-weight:700; color:#1a1a0e; letter-spacing:0.01em;">Get in touch →</button>
     <div class="mobile-scroll-spacer"></div>
   </div>
 
@@ -2881,7 +2890,7 @@
   </div>
 
   <!-- Back button — bottom-left, same style as Read more -->
-  <button onclick="window.hideDetail('sectionArtDetail')" style="position:absolute; bottom:5vw; left:3vw; z-index:10; background:none; border:none; cursor:pointer; font-family:'GT Cinetype',sans-serif; font-size:clamp(17px,1.3vw,20px); font-weight:700; color:#1a1a0e; padding:0; letter-spacing:0.01em; display:flex; align-items:center; gap:6px;">← Back</button>
+  <button onclick="window.hideDetail('sectionArtDetail')" style="position:absolute; bottom:5vw; left:3vw; z-index:10; background:none; border:none; cursor:pointer; font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); font-weight:700; color:#1a1a0e; padding:0; letter-spacing:0.01em; display:flex; align-items:center; gap:6px;">← Back</button>
 
   <!-- Body text — left:50%, top:28px, width matching Our Mission panel -->
   <div id="artDetailScroll" style="position:absolute; top:0; left:50%; transform:translateX(-50%); width:clamp(280px,44vw,640px); height:100%; overflow-y:auto; scrollbar-width:none; padding:5vw 0 120px; box-sizing:border-box;">
@@ -2890,24 +2899,24 @@
     <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(22px,3vw,48px); font-weight:400; line-height:1.2; letter-spacing:-0.02em; color:#1a1a0e; margin:0 0 1.6em 0;">Afield aims to address a funding gap in the arts by providing grants to artists in financial hardship or on low incomes, whose research contributes towards environmental knowledge and justice.</p>
 
     
-    <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(17px,1.3vw,20px); font-weight:400; line-height:1.65; color:#1a1a0e; margin:0 0 1.4em 0;">Afield's art programme aims to:</p>
-    <ul style="font-family:'GT Cinetype',sans-serif; font-size:clamp(17px,1.3vw,20px); line-height:1.65; color:#1a1a0e; padding-left:1.4em; margin:0 0 1.4em 0;">
+    <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); font-weight:400; line-height:1.65; color:#1a1a0e; margin:0 0 1.4em 0;">Afield's art programme aims to:</p>
+    <ul style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); line-height:1.65; color:#1a1a0e; padding-left:1.4em; margin:0 0 1.4em 0;">
       <li>Provide career and development support for artists who have been structurally disadvantaged in arts funding, and to promote equity and plurality in arts research</li>
       <li>Value and support the intrinsic value of artist contributions to ecological justice</li>
       <li>Promote ecological frameworks that foreground care, interdependency and connection, imagination and repair</li>
     </ul>
-    <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(17px,1.3vw,20px); font-weight:400; line-height:1.65; color:#1a1a0e; margin:0 0 1.4em 0;">We believe that we can support excellence both in the arts and in ecological research by focusing our resources on low-income artists who have been traditionally excluded from research funding. Artists can make a unique and vital contribution to ecological research — they can work outside of, across, with and against traditional disciplines, developing insights and ideas that go beyond established scientific, technical and cultural frameworks.</p>
-    <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(17px,1.3vw,20px); font-weight:400; line-height:1.65; color:#1a1a0e; margin:0 0 1.4em 0;">We seek to fund artist research that might include:</p>
-    <ul style="font-family:'GT Cinetype',sans-serif; font-size:clamp(17px,1.3vw,20px); line-height:1.65; color:#1a1a0e; padding-left:1.4em; margin:0 0 1.4em 0;">
+    <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); font-weight:400; line-height:1.65; color:#1a1a0e; margin:0 0 1.4em 0;">We believe that we can support excellence both in the arts and in ecological research by focusing our resources on low-income artists who have been traditionally excluded from research funding. Artists can make a unique and vital contribution to ecological research — they can work outside of, across, with and against traditional disciplines, developing insights and ideas that go beyond established scientific, technical and cultural frameworks.</p>
+    <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); font-weight:400; line-height:1.65; color:#1a1a0e; margin:0 0 1.4em 0;">We seek to fund artist research that might include:</p>
+    <ul style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); line-height:1.65; color:#1a1a0e; padding-left:1.4em; margin:0 0 1.4em 0;">
       <li>New knowledge, frameworks and paradigms that disrupt and offer alternatives to current, exploitative models</li>
       <li>Direct action or intervention</li>
       <li>Socially engaged learning, organising and solidarity-building</li>
       <li>Speculation, reimagining, and world-building</li>
       <li>More than human-perspectives</li>
     </ul>
-    <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(17px,1.3vw,20px); font-weight:400; line-height:1.65; color:#1a1a0e; margin:0 0 1.4em 0;">We recognise that the current funding system for artists is broken and we aim to be a fair and transparent funder, creating an application process that doesn't overburden applicants. Initially we will trial an open call approach, and in the first year we will award seven grants of up to £30,000 for projects of up to three years, paying artists who are shortlisted to write a full proposal.</p>
-    <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(17px,1.3vw,20px); font-weight:400; line-height:1.65; color:#1a1a0e; margin:0 0 1.4em 0;">We do not make our grants conditional on achieving specified outputs and outcomes, and we seek a collaborative, learning-based relationship with the artists we support. We are particularly interested in proposals from global majority artists, LGBTQIA+ artists, disabled artists or artists experiencing chronic illness. Our fund is open to all ages, art disciplines and points in career.</p>
-    <button onclick="window.hideDetail('sectionArtDetail'); setTimeout(function(){ document.getElementById('sectionTouch').scrollIntoView({behavior:'smooth'}); }, 420);" style="display:inline-flex; align-items:center; gap:8px; background:none; border:none; cursor:pointer; padding:0; font-family:'GT Cinetype',sans-serif; font-size:clamp(17px,1.3vw,20px); font-weight:700; color:#1a1a0e; letter-spacing:0.01em;">Get in touch →</button>
+    <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); font-weight:400; line-height:1.65; color:#1a1a0e; margin:0 0 1.4em 0;">We recognise that the current funding system for artists is broken and we aim to be a fair and transparent funder, creating an application process that doesn't overburden applicants. Initially we will trial an open call approach, and in the first year we will award seven grants of up to £30,000 for projects of up to three years, paying artists who are shortlisted to write a full proposal.</p>
+    <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); font-weight:400; line-height:1.65; color:#1a1a0e; margin:0 0 1.4em 0;">We do not make our grants conditional on achieving specified outputs and outcomes, and we seek a collaborative, learning-based relationship with the artists we support. We are particularly interested in proposals from global majority artists, LGBTQIA+ artists, disabled artists or artists experiencing chronic illness. Our fund is open to all ages, art disciplines and points in career.</p>
+    <button onclick="window.hideDetail('sectionArtDetail'); setTimeout(function(){ document.getElementById('sectionTouch').scrollIntoView({behavior:'smooth'}); }, 420);" style="display:inline-flex; align-items:center; gap:8px; background:none; border:none; cursor:pointer; padding:0; font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); font-weight:700; color:#1a1a0e; letter-spacing:0.01em;">Get in touch →</button>
     <div class="mobile-scroll-spacer"></div>
   </div>
 
@@ -3022,13 +3031,13 @@
   <!-- Policy overlays -->
   <!-- Policy full-page overlays — slide in from left -->
   <div id="touch-cookies-content" style="position:fixed; inset:0; z-index:50; background:#e4c9f9; overflow:hidden; transform:translateX(-100vw); transition:transform 0.69s cubic-bezier(0.22,1,0.36,1); pointer-events:none; visibility:hidden;">
-    <button onclick="toggleTouchPolicy('cookies')" style="position:absolute; bottom:5vw; left:3vw; z-index:10; background:none; border:none; cursor:pointer; font-family:'GT Cinetype',sans-serif; font-size:clamp(17px,1.3vw,20px); font-weight:700; color:#1a1a0e; padding:0; display:flex; align-items:center; gap:6px;">← Back</button>
+    <button onclick="toggleTouchPolicy('cookies')" style="position:absolute; bottom:5vw; left:3vw; z-index:10; background:none; border:none; cursor:pointer; font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); font-weight:700; color:#1a1a0e; padding:0; display:flex; align-items:center; gap:6px;">← Back</button>
     <div style="position:absolute; top:5vw; left:50%; transform:translateX(-50%); width:clamp(280px,44vw,640px); bottom:calc(5vw + 60px); overflow-y:auto; scrollbar-width:none; padding-bottom:40px; box-sizing:border-box;">
       <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(11px,0.85vw,13px); color:#1a1a0e; opacity:0.55; margin:0 0 2em 0; letter-spacing:0.04em; text-transform:uppercase;">Last updated: October 2025</p>
-      <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(17px,1.3vw,20px); line-height:1.65; color:#1a1a0e; margin:0 0 1.4em 0;">Afield Environmental (&ldquo;Afield&rdquo;) is a Charitable Incorporated Organisation, registration number 1213914. We are committed to protecting and respecting your privacy. In accordance with our Privacy Policy, we may collect information about your device, including where available your IP address, operating system and browser type, for system administration and to report aggregate information to our customers. This is statistical data about our users' browsing actions and patterns, and does not identify any individual.</p>
-      <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(17px,1.3vw,20px); font-weight:700; line-height:1.65; color:#1a1a0e; margin:0 0 0.6em 0;">Cookies</p>
-      <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(17px,1.3vw,20px); line-height:1.65; color:#1a1a0e; margin:0 0 1.4em 0;">We may obtain information about your general internet usage by using a cookie which is stored on your browser or the hard drive of your device. They help us to improve our website and to deliver a better and more personalised service. Some of the cookies we use are essential for the site to operate.</p>
-      <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(17px,1.3vw,20px); line-height:1.65; color:#1a1a0e; margin:0 0 1.4em 0;">While we do our best to keep this table updated, please note that the number and names of cookies may change from time to time.</p>
+      <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); line-height:1.65; color:#1a1a0e; margin:0 0 1.4em 0;">Afield Environmental (&ldquo;Afield&rdquo;) is a Charitable Incorporated Organisation, registration number 1213914. We are committed to protecting and respecting your privacy. In accordance with our Privacy Policy, we may collect information about your device, including where available your IP address, operating system and browser type, for system administration and to report aggregate information to our customers. This is statistical data about our users' browsing actions and patterns, and does not identify any individual.</p>
+      <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); font-weight:700; line-height:1.65; color:#1a1a0e; margin:0 0 0.6em 0;">Cookies</p>
+      <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); line-height:1.65; color:#1a1a0e; margin:0 0 1.4em 0;">We may obtain information about your general internet usage by using a cookie which is stored on your browser or the hard drive of your device. They help us to improve our website and to deliver a better and more personalised service. Some of the cookies we use are essential for the site to operate.</p>
+      <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); line-height:1.65; color:#1a1a0e; margin:0 0 1.4em 0;">While we do our best to keep this table updated, please note that the number and names of cookies may change from time to time.</p>
       <table style="width:100%; border-collapse:collapse; font-family:'GT Cinetype',sans-serif; font-size:clamp(13px,1vw,15px); color:#1a1a0e; margin-bottom:1.4em;">
         <tr style="border-bottom:1px solid rgba(26,26,14,0.2);"><th style="text-align:left; padding:8px 12px 8px 0; font-weight:700;">Cookie name</th><th style="text-align:left; padding:8px 12px; font-weight:700;">Category</th><th style="text-align:left; padding:8px 0 8px 12px; font-weight:700;">Description</th></tr>
         <tr style="border-bottom:1px solid rgba(26,26,14,0.1);"><td style="padding:10px 12px 10px 0; opacity:0.7;">TBA</td><td style="padding:10px 12px; opacity:0.7;"></td><td style="padding:10px 0 10px 12px; opacity:0.7;"></td></tr>
@@ -3038,16 +3047,16 @@
   </div>
 
   <div id="touch-privacy-content" style="position:fixed; inset:0; z-index:50; background:#e4c9f9; overflow:hidden; transform:translateX(-100vw); transition:transform 0.69s cubic-bezier(0.22,1,0.36,1); pointer-events:none; visibility:hidden;">
-    <button onclick="toggleTouchPolicy('privacy')" style="position:absolute; bottom:5vw; left:3vw; z-index:10; background:none; border:none; cursor:pointer; font-family:'GT Cinetype',sans-serif; font-size:clamp(17px,1.3vw,20px); font-weight:700; color:#1a1a0e; padding:0; display:flex; align-items:center; gap:6px;">← Back</button>
+    <button onclick="toggleTouchPolicy('privacy')" style="position:absolute; bottom:5vw; left:3vw; z-index:10; background:none; border:none; cursor:pointer; font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); font-weight:700; color:#1a1a0e; padding:0; display:flex; align-items:center; gap:6px;">← Back</button>
     <div style="position:absolute; top:5vw; left:50%; transform:translateX(-50%); width:clamp(280px,44vw,640px); bottom:calc(5vw + 60px); overflow-y:auto; scrollbar-width:none; padding-bottom:40px; box-sizing:border-box;">
       <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(11px,0.85vw,13px); color:#1a1a0e; opacity:0.55; margin:0 0 2em 0; letter-spacing:0.04em; text-transform:uppercase;">Last updated: March 2026</p>
-      <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(17px,1.3vw,20px); line-height:1.65; color:#1a1a0e; margin:0 0 1.4em 0;">Afield Environmental (&ldquo;Afield&rdquo;) is a Charitable Incorporated Organisation, registration number ZC041916. Afield is committed to protecting and respecting your privacy. This policy covers data we collect from you during the course of our operations, including from our website at www.afield.org.uk. It explains how any personal data we collect from you, or that you provide to us, will be processed by us. This policy is not intended for children, and we will not knowingly collect personal data relating to anyone under the age of 18.</p>
-      <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(17px,1.3vw,20px); font-weight:700; line-height:1.65; color:#1a1a0e; margin:0 0 0.6em 0;">Contact</p>
-      <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(17px,1.3vw,20px); line-height:1.65; color:#1a1a0e; margin:0 0 1.4em 0;">For questions about your personal data, contact us at <a href="mailto:privacy@afield.org.uk" style="color:#1a1a0e;">privacy@afield.org.uk</a> or by post to Afield, 5 Brayford Square, London, E1 0SG.</p>
-      <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(17px,1.3vw,20px); font-weight:700; line-height:1.65; color:#1a1a0e; margin:0 0 0.6em 0;">How we collect information</p>
-      <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(17px,1.3vw,20px); line-height:1.65; color:#1a1a0e; margin:0 0 1.4em 0;">We collect data when you interact with us — by email, via forms on our website, over the phone, or in person. We may also automatically collect anonymous technical data about your equipment and browsing patterns.</p>
-      <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(17px,1.3vw,20px); font-weight:700; line-height:1.65; color:#1a1a0e; margin:0 0 0.6em 0;">Your rights</p>
-      <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(17px,1.3vw,20px); line-height:1.65; color:#1a1a0e; margin:0 0 1.4em 0;">Under UK GDPR you have the right to access, correct, erase, or restrict use of your personal data. You also have the right to complain to the Information Commissioner's Office (ICO) at www.ico.org.uk, registration number C1827123.</p>
+      <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); line-height:1.65; color:#1a1a0e; margin:0 0 1.4em 0;">Afield Environmental (&ldquo;Afield&rdquo;) is a Charitable Incorporated Organisation, registration number ZC041916. Afield is committed to protecting and respecting your privacy. This policy covers data we collect from you during the course of our operations, including from our website at www.afield.org.uk. It explains how any personal data we collect from you, or that you provide to us, will be processed by us. This policy is not intended for children, and we will not knowingly collect personal data relating to anyone under the age of 18.</p>
+      <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); font-weight:700; line-height:1.65; color:#1a1a0e; margin:0 0 0.6em 0;">Contact</p>
+      <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); line-height:1.65; color:#1a1a0e; margin:0 0 1.4em 0;">For questions about your personal data, contact us at <a href="mailto:privacy@afield.org.uk" style="color:#1a1a0e;">privacy@afield.org.uk</a> or by post to Afield, 5 Brayford Square, London, E1 0SG.</p>
+      <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); font-weight:700; line-height:1.65; color:#1a1a0e; margin:0 0 0.6em 0;">How we collect information</p>
+      <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); line-height:1.65; color:#1a1a0e; margin:0 0 1.4em 0;">We collect data when you interact with us — by email, via forms on our website, over the phone, or in person. We may also automatically collect anonymous technical data about your equipment and browsing patterns.</p>
+      <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); font-weight:700; line-height:1.65; color:#1a1a0e; margin:0 0 0.6em 0;">Your rights</p>
+      <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); line-height:1.65; color:#1a1a0e; margin:0 0 1.4em 0;">Under UK GDPR you have the right to access, correct, erase, or restrict use of your personal data. You also have the right to complain to the Information Commissioner's Office (ICO) at www.ico.org.uk, registration number C1827123.</p>
       <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(11px,0.85vw,13px); color:#1a1a0e; opacity:0.5; margin:0;">Afield Environmental, CIO no. ZC041916. ICO reg. C1827123.</p>
     </div>
   </div>
@@ -4715,10 +4724,10 @@ if(window.innerWidth <= 768){
       if (!block) return;
       if (block.indexOf('[LI]') !== -1) {
         var items = block.split('[LI]').map(function (s) { return s.trim(); }).filter(Boolean);
-        html += '<ul style="font-family:\'GT Cinetype\',sans-serif;font-size:clamp(17px,1.3vw,20px);line-height:1.65;color:#1a1a0e;padding-left:1.4em;margin:0 0 1.4em 0;">' +
+        html += '<ul style="font-family:\'GT Cinetype\',sans-serif;font-size:clamp(15px,1.1vw,18px);line-height:1.65;color:#1a1a0e;padding-left:1.4em;margin:0 0 1.4em 0;">' +
           items.map(function (i) { return '<li>' + i + '</li>'; }).join('') + '</ul>';
       } else {
-        html += '<p style="font-family:\'GT Cinetype\',sans-serif;font-size:clamp(17px,1.3vw,20px);font-weight:400;line-height:1.65;color:#1a1a0e;margin:0 0 1.4em 0;">' + block + '</p>';
+        html += '<p style="font-family:\'GT Cinetype\',sans-serif;font-size:clamp(15px,1.1vw,18px);font-weight:400;line-height:1.65;color:#1a1a0e;margin:0 0 1.4em 0;">' + block + '</p>';
       }
     });
     return html;
