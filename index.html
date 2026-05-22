@@ -1733,7 +1733,11 @@
   </div>
   <div id="fixedVideoArt" class="fixed-video-pin">
     <video autoplay loop muted playsinline disablepictureinpicture disableremoteplayback preload="auto" style="width:100%; height:100%; object-fit:cover; object-position:center center; pointer-events:none;">
-      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779446388/Comp_9_1-hevc-safari_gkuq9s.mp4" type='video/mp4; codecs="hvc1"'>
+      <!-- Old HEVC source removed — it pointed to an older edit of the
+           video, so Safari was rendering different artwork than Chrome.
+           The new VP9 WebM is now the primary source for ALL browsers;
+           modern Safari (14.1+ macOS / 14.5+ iOS) supports VP9. H.264
+           fallback for everything else, auto-derived from the WebM. -->
       <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779455658/Comp_9_2-vp9-chrome_mdhrrv.webm" type="video/webm">
       <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/f_mp4,q_auto/v1779455658/Comp_9_2-vp9-chrome_mdhrrv.webm" type="video/mp4">
     </video>
@@ -2761,7 +2765,7 @@
   <h2 class="mobile-section-heading">Arts<br>Grants</h2>
   <div class="mobile-section-video">
     <video autoplay muted loop playsinline disablepictureinpicture disableremoteplayback preload="auto" style="pointer-events:none;">
-      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779446388/Comp_9_1-hevc-safari_gkuq9s.mp4" type='video/mp4; codecs="hvc1"'>
+      <!-- Same logic as desktop: old HEVC removed (wrong content), VP9 WebM as primary. -->
       <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779455658/Comp_9_2-vp9-chrome_mdhrrv.webm" type="video/webm">
       <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/f_mp4,q_auto/v1779455658/Comp_9_2-vp9-chrome_mdhrrv.webm" type="video/mp4">
     </video>
