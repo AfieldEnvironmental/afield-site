@@ -56,8 +56,12 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    /* Input de-styling — removes Safari rounded inputs, inset shadows, OS chrome */
-    input, textarea, select {
+    /* Input de-styling — removes Safari rounded inputs, inset shadows, OS chrome.
+       Scoped to TEXT-LIKE inputs only; a blanket rule on `input` also strips
+       the native rendering off checkboxes and radios, making them invisible. */
+    input:not([type="checkbox"]):not([type="radio"]),
+    textarea,
+    select {
       -webkit-appearance: none;
       appearance: none;
       border-radius: 0;
@@ -67,6 +71,11 @@
     input[type="search"] { -webkit-appearance: textfield; }
     input[type="search"]::-webkit-search-decoration,
     input[type="search"]::-webkit-search-cancel-button { -webkit-appearance: none; }
+    /* Re-assert native rendering on checkboxes/radios in case any other rule strips it. */
+    input[type="checkbox"], input[type="radio"] {
+      -webkit-appearance: auto;
+      appearance: auto;
+    }
 
     /* Images never overflow their container */
     img, video, svg, canvas { display: block; max-width: 100%; }
@@ -729,26 +738,29 @@
       position: fixed;
       bottom: 5vw;
       left: 3vw;
+      top: auto;       /* lock to bottom-anchored — prevents Safari from inferring top:0 */
+      right: auto;
       width: clamp(200px, 42vw, 700px);
       height: calc(clamp(36px, 9.5vh, 130px) * 3);
       overflow: hidden;
       z-index: 4;
       pointer-events: none;
       opacity: 0;
+      /* No translateZ(0) and no will-change:transform.
+         On Safari, transform:translateZ(0) + position:fixed promotes the
+         element to a composited layer that gets anchored to the document
+         (its containing block) instead of the viewport — making the
+         cycler drift downward as the user scrolls. Pure 2D translateY
+         is fine and keeps the element correctly viewport-fixed. */
+      will-change: opacity;
       transform: translateY(60px);
       transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
                   transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-      /* mask-image + position:fixed + transform = Safari rendering bug (element vanishes).
-         overflow:hidden already clips the ghost words; the soft edges aren't critical. */
-      will-change: opacity, transform;
-      -webkit-transform: translateY(60px) translateZ(0);
-      transform: translateY(60px) translateZ(0);
     }
 
     #missionCycler.visible {
       opacity: 1;
-      -webkit-transform: translateY(0) translateZ(0);
-      transform: translateY(0) translateZ(0);
+      transform: translateY(0);
     }
 
     #missionTrack {
