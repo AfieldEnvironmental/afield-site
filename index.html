@@ -3291,22 +3291,28 @@
   function showOnly(activeIds){
     var allIds = ['missionCycler','fixedHeadingWilding','fixedHeadingArt','fixedHeadingValues','fixedHeadingPeople','fixedVideoWilding','fixedVideoArt'];
 
-    // Active set first → cleared visibility hidden BEFORE adding .visible
-    // so any pending hide from a previous transition doesn't keep it dark.
+    // Active set first → fully reset display/visibility BEFORE adding
+    // .visible so any pending hide from a previous transition doesn't
+    // keep it dark. Also resume the video element so it's playing
+    // by the time the user sees it.
     activeIds.forEach(function(id){
       var el = document.getElementById(id);
       if(!el) return;
       if (hideTimers[id]) { clearTimeout(hideTimers[id]); hideTimers[id] = null; }
-      el.style.visibility = '';      // reset inline visibility
+      el.style.display = '';
+      el.style.visibility = '';
       el.classList.add('visible');
+      var vid = el.querySelector('video');
+      if (vid) { try { vid.play(); } catch(e){} }
     });
 
     // Anything NOT in activeIds gets .visible removed AND scheduled to
-    // become visibility:hidden after the fade-out completes (400ms is
-    // a safe buffer past the 350ms CSS opacity transition). This makes
-    // sure the outgoing video element is no longer in the paint stack
-    // when the incoming starts fading in — eliminating the "doubled
-    // video" Safari was painting during the cross-fade.
+    // become display:none after the fade-out completes. display:none is
+    // more aggressive than visibility:hidden — Safari fully drops the
+    // composited GPU layer for the element, which is what was causing
+    // the cached frame of #fixedVideoWilding to keep painting on top
+    // of #fixedVideoArt during/after a section transition. Also pauses
+    // the video so it stops decoding frames.
     allIds.forEach(function(id){
       if (activeIds.indexOf(id) !== -1) return;
       var el = document.getElementById(id);
@@ -3317,6 +3323,9 @@
         // Only hide if it's still inactive (user hasn't scrolled back in)
         if (!el.classList.contains('visible')) {
           el.style.visibility = 'hidden';
+          el.style.display    = 'none';
+          var vid = el.querySelector('video');
+          if (vid) { try { vid.pause(); } catch(e){} }
         }
         hideTimers[id] = null;
       }, 600);  // > longest fade-out (cycler 500ms) so no element is cut mid-fade
