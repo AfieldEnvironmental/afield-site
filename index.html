@@ -3461,14 +3461,15 @@
   var holdTimeout = null;
 
   function update(){
-    /* Always re-measure: if the first measurement happened while the cycler
-       was display:none (e.g. mobile media query), lineH got the 110 fallback
-       and was never refreshed, causing the wrong transform offset. */
-    var measured = els[0].offsetHeight;
-    if(measured) lineH = measured;
-    if(!lineH) lineH = 110;
+    /* Measure FRESH every tick using getBoundingClientRect().height — which
+       returns FRACTIONAL pixels (e.g. 110.6). offsetHeight rounds to integer
+       (110), and that 0.6px error accumulates: after 15 cycles the active
+       word drifts 9px off-centre. Also handles the web-font race condition
+       where the first measurement caught the fallback font's metrics before
+       GT Cinetype loaded — re-measuring catches the swap immediately. */
+    var currentLineH = els[0].getBoundingClientRect().height || 110;
     // Centre the active word in the window by offsetting by 1 line (one ghost above)
-    track.style.transform = 'translateY(-' + ((current - 1) * lineH) + 'px)';
+    track.style.transform = 'translateY(-' + ((current - 1) * currentLineH) + 'px)';
     els.forEach(function(el, i){
       var dist = i - current;
       var isActive = dist === 0;
@@ -4341,8 +4342,12 @@ if(window.innerWidth <= 768){
   var current = WORDS.length; // start at second copy — identical to desktop
 
   function update(){
-    if(!lineH) lineH = allEls[0].offsetHeight || 52;
-    track.style.transform = 'translateY(-' + ((current - 1) * lineH) + 'px)';
+    /* Fresh fractional measurement every tick — offsetHeight rounds to
+       integer pixels and the sub-pixel error compounds (Gemini caught
+       this). getBoundingClientRect().height returns the true height
+       including decimals, so the active word stays centred over many cycles. */
+    var currentLineH = allEls[0].getBoundingClientRect().height || 52;
+    track.style.transform = 'translateY(-' + ((current - 1) * currentLineH) + 'px)';
     allEls.forEach(function(el, i){
       el.classList.toggle('active', i === current);
     });
