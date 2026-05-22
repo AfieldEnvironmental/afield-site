@@ -779,6 +779,12 @@
       opacity: 0;
       will-change: opacity, top;
       transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+      /* Soft fade on top + bottom of the cycler so the ghost words
+         dissolve into the background instead of being hard-cut by
+         overflow:hidden. Safe now that the cycler is position:absolute
+         (no longer the position:fixed + mask-image WebKit vanish bug). */
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 22%, black 78%, transparent 100%);
+              mask-image: linear-gradient(to bottom, transparent 0%, black 22%, black 78%, transparent 100%);
     }
 
     #missionCycler.visible {
@@ -1610,7 +1616,15 @@
   </button>
 
   <!-- Mobile nav overlay -->
-  <div id="mobileNav" style="display:none; position:fixed; inset:0; z-index:250; padding:80px 5vw 5vw 5vw; padding-top:max(80px, calc(env(safe-area-inset-top, 0px) + 60px)); padding-bottom:max(5vw, env(safe-area-inset-bottom, 0px)); flex-direction:column; justify-content:flex-start; gap:8px;">
+  <div id="mobileNav" style="display:none; position:fixed; inset:0; z-index:250; background:#EAFE8B; padding:80px 5vw 5vw 5vw; padding-top:max(80px, calc(env(safe-area-inset-top, 0px) + 60px)); padding-bottom:max(5vw, env(safe-area-inset-bottom, 0px)); flex-direction:column; justify-content:flex-start; gap:8px;">
+    <!-- Close (X) button — top right -->
+    <button id="mobileNavClose" aria-label="Close menu"
+      onclick="document.getElementById('mobileNav').style.display='none'; document.getElementById('hamburger').classList.remove('open');"
+      style="position:absolute; top:max(16px, calc(env(safe-area-inset-top, 0px) + 12px)); right:20px; z-index:301; background:none; border:none; cursor:pointer; padding:14px; -webkit-tap-highlight-color:transparent;">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M2 2 L18 18 M18 2 L2 18" stroke="#1a1a0e" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+    </button>
   </div>
 
 
