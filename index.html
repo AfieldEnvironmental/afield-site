@@ -779,12 +779,15 @@
       opacity: 0;
       will-change: opacity, top;
       transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-      /* Soft fade on top + bottom of the cycler so the ghost words
-         dissolve into the background instead of being hard-cut by
-         overflow:hidden. Safe now that the cycler is position:absolute
-         (no longer the position:fixed + mask-image WebKit vanish bug). */
-      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 22%, black 78%, transparent 100%);
-              mask-image: linear-gradient(to bottom, transparent 0%, black 22%, black 78%, transparent 100%);
+      /* Soft fade on top + bottom of the cycler. WebKit needs the
+         -webkit-mask-repeat/-size properties or the gradient mask
+         silently no-ops on Safari. */
+      -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 24%, rgba(0,0,0,1) 76%, rgba(0,0,0,0) 100%);
+              mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 24%, rgba(0,0,0,1) 76%, rgba(0,0,0,0) 100%);
+      -webkit-mask-repeat: no-repeat;
+              mask-repeat: no-repeat;
+      -webkit-mask-size: 100% 100%;
+              mask-size: 100% 100%;
     }
 
     #missionCycler.visible {
@@ -1177,6 +1180,9 @@
   .logo svg { height: 54px !important; transition: height 0.3s ease; }
   nav.scrolled .logo svg { height: 40px !important; }
   .ham-line { display: block; width: 22px; height: 1.5px; background: #1a1a0e; transition: all 0.3s ease; }
+  /* When the menu is open the dedicated #mobileNavClose X handles closing,
+     so hide the hamburger to avoid two overlapping X marks at top-right. */
+  #hamburger.open { display: none !important; }
   #hamburger.open .ham-line:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
   #hamburger.open .ham-line:nth-child(2) { opacity: 0; }
   #hamburger.open .ham-line:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
@@ -1184,7 +1190,21 @@
     padding: 80px 5vw 5vw 5vw;
     padding-top: max(80px, calc(env(safe-area-inset-top, 0px) + 60px));
     padding-bottom: max(5vw, env(safe-area-inset-bottom, 0px));
-    background: #EAFE8B;
+    background: #EAFE8B !important;
+    /* Force full-viewport coverage on iOS Safari. inset:0 alone isn't
+       reliable when the address bar changes height; dvh tracks the
+       dynamic visible viewport so the yellow background reaches edge
+       to edge. overflow-y:auto lets long menus scroll within the
+       overlay rather than spill out below. */
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
   }
   #mobileNav.open { display: flex !important; }
   .mobile-nav-btn { font-family: "GT Cinetype", sans-serif; font-size: 32px; font-weight: 400; letter-spacing: 0.01em; text-transform: uppercase; color: #1a1a0e; background: none; border: none; cursor: pointer; padding: 4px 0; opacity: 0.4; text-align: left !important; display: flex; align-items: center; gap: 0.35em; width: 100%; }
@@ -1245,8 +1265,14 @@
     width: 100% !important;
     box-sizing: border-box !important;
     height: calc(clamp(40px, 13vw, 60px) * 3) !important;
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%);
-    mask-image: linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%);
+    /* WebKit requires explicit mask-repeat + mask-size or the gradient
+       mask silently does nothing on Safari. */
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 24%, rgba(0,0,0,1) 76%, rgba(0,0,0,0) 100%);
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 24%, rgba(0,0,0,1) 76%, rgba(0,0,0,0) 100%);
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
   }
   .mobile-cycle-word {
     font-family: 'GT Cinetype', sans-serif !important;
@@ -1259,11 +1285,17 @@
     display: block !important;
     padding: 0 5vw !important;
     opacity: 0.15 !important;
-    transition: opacity 0.55s ease !important;
+    /* Outgoing word fades fast (0.18s) so it's gone before the new active
+       word reaches full opacity. Eliminates the brief moment where two
+       words appear black at once during the transition. */
+    transition: opacity 0.18s ease-out !important;
     white-space: nowrap !important;
   }
   .mobile-cycle-word.active {
     opacity: 1 !important;
+    /* Incoming active word fades in with a slight delay so the previous
+       active word has time to fade out first. */
+    transition: opacity 0.32s ease-in 0.1s !important;
   }
   #mobileCyclerTrack {
     display: flex !important;
