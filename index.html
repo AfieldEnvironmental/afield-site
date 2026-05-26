@@ -1162,12 +1162,14 @@
     font-size: clamp(17px, 4.5vw, 20px) !important;
   }
 
-  html, body { overflow-y: auto !important; height: auto !important; background: #EAFE8B; }
-  body { background-color: #EAFE8B; transition: none !important; }
+  /* Mint by default — matches the new landing-page colour. JS updates
+     per section as user scrolls. */
+  html, body { overflow-y: auto !important; height: auto !important; background: #b1ffcb; }
+  body { background-color: #b1ffcb; transition: none !important; }
   * { text-align: left !important; }
 
   /* Fill entire screen with bg colour — no brown showing */
-  html { background: #EAFE8B !important; }
+  html { background: #b1ffcb !important; }
   body {
     min-height: 100vh !important;
     min-height: calc(var(--vh, 1vh) * 100) !important;
@@ -1746,7 +1748,7 @@
   <div id="dotNav">
     <button class="dot-btn active" data-state="0" title="Afield"><span class="dot-circle"></span><span class="dot-label">Afield</span></button>
     <button class="dot-btn" data-state="1" title="Purpose"><span class="dot-circle"></span><span class="dot-label">Purpose</span></button>
-    <button class="dot-btn" data-state="2" title="Wilding"><span class="dot-circle"></span><span class="dot-label">Wilding</span></button>
+    <button class="dot-btn" data-state="2" title="Wilding Grants"><span class="dot-circle"></span><span class="dot-label">Wilding Grants</span></button>
     <button class="dot-btn" data-state="3" title="Arts Grants"><span class="dot-circle"></span><span class="dot-label">Arts Grants</span></button>
     <button class="dot-btn" data-state="4" title="Values"><span class="dot-circle"></span><span class="dot-label">Values</span></button>
     <button class="dot-btn" data-state="5" title="Team"><span class="dot-circle"></span><span class="dot-label">Team</span></button>
