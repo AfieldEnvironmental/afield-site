@@ -2373,9 +2373,11 @@
 
   .cs-people .people-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 480px));
-    gap: clamp(16px, 3vw, 60px);
-    width: auto;
+    /* 3 columns now (was 2). minmax(0, 1fr) lets them share space evenly
+       and respect the page padding instead of capping at a fixed max. */
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(16px, 2.5vw, 48px);
+    width: 100%;
   }
 
   .ws-pair {
@@ -2501,7 +2503,7 @@
 
   .people-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     gap: 60px;
   }
 
@@ -2980,6 +2982,11 @@
         <h3 class="bio-name reveal-on-scroll">Mike Saunders</h3>
         <p class="bio-body reveal-on-scroll">Mike is an entrepreneur, technologist and trustee, interested in the way that communities are impacted by, and respond to environmental crises. He founded community platform Commonplace, helping councils and developers to engage and co-design with over 12M local people. Commonplace data consistently shows nature and green space to be amongst the top two priorities for urban communities. Mike is also deputy chair of Trinity College London and a trustee of Open City, which amongst other things runs the Open House Festival. He previously led digital at Kew Gardens, was a member of the Speaker's Advisory Committee on Public Engagement at Parliament, ActionAid's digital board and worked in government and broadcasting. He has a design MA, and trained as a software engineer.</p>
       </div>
+      <!-- Placeholder for new staff member — duplicate of Mike's profile for now. -->
+      <div class="bio-item">
+        <h3 class="bio-name reveal-on-scroll">Mike Saunders</h3>
+        <p class="bio-body reveal-on-scroll">Mike is an entrepreneur, technologist and trustee, interested in the way that communities are impacted by, and respond to environmental crises. He founded community platform Commonplace, helping councils and developers to engage and co-design with over 12M local people. Commonplace data consistently shows nature and green space to be amongst the top two priorities for urban communities. Mike is also deputy chair of Trinity College London and a trustee of Open City, which amongst other things runs the Open House Festival. He previously led digital at Kew Gardens, was a member of the Speaker's Advisory Committee on Public Engagement at Parliament, ActionAid's digital board and worked in government and broadcasting. He has a design MA, and trained as a software engineer.</p>
+      </div>
     </div>
   </div>
 </div>
@@ -2996,9 +3003,16 @@
     <!-- Right: form -->
     <div style="flex:0 0 clamp(260px,34vw,500px); display:flex; flex-direction:column; gap:4vh; align-self:flex-start; margin-top:-40px;">
       <form class="touch-form" action="contact.php" method="POST">
-        <div class="touch-field">
-          <label class="touch-label-field">Name</label>
-          <input class="touch-input-field" type="text" name="name" placeholder="Your name" autocomplete="off" required/>
+        <!-- Name + new field side-by-side on desktop, stacked on mobile -->
+        <div class="touch-field" style="display:flex; gap:16px; flex-wrap:wrap;">
+          <div style="flex:1 1 140px; min-width:0;">
+            <label class="touch-label-field">Name</label>
+            <input class="touch-input-field" type="text" name="name" placeholder="Your name" autocomplete="off" required style="width:100%; box-sizing:border-box;"/>
+          </div>
+          <div style="flex:1 1 140px; min-width:0;">
+            <label class="touch-label-field">Organisation</label>
+            <input class="touch-input-field" type="text" name="organisation" placeholder="Optional" autocomplete="off" style="width:100%; box-sizing:border-box;"/>
+          </div>
         </div>
         <div class="touch-field">
           <label class="touch-label-field">Email address</label>
@@ -3261,8 +3275,17 @@
     if(toIdx >= keys.length){
       colour = keys[fromIdx].colour;
     } else {
-      var transStart = keys[toIdx].top - vh * 0.35;
-      var transEnd   = keys[toIdx].top;
+      /* Tightened window so the bg flip lines up with when the next
+         section's content actually arrives on screen, not before:
+         - transStart: only kick off the fade when the next section's
+           top is ~halfway into the viewport from below (vh*0.5 above
+           the section top). Before that the current section's content
+           is still what the user is reading, so its colour should hold.
+         - transEnd: complete the fade slightly before the section top
+           hits viewport top, so by the time the heading is fully in
+           view the colour is settled. */
+      var transStart = keys[toIdx].top - vh * 0.5;
+      var transEnd   = keys[toIdx].top - vh * 0.15;
       if(scrollY <= transStart){
         colour = keys[fromIdx].colour;
       } else if(scrollY >= transEnd){
@@ -4692,11 +4715,10 @@ if(window.innerWidth <= 768){
     if(toIdx >= keys.length){
       rgb = keys[fromIdx].rgb;
     } else {
-      /* Match the main updateBg threshold so the feather and body bg
-         transition at the same scroll position. Was vh (eager) → now
-         vh*0.35 (lets the current section colour hold longer). */
-      var transStart = keys[toIdx].top - vh * 0.35;
-      var transEnd   = keys[toIdx].top;
+      /* Match main updateBg window exactly — tightened to align with
+         when content actually appears on screen. */
+      var transStart = keys[toIdx].top - vh * 0.5;
+      var transEnd   = keys[toIdx].top - vh * 0.15;
       if(scrollY <= transStart){
         rgb = keys[fromIdx].rgb;
       } else if(scrollY >= transEnd){
