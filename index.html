@@ -3255,7 +3255,7 @@
     var keys = [];
     for(var i = 0; i < bgSectionIds.length; i++){
       var el = document.getElementById(bgSectionIds[i]);
-      if(el) keys.push({ top: el.offsetTop, colour: bgColours[bgSectionIds[i]] });
+      if(el) keys.push({ top: el.offsetTop, colour: bgColours[bgSectionIds[i]], id: bgSectionIds[i] });
     }
     if(!keys.length) return;
 
@@ -3275,17 +3275,15 @@
     if(toIdx >= keys.length){
       colour = keys[fromIdx].colour;
     } else {
-      /* Tightened window so the bg flip lines up with when the next
-         section's content actually arrives on screen, not before:
-         - transStart: only kick off the fade when the next section's
-           top is ~halfway into the viewport from below (vh*0.5 above
-           the section top). Before that the current section's content
-           is still what the user is reading, so its colour should hold.
-         - transEnd: complete the fade slightly before the section top
-           hits viewport top, so by the time the heading is fully in
-           view the colour is settled. */
-      var transStart = keys[toIdx].top - vh * 0.5;
-      var transEnd   = keys[toIdx].top - vh * 0.15;
+      /* Default fade window aligns with when section content appears.
+         Get-in-touch is an exception — client wants the orange to
+         start showing earlier (as the user begins arriving at the
+         contact section), so it gets a wider, earlier window. */
+      var isTouch = keys[toIdx].id === 'sectionTouch';
+      var startFactor = isTouch ? 0.85 : 0.5;
+      var endFactor   = isTouch ? 0.40 : 0.15;
+      var transStart = keys[toIdx].top - vh * startFactor;
+      var transEnd   = keys[toIdx].top - vh * endFactor;
       if(scrollY <= transStart){
         colour = keys[fromIdx].colour;
       } else if(scrollY >= transEnd){
@@ -4701,7 +4699,7 @@ if(window.innerWidth <= 768){
     var keys = [];
     for(var i = 0; i < sections.length; i++){
       var el = document.getElementById(sections[i].id);
-      if(el) keys.push({ top: el.offsetTop, rgb: parseRgbStr(sections[i].colour) });
+      if(el) keys.push({ top: el.offsetTop, rgb: parseRgbStr(sections[i].colour), id: sections[i].id });
     }
     if(!keys.length) return;
 
@@ -4715,10 +4713,13 @@ if(window.innerWidth <= 768){
     if(toIdx >= keys.length){
       rgb = keys[fromIdx].rgb;
     } else {
-      /* Match main updateBg window exactly — tightened to align with
-         when content actually appears on screen. */
-      var transStart = keys[toIdx].top - vh * 0.5;
-      var transEnd   = keys[toIdx].top - vh * 0.15;
+      /* Match main updateBg window. Touch gets an earlier window so
+         the orange shows up sooner. */
+      var isTouch = keys[toIdx].id === 'sectionTouch';
+      var startFactor = isTouch ? 0.85 : 0.5;
+      var endFactor   = isTouch ? 0.40 : 0.15;
+      var transStart = keys[toIdx].top - vh * startFactor;
+      var transEnd   = keys[toIdx].top - vh * endFactor;
       if(scrollY <= transStart){
         rgb = keys[fromIdx].rgb;
       } else if(scrollY >= transEnd){
