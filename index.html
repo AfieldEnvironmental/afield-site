@@ -3025,8 +3025,9 @@
               <input type="checkbox" name="interest" value="arts" style="width:14px; height:14px; accent-color:#1a1a0e; cursor:pointer;"> Arts Grants
             </label>
             <label style="display:flex; align-items:center; gap:10px; font-family:'GT Cinetype',sans-serif; font-size:clamp(13px,1vw,16px); color:#1a1a0e; cursor:pointer;">
-              <input type="checkbox" name="interest" value="other" id="interestOther" style="width:14px; height:14px; accent-color:#1a1a0e; cursor:pointer; flex-shrink:0;"> Something else
-              <input class="touch-input-field" type="text" name="interestOtherText" placeholder="Please specify…" autocomplete="off" style="flex:1 1 auto; min-width:0; font-size:clamp(13px,1vw,16px); padding-bottom:2px;"/>
+              <input type="checkbox" name="interest" value="other" id="interestOther" style="width:14px; height:14px; accent-color:#1a1a0e; cursor:pointer; flex-shrink:0;">
+              <span style="white-space:nowrap; flex-shrink:0;">Something else</span>
+              <input class="touch-input-field" type="text" name="interestOtherText" placeholder="Please specify…" autocomplete="off" style="flex:1 1 0; min-width:60px; font-size:clamp(13px,1vw,16px); padding-bottom:2px;" onclick="event.stopPropagation();"/>
             </label>
           </div>
         </div>
