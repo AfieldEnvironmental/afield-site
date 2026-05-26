@@ -3122,13 +3122,13 @@
     'sectionTouch':   '#b8f5b1',
   };
   var bgColours = {
-    'heroSection':    '#b1ffcb',
-    'textPanel':      '#EAFE8B',
-    'sectionWilding': '#b1ffcb',
-    'sectionArt':     '#EAFE8B',
-    'sectionValues':  '#EAFE8B',
-    'sectionPeople':  '#e4c9f9',
-    'sectionTouch':   '#e4c9f9',
+    'heroSection':    '#b1ffcb',  /* mint   — Landing */
+    'textPanel':      '#EAFE8B',  /* yellow — Purpose */
+    'sectionWilding': '#e4c9f9',  /* purple — Wilding */
+    'sectionArt':     '#b1ffcb',  /* mint   — Art */
+    'sectionValues':  '#EAFE8B',  /* yellow — Values */
+    'sectionPeople':  '#e4c9f9',  /* purple — Team */
+    'sectionTouch':   '#FFCBA4',  /* orange — Get in touch */
   };
   var dotIndices = {
     'heroSection':0,'textPanel':1,'sectionWilding':2,
@@ -3224,11 +3224,11 @@
   var bgColours = {
     'heroSection':   '#b1ffcb',
     'textPanel':     '#EAFE8B',
-    'sectionWilding':'#b1ffcb',
-    'sectionArt':    '#EAFE8B',
+    'sectionWilding':'#e4c9f9',
+    'sectionArt':    '#b1ffcb',
     'sectionValues': '#EAFE8B',
     'sectionPeople': '#e4c9f9',
-    'sectionTouch':  '#e4c9f9'
+    'sectionTouch':  '#FFCBA4'
   };
   var bgSectionIds = ['heroSection','textPanel','sectionWilding','sectionArt','sectionValues','sectionPeople','sectionTouch'];
 
@@ -4659,13 +4659,13 @@ if(window.innerWidth <= 768){
   /* Landing/Purpose swapped: landing is now mint (177,255,203), Purpose
      is now yellow (234,254,139). */
   var sections = [
-    { id:'heroSection',   colour:'177,255,203' },
-    { id:'textPanel',     colour:'234,254,139' },
-    { id:'sectionWilding',colour:'177,255,203' },
-    { id:'sectionArt',    colour:'234,254,139' },
-    { id:'sectionValues', colour:'234,254,139' },
-    { id:'sectionPeople', colour:'228,201,249' },
-    { id:'sectionTouch',  colour:'228,201,249' }
+    { id:'heroSection',   colour:'177,255,203' },  /* mint */
+    { id:'textPanel',     colour:'234,254,139' },  /* yellow */
+    { id:'sectionWilding',colour:'228,201,249' },  /* purple */
+    { id:'sectionArt',    colour:'177,255,203' },  /* mint */
+    { id:'sectionValues', colour:'234,254,139' },  /* yellow */
+    { id:'sectionPeople', colour:'228,201,249' },  /* purple */
+    { id:'sectionTouch',  colour:'255,203,164' }   /* orange */
   ];
   function lerpChannel(a, b, t){ return Math.round(a + (b - a) * t); }
   function parseRgbStr(s){ var p=s.split(','); return [+p[0],+p[1],+p[2]]; }
