@@ -3003,16 +3003,9 @@
     <!-- Right: form -->
     <div style="flex:0 0 clamp(260px,34vw,500px); display:flex; flex-direction:column; gap:4vh; align-self:flex-start; margin-top:-40px;">
       <form class="touch-form" action="contact.php" method="POST">
-        <!-- Name + new field side-by-side on desktop, stacked on mobile -->
-        <div class="touch-field" style="display:flex; gap:16px; flex-wrap:wrap;">
-          <div style="flex:1 1 140px; min-width:0;">
-            <label class="touch-label-field">Name</label>
-            <input class="touch-input-field" type="text" name="name" placeholder="Your name" autocomplete="off" required style="width:100%; box-sizing:border-box;"/>
-          </div>
-          <div style="flex:1 1 140px; min-width:0;">
-            <label class="touch-label-field">Organisation</label>
-            <input class="touch-input-field" type="text" name="organisation" placeholder="Optional" autocomplete="off" style="width:100%; box-sizing:border-box;"/>
-          </div>
+        <div class="touch-field">
+          <label class="touch-label-field">Name</label>
+          <input class="touch-input-field" type="text" name="name" placeholder="Your name" autocomplete="off" required/>
         </div>
         <div class="touch-field">
           <label class="touch-label-field">Email address</label>
@@ -3032,7 +3025,8 @@
               <input type="checkbox" name="interest" value="arts" style="width:14px; height:14px; accent-color:#1a1a0e; cursor:pointer;"> Arts Grants
             </label>
             <label style="display:flex; align-items:center; gap:10px; font-family:'GT Cinetype',sans-serif; font-size:clamp(13px,1vw,16px); color:#1a1a0e; cursor:pointer;">
-              <input type="checkbox" name="interest" value="other" style="width:14px; height:14px; accent-color:#1a1a0e; cursor:pointer;"> Something else
+              <input type="checkbox" name="interest" value="other" id="interestOther" style="width:14px; height:14px; accent-color:#1a1a0e; cursor:pointer; flex-shrink:0;"> Something else
+              <input class="touch-input-field" type="text" name="interestOtherText" placeholder="Please specify…" autocomplete="off" style="flex:1 1 auto; min-width:0; font-size:clamp(13px,1vw,16px); padding-bottom:2px;"/>
             </label>
           </div>
         </div>
