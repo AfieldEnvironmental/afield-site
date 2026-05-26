@@ -3246,8 +3246,12 @@
     if(!keys.length) return;
 
     // Find which two sections we're transitioning between.
-    // Blend begins when the next section's top enters the viewport from below,
-    // and completes when that top reaches the viewport top.
+    // Blend now begins much LATER — only when the next section's top is
+    // roughly 35% into the viewport from below — so the current section
+    // colour holds for most of its scroll before fading to the next.
+    // Was: transStart = top - vh (started as soon as the next section's
+    // top peeked into the bottom edge), which made the landing mint
+    // start fading the instant the user nudged the scroll wheel.
     var fromIdx = 0;
     for(var i = keys.length - 1; i >= 0; i--){
       if(scrollY >= keys[i].top){ fromIdx = i; break; }
@@ -3257,7 +3261,7 @@
     if(toIdx >= keys.length){
       colour = keys[fromIdx].colour;
     } else {
-      var transStart = keys[toIdx].top - vh;
+      var transStart = keys[toIdx].top - vh * 0.35;
       var transEnd   = keys[toIdx].top;
       if(scrollY <= transStart){
         colour = keys[fromIdx].colour;
@@ -4652,9 +4656,11 @@ if(window.innerWidth <= 768){
 (function(){
   var feather = document.getElementById('topFeather');
   if(!feather) return;
+  /* Landing/Purpose swapped: landing is now mint (177,255,203), Purpose
+     is now yellow (234,254,139). */
   var sections = [
-    { id:'heroSection',   colour:'234,254,139' },
-    { id:'textPanel',     colour:'177,255,203' },
+    { id:'heroSection',   colour:'177,255,203' },
+    { id:'textPanel',     colour:'234,254,139' },
     { id:'sectionWilding',colour:'255,255,255' },
     { id:'sectionArt',    colour:'255,255,255' },
     { id:'sectionValues', colour:'234,254,139' },
@@ -4686,7 +4692,10 @@ if(window.innerWidth <= 768){
     if(toIdx >= keys.length){
       rgb = keys[fromIdx].rgb;
     } else {
-      var transStart = keys[toIdx].top - vh;
+      /* Match the main updateBg threshold so the feather and body bg
+         transition at the same scroll position. Was vh (eager) → now
+         vh*0.35 (lets the current section colour hold longer). */
+      var transStart = keys[toIdx].top - vh * 0.35;
       var transEnd   = keys[toIdx].top;
       if(scrollY <= transStart){
         rgb = keys[fromIdx].rgb;
