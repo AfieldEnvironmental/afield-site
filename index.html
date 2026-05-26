@@ -3218,11 +3218,12 @@
   }
 
   var bgRaf = null;
-  var currentBgRgb = hexToRgb('#EAFE8B');
-  var currentTargetColour = '#EAFE8B';
+  /* Landing is mint now (swapped with Purpose). */
+  var currentBgRgb = hexToRgb('#b1ffcb');
+  var currentTargetColour = '#b1ffcb';
   var bgColours = {
-    'heroSection':   '#EAFE8B',
-    'textPanel':     '#b1ffcb',
+    'heroSection':   '#b1ffcb',
+    'textPanel':     '#EAFE8B',
     'sectionWilding':'#ffffff',
     'sectionArt':    '#ffffff',
     'sectionValues': '#EAFE8B',
@@ -3277,8 +3278,8 @@
   window.addEventListener('resize', updateBg);
 
   document.body.style.transition = 'none';
-  document.body.style.backgroundColor = '#EAFE8B';
-  document.documentElement.style.setProperty('--bg', '#EAFE8B');
+  document.body.style.backgroundColor = '#b1ffcb';
+  document.documentElement.style.setProperty('--bg', '#b1ffcb');
   setTimeout(updateBg, 100);
 
   // ── CLOSE OVERLAYS ON NAV ──
