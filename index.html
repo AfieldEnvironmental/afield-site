@@ -4815,10 +4815,13 @@ if(window.innerWidth <= 768){
     var cfg = {};
     (results[0].records || []).forEach(function (r) { cfg[r.fields.Key] = r.fields.Value; });
 
-    // Mission text
-    var panelPs = document.querySelectorAll('.panel-body p');
-    if (cfg.mission_intro && panelPs[0]) panelPs[0].textContent = cfg.mission_intro;
-    if (cfg.mission_body  && panelPs[1]) panelPs[1].textContent = cfg.mission_body;
+    /* Mission text override DISABLED — Purpose copy is now hand-edited
+       in the HTML (4-paragraph structure that the old single-paragraph
+       textContent-overwrite would have collapsed). To re-enable, the
+       script needs splitting on [P] markers like the bio/detail fields. */
+    // var panelPs = document.querySelectorAll('.panel-body p');
+    // if (cfg.mission_intro && panelPs[0]) panelPs[0].textContent = cfg.mission_intro;
+    // if (cfg.mission_body  && panelPs[1]) panelPs[1].textContent = cfg.mission_body;
 
     // Values intro
     var vi = document.querySelector('.values-intro');
