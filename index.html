@@ -1774,9 +1774,12 @@
   <!-- Fixed videos — pinned, fade with their section -->
   <div id="fixedVideoWilding" class="fixed-video-pin">
     <video autoplay loop muted playsinline disablepictureinpicture disableremoteplayback preload="auto" style="width:100%; height:100%; object-fit:cover; object-position:65% center; transform:scale(1.04); transform-origin:65% center; pointer-events:none;">
-      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779444552/Comp_9-hevc-safari_cygpav.mp4" type='video/mp4; codecs="hvc1"'>
-      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779119908/Comp_8_1_zi9dny.webm" type="video/webm">
-      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/f_mp4,q_auto/v1779119908/Comp_8_1_zi9dny.webm" type="video/mp4">
+      <!-- New Wilding edit — VP9 WebM primary for ALL browsers (modern
+           Safari 14.1+ supports VP9). Old HEVC removed because it
+           was a different edit and made Safari look different from
+           Chrome. H.264 fallback auto-derived from the new WebM. -->
+      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779895829/Wilding-vp9-chrome_shyohf.webm" type="video/webm">
+      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/f_mp4,q_auto/v1779895829/Wilding-vp9-chrome_shyohf.webm" type="video/mp4">
     </video>
   </div>
   <div id="fixedVideoArt" class="fixed-video-pin">
@@ -2796,9 +2799,12 @@
   <h2 class="mobile-section-heading">Wilding<br>Grants</h2>
   <div class="mobile-section-video">
     <video autoplay muted loop playsinline disablepictureinpicture disableremoteplayback preload="auto" style="pointer-events:none;">
-      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779444552/Comp_9-hevc-safari_cygpav.mp4" type='video/mp4; codecs="hvc1"'>
-      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779119908/Comp_8_1_zi9dny.webm" type="video/webm">
-      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/f_mp4,q_auto/v1779119908/Comp_8_1_zi9dny.webm" type="video/mp4">
+      <!-- New Wilding edit — VP9 WebM primary for ALL browsers (modern
+           Safari 14.1+ supports VP9). Old HEVC removed because it
+           was a different edit and made Safari look different from
+           Chrome. H.264 fallback auto-derived from the new WebM. -->
+      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779895829/Wilding-vp9-chrome_shyohf.webm" type="video/webm">
+      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/f_mp4,q_auto/v1779895829/Wilding-vp9-chrome_shyohf.webm" type="video/mp4">
     </video>
   </div>
   <div class="cs-inner" style="align-items:flex-start; padding-right:72vw; position:relative; z-index:3;">
