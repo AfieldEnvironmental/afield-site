@@ -3850,6 +3850,28 @@
   setTimeout(fitAndStart, 800);
   window.addEventListener('resize', fitCyclerFont);
 
+  /* Re-centre the active word every time the cycler becomes visible.
+     Fixes the first-scroll bug where the active word appeared at the
+     top instead of the middle — that was the track transform being
+     calculated before the cycler/words had final dimensions on first
+     reveal. Re-running update() once the element is actually painted
+     fixes the alignment. */
+  var cyclerEl = document.getElementById('missionCycler');
+  if (cyclerEl) {
+    var classObserver = new MutationObserver(function(){
+      if (cyclerEl.classList.contains('visible')) {
+        // Two rAF beats so layout has fully committed before we measure
+        requestAnimationFrame(function(){
+          requestAnimationFrame(function(){
+            fitCyclerFont();
+            update();
+          });
+        });
+      }
+    });
+    classObserver.observe(cyclerEl, { attributes: true, attributeFilter: ['class'] });
+  }
+
 })();
 </script>
 
