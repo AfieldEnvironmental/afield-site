@@ -1437,9 +1437,9 @@
     width: calc(100% + 50px) !important;
     max-width: none !important;
     margin-left: -50px !important;
-    /* Larger: 52vw → 75vw — gives grant videos significantly more presence
-       on the mobile page. */
-    height: 75vw !important;
+    /* Bounding box bumped up to 120vw (was 75vw) so the polygon at
+       scale(2.3) on the inner video isn't clipped at top/bottom. */
+    height: 120vw !important;
     max-height: none !important;
     margin-bottom: 6vw !important;
     overflow: hidden !important;
