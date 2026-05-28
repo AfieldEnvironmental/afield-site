@@ -1137,6 +1137,17 @@
     padding-bottom: max(16px, env(safe-area-inset-bottom, 16px)) !important;
     padding-left:  max(28px, env(safe-area-inset-left,  28px)) !important;
     padding-right: max(28px, env(safe-area-inset-right, 28px)) !important;
+    color: #b1ffcb !important;  /* mint accent text on mobile */
+  }
+  /* Mobile: swap the cookie banner's yellow accents (text + Accept bg +
+     Decline border/text) for the new mint landing colour. Inline styles
+     need !important to win. */
+  #cookieBanner button[onclick*="accept"] {
+    background: #b1ffcb !important;
+  }
+  #cookieBanner button[onclick*="decline"] {
+    color: #b1ffcb !important;
+    border-color: #b1ffcb !important;
   }
 
   </style>
@@ -1206,7 +1217,7 @@
     padding-right: 0 !important;
     padding-bottom: 0 !important;
     padding-left: 0 !important;
-    background: #EAFE8B !important;
+    background: #b1ffcb !important;
     transition: none;
     -webkit-transform: none;
     transform: none;
