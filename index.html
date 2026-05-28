@@ -1495,7 +1495,8 @@
   #sectionPeople .cs-inner { height: auto !important; padding: 5vw 5vw 15vw 5vw !important; }
   .people-grid { grid-template-columns: 1fr !important; gap: 12vw !important; }
   .bio-name { font-size: clamp(22px, 7vw, 36px) !important; padding-left: 10vw !important; }
-  .bio-body { font-size: clamp(13px, 3.8vw, 16px) !important; padding-left: 10vw !important; }
+  .bio-body { font-size: clamp(19px, 5vw, 23px) !important; padding-left: 10vw !important; }
+  .bio-body + .bio-body { margin-top: 0.3em !important; }
 
   /* GET IN TOUCH */
   #sectionTouch .cs-inner { position: relative !important; height: auto !important; min-height: auto !important; overflow: visible !important; display: flex !important; flex-direction: column !important; padding: 15vw 5vw 15vw 5vw !important; gap: 8vw !important; }
@@ -3012,8 +3013,8 @@
       <div class="bio-item">
         <h3 class="bio-name reveal-on-scroll">Liz Orton</h3>
         <p class="bio-body reveal-on-scroll">Liz is a visual artist with a background in education and participatory arts. She worked as a Lecturer in Photography at London College of Communication, and as an Associate Artist with Performing Medicine, and has led participatory photography projects for PhotoVoice, the Photographers' Gallery, The Refugee Council and other community organisations.</p>
-        <p class="bio-body reveal-on-scroll" style="margin-top:0.5em;">Her artistic practice centres on archives and found images, considering the tensions in the production of knowledge and its circulation. Her practice has been supported by several grants including from the Mead Fellowship, Wellcome Trust and UCL Grand Challenges.</p>
-        <p class="bio-body reveal-on-scroll" style="margin-top:0.5em;">In 2019 she was diagnosed with M.E., became unemployed and spent five years often bedbound and housebound. Improvements in health enabled her to co-found Afield from a family legacy in 2025. She lives a sometimes life – sometimes active and sometimes in bed.</p>
+        <p class="bio-body reveal-on-scroll" style="margin-top:0.3em;">Her artistic practice centres on archives and found images, considering the tensions in the production of knowledge and its circulation. Her practice has been supported by several grants including from the Mead Fellowship, Wellcome Trust and UCL Grand Challenges.</p>
+        <p class="bio-body reveal-on-scroll" style="margin-top:0.3em;">In 2019 she was diagnosed with M.E., became unemployed and spent five years often bedbound and housebound. Improvements in health enabled her to co-found Afield from a family legacy in 2025. She lives a sometimes life – sometimes active and sometimes in bed.</p>
       </div>
       <div class="bio-item">
         <h3 class="bio-name reveal-on-scroll">Mike Saunders</h3>
@@ -3028,19 +3029,18 @@
 </div>
 
 <div id="sectionTouch" class="content-section" style="min-height:100vh;">
-  <div class="cs-inner" style="align-items:flex-start; flex-wrap:nowrap; gap:5vw; padding:clamp(100px,14vh,160px) clamp(80px,10vw,220px) clamp(60px,8vw,120px) 3vw; min-height:auto; height:auto;">
+  <!-- Single-column stack so the email link and the form share the
+       SAME left edge (cs-inner left + 10vw). H2 sits at the cs-inner
+       left edge so it "sticks out" to the left of the indented block. -->
+  <div class="cs-inner" style="align-items:flex-start; flex-direction:column; gap:clamp(20px,3vh,40px); padding:clamp(100px,14vh,160px) clamp(80px,10vw,220px) clamp(60px,8vw,120px) 3vw; min-height:auto; height:auto;">
 
-    <!-- Left: heading + email - pins at vertical centre -->
-    <div style="flex:0 0 auto; display:flex; flex-direction:column; gap:clamp(10px,1.2vh,16px); position:sticky; top:50%; transform:translateY(-50%); align-self:flex-start;">
-      <h2 style="font-family:'GT Cinetype',sans-serif; font-weight:400; font-size:clamp(24px,3.5vw,52px); letter-spacing:-0.03em; line-height:1.05; color:#1a1a0e; margin:0;">Get in<br>touch</h2>
-      <!-- Email link indented by ~10vw so it sits clearly inside the
-           indented column with the form, not aligned with the header. -->
-      <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.4vw,20px); font-weight:400; line-height:1.6; color:#1a1a0e; margin:0 0 0 10vw; opacity:0.75;">Or drop us an email at <a href="mailto:hello@afield.org.uk" style="color:#1a1a0e; text-decoration:underline;">hello@afield.org.uk</a></p>
-    </div>
+    <h2 style="font-family:'GT Cinetype',sans-serif; font-weight:400; font-size:clamp(24px,3.5vw,52px); letter-spacing:-0.03em; line-height:1.05; color:#1a1a0e; margin:0;">Get in<br>touch</h2>
 
-    <!-- Right: form — indented 10vw from cs-inner left edge so the
-         header stands out to the left. -->
-    <div style="flex:0 0 clamp(260px,34vw,500px); display:flex; flex-direction:column; gap:4vh; align-self:flex-start; margin-top:-40px; margin-left:10vw;">
+    <!-- Email link — indent 10vw from cs-inner left edge -->
+    <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.4vw,20px); font-weight:400; line-height:1.6; color:#1a1a0e; margin:0 0 0 10vw; opacity:0.75;">Or drop us an email at <a href="mailto:hello@afield.org.uk" style="color:#1a1a0e; text-decoration:underline;">hello@afield.org.uk</a></p>
+
+    <!-- Form — same 10vw indent as the email so left edges line up -->
+    <div style="width:clamp(260px,34vw,500px); display:flex; flex-direction:column; gap:4vh; margin-left:10vw;">
       <form class="touch-form" action="contact.php" method="POST">
         <div class="touch-field">
           <label class="touch-label-field">Name</label>
