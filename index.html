@@ -1852,7 +1852,11 @@
       </div>
       <!-- Text: smaller hero copy (was clamp(46,13vw,72) → clamp(34,9.5vw,52)),
            tighter margin so Continue sits closer beneath. -->
-      <div style="padding:4vw 5vw 5vw 5vw;">
+      <!-- Negative margin-top lifts the H1+Continue ~50px up over the
+           video. Hero video has alpha bg so the text reads cleanly on
+           top of the transparent area. position:relative + z-index so
+           it paints above the video container. -->
+      <div style="padding:4vw 5vw 5vw 5vw; margin-top:-50px; position:relative; z-index:2;">
         <h1 style="font-family:'GT Cinetype',sans-serif; font-size:clamp(34px,9.5vw,52px); font-weight:400; letter-spacing:-0.03em; line-height:1.05; color:#1a1a0e; margin:0 0 3vw 0;">Creative<br>responses to<br>environmental injustice.</h1>
         <button onclick="document.getElementById('sectionPurpose').scrollIntoView({behavior:'smooth'})" style="font-family:'GT Cinetype',sans-serif; font-size:13px; letter-spacing:0.08em; text-transform:uppercase; color:#1a1a0e; background:none; border:none; cursor:pointer; padding:0;">Continue ↓</button>
       </div>
