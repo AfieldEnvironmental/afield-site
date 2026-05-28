@@ -1502,10 +1502,11 @@
   #sectionTouch .cs-inner { position: relative !important; height: auto !important; min-height: auto !important; overflow: visible !important; display: flex !important; flex-direction: column !important; padding: 15vw 5vw 15vw 5vw !important; gap: 8vw !important; }
   /* Unstick the heading so it doesn't overlay the form on mobile */
   #sectionTouch .cs-inner > div:first-child { position: static !important; transform: none !important; align-self: auto !important; padding-top: 15vw !important; }
-  /* Let the form div grow naturally in height */
-  #sectionTouch .cs-inner > div:nth-child(2) { flex: auto !important; width: 100% !important; margin-top: 0 !important; }
-  /* Email line — flush left, no indent */
-  #sectionTouch .cs-inner > div:first-child p { padding-left: 0 !important; white-space: nowrap !important; }
+  /* Form column: full width but indented 10vw from left so the
+     header sticks out to the left of the indented block. */
+  #sectionTouch .cs-inner > div:nth-child(2) { flex: auto !important; width: calc(100% - 10vw) !important; margin-top: 0 !important; margin-left: 10vw !important; }
+  /* Email line — indented to match the form's 10vw indent */
+  #sectionTouch .cs-inner > div:first-child p { padding-left: 0 !important; margin-left: 10vw !important; white-space: nowrap !important; }
   .mobile-touch-heading { font-size: clamp(42px, 14vw, 72px) !important; font-weight: 400 !important; letter-spacing: -0.03em !important; line-height: 1.0 !important; text-transform: uppercase !important; white-space: normal !important; padding: 0 !important; margin: 0 !important; position: relative !important; display: block !important; }
   .mobile-touch-form { padding: 0 !important; position: relative !important; width: 100% !important; box-sizing: border-box !important; }
   .touch-input-field { font-size: clamp(14px, 4vw, 18px) !important; }
@@ -1805,8 +1806,8 @@
            Chrome/Firefox: VP9 WebM (also new edit; alpha varies)
            Older browsers: H.264 fallback -->
       <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779985803/Arts_3-hevc-safari_h2aphu.mp4" type='video/mp4; codecs="hvc1"'>
-      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779455658/Comp_9_2-vp9-chrome_mdhrrv.webm" type="video/webm">
-      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/f_mp4,q_auto/v1779455658/Comp_9_2-vp9-chrome_mdhrrv.webm" type="video/mp4">
+      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779986628/Art_chrome_v7juz9.webm" type="video/webm">
+      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/f_mp4,q_auto/v1779986628/Art_chrome_v7juz9.webm" type="video/mp4">
     </video>
   </div>
 
@@ -1836,8 +1837,8 @@
         <!-- Non-Safari (Chrome/Firefox/Edge): Cloudinary auto-transcodes the
              new HEVC source to H.264 MP4 (and to VP9 WebM via f_webm).
              Same content as Safari now, no old Comp_7_1 left over. -->
-        <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779957729/hero-vp9-chrome_xdzn1n.webm" type="video/webm">
-        <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/f_mp4,q_auto/v1779957729/hero-vp9-chrome_xdzn1n.webm" type="video/mp4">
+        <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779986008/Hero_2-vp9-chrome_xvlzwn.webm" type="video/webm">
+        <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/f_mp4,q_auto/v1779986008/Hero_2-vp9-chrome_xvlzwn.webm" type="video/mp4">
       </video>
     </div>
     <!-- Mobile-only hero -->
@@ -1846,8 +1847,8 @@
       <div style="width:100vw; height:calc(var(--vh, 1vh) * 45); height:45svh; overflow:hidden; position:relative;">
         <video autoplay loop muted playsinline disablepictureinpicture disableremoteplayback preload="auto" style="position:absolute; top:50%; left:50%; transform:translate(-66%,-50%); width:137%; height:137%; object-fit:cover; pointer-events:none;">
           <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779985527/Hero_2-hevc-safari_oo8kk8.mp4" type='video/mp4; codecs="hvc1"'>
-          <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779957729/hero-vp9-chrome_xdzn1n.webm" type="video/webm">
-          <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/f_mp4,q_auto/v1779957729/hero-vp9-chrome_xdzn1n.webm" type="video/mp4">
+          <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779986008/Hero_2-vp9-chrome_xvlzwn.webm" type="video/webm">
+          <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/f_mp4,q_auto/v1779986008/Hero_2-vp9-chrome_xvlzwn.webm" type="video/mp4">
         </video>
       </div>
       <!-- Text: smaller hero copy (was clamp(46,13vw,72) → clamp(34,9.5vw,52)),
@@ -2852,8 +2853,8 @@
   <div class="mobile-section-video">
     <video autoplay muted loop playsinline disablepictureinpicture disableremoteplayback preload="auto" style="pointer-events:none;">
       <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779985803/Arts_3-hevc-safari_h2aphu.mp4" type='video/mp4; codecs="hvc1"'>
-      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779455658/Comp_9_2-vp9-chrome_mdhrrv.webm" type="video/webm">
-      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/f_mp4,q_auto/v1779455658/Comp_9_2-vp9-chrome_mdhrrv.webm" type="video/mp4">
+      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779986628/Art_chrome_v7juz9.webm" type="video/webm">
+      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/f_mp4,q_auto/v1779986628/Art_chrome_v7juz9.webm" type="video/mp4">
     </video>
   </div>
   <div class="cs-inner" style="align-items:flex-start; padding-right:68vw; position:relative; z-index:3;">
