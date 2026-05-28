@@ -4602,6 +4602,31 @@ function declineCookies(){
     sources.forEach(function(s){ if (s !== chosen) s.parentNode.removeChild(s); });
     // Force the video element to re-evaluate its (now single) source
     try { v.load(); } catch (e) {}
+    /* v.load() resets the autoplay state on Safari — the autoplay
+       attribute only fires on initial element insertion, so after
+       load() we have to kick playback off ourselves. Try immediately,
+       and also when the new source signals it's ready. .play() returns
+       a promise that rejects silently if autoplay is blocked. */
+    var tryPlay = function(){ var p = v.play(); if (p && p.catch) p.catch(function(){}); };
+    tryPlay();
+    v.addEventListener('canplay', tryPlay, { once: true });
+    v.addEventListener('loadeddata', tryPlay, { once: true });
+  });
+
+  /* Safari fallback: the first user gesture (any pointer/touch/scroll)
+     anywhere on the page retries play() on every video. Catches the
+     case where Safari blocks autoplay entirely until the user has
+     interacted with the document. */
+  function bumpAll(){
+    document.querySelectorAll('video').forEach(function(v){
+      if (v.paused) {
+        var p = v.play();
+        if (p && p.catch) p.catch(function(){});
+      }
+    });
+  }
+  ['touchstart', 'pointerdown', 'click', 'scroll', 'wheel', 'keydown'].forEach(function(ev){
+    window.addEventListener(ev, bumpAll, { once: true, passive: true });
   });
 })();
 
