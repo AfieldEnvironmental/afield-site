@@ -1804,7 +1804,7 @@
       <!-- Safari: HEVC with alpha channel (transparent bg around polygon)
            Chrome/Firefox: VP9 WebM (also new edit; alpha varies)
            Older browsers: H.264 fallback -->
-      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779901389/Art_2-hevc-safari_epagcn.mp4" type='video/mp4; codecs="hvc1"'>
+      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779985803/Arts_3-hevc-safari_h2aphu.mp4" type='video/mp4; codecs="hvc1"'>
       <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779455658/Comp_9_2-vp9-chrome_mdhrrv.webm" type="video/webm">
       <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/f_mp4,q_auto/v1779455658/Comp_9_2-vp9-chrome_mdhrrv.webm" type="video/mp4">
     </video>
@@ -1832,7 +1832,7 @@
              - Chrome / Firefox: skip HEVC (no decode), pick WebM (VP9)
              - Anything else: H.264 MP4 fallback
              Result: no flash of black, no double-fetch. -->
-        <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779902084/hero-hevc-safari_lmky8y.mp4" type='video/mp4; codecs="hvc1"'>
+        <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779985527/Hero_2-hevc-safari_oo8kk8.mp4" type='video/mp4; codecs="hvc1"'>
         <!-- Non-Safari (Chrome/Firefox/Edge): Cloudinary auto-transcodes the
              new HEVC source to H.264 MP4 (and to VP9 WebM via f_webm).
              Same content as Safari now, no old Comp_7_1 left over. -->
@@ -1845,7 +1845,7 @@
       <!-- Video: larger now (was 44svh → 56svh) so it fills more of the mobile hero -->
       <div style="width:100vw; height:calc(var(--vh, 1vh) * 45); height:45svh; overflow:hidden; position:relative;">
         <video autoplay loop muted playsinline disablepictureinpicture disableremoteplayback preload="auto" style="position:absolute; top:50%; left:50%; transform:translate(-66%,-50%); width:137%; height:137%; object-fit:cover; pointer-events:none;">
-          <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779902084/hero-hevc-safari_lmky8y.mp4" type='video/mp4; codecs="hvc1"'>
+          <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779985527/Hero_2-hevc-safari_oo8kk8.mp4" type='video/mp4; codecs="hvc1"'>
           <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779957729/hero-vp9-chrome_xdzn1n.webm" type="video/webm">
           <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/f_mp4,q_auto/v1779957729/hero-vp9-chrome_xdzn1n.webm" type="video/mp4">
         </video>
@@ -2851,7 +2851,7 @@
   <h2 class="mobile-section-heading">Arts<br>Grants</h2>
   <div class="mobile-section-video">
     <video autoplay muted loop playsinline disablepictureinpicture disableremoteplayback preload="auto" style="pointer-events:none;">
-      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779901389/Art_2-hevc-safari_epagcn.mp4" type='video/mp4; codecs="hvc1"'>
+      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779985803/Arts_3-hevc-safari_h2aphu.mp4" type='video/mp4; codecs="hvc1"'>
       <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779455658/Comp_9_2-vp9-chrome_mdhrrv.webm" type="video/webm">
       <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/f_mp4,q_auto/v1779455658/Comp_9_2-vp9-chrome_mdhrrv.webm" type="video/mp4">
     </video>
@@ -3029,18 +3029,16 @@
 </div>
 
 <div id="sectionTouch" class="content-section" style="min-height:100vh;">
-  <!-- Single-column stack so the email link and the form share the
-       SAME left edge (cs-inner left + 10vw). H2 sits at the cs-inner
-       left edge so it "sticks out" to the left of the indented block. -->
-  <div class="cs-inner" style="align-items:flex-start; flex-direction:column; gap:clamp(20px,3vh,40px); padding:clamp(100px,14vh,160px) clamp(80px,10vw,220px) clamp(60px,8vw,120px) 3vw; min-height:auto; height:auto;">
+  <div class="cs-inner" style="align-items:flex-start; flex-wrap:nowrap; gap:5vw; padding:clamp(100px,14vh,160px) clamp(80px,10vw,220px) clamp(60px,8vw,120px) 3vw; min-height:auto; height:auto;">
 
-    <h2 style="font-family:'GT Cinetype',sans-serif; font-weight:400; font-size:clamp(24px,3.5vw,52px); letter-spacing:-0.03em; line-height:1.05; color:#1a1a0e; margin:0;">Get in<br>touch</h2>
+    <!-- Left: heading + email - pins at vertical centre -->
+    <div style="flex:0 0 auto; display:flex; flex-direction:column; gap:clamp(10px,1.2vh,16px); position:sticky; top:50%; transform:translateY(-50%); align-self:flex-start;">
+      <h2 style="font-family:'GT Cinetype',sans-serif; font-weight:400; font-size:clamp(24px,3.5vw,52px); letter-spacing:-0.03em; line-height:1.0; color:#1a1a0e; margin:0;">Get in touch</h2>
+      <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.4vw,20px); font-weight:400; line-height:1.6; color:#1a1a0e; margin:0; opacity:0.75;">Or drop us an email at <a href="mailto:hello@afield.org.uk" style="color:#1a1a0e; text-decoration:underline;">hello@afield.org.uk</a></p>
+    </div>
 
-    <!-- Email link — indent 10vw from cs-inner left edge -->
-    <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.4vw,20px); font-weight:400; line-height:1.6; color:#1a1a0e; margin:0 0 0 10vw; opacity:0.75;">Or drop us an email at <a href="mailto:hello@afield.org.uk" style="color:#1a1a0e; text-decoration:underline;">hello@afield.org.uk</a></p>
-
-    <!-- Form — same 10vw indent as the email so left edges line up -->
-    <div style="width:clamp(260px,34vw,500px); display:flex; flex-direction:column; gap:4vh; margin-left:10vw;">
+    <!-- Right: form -->
+    <div style="flex:0 0 clamp(260px,34vw,500px); display:flex; flex-direction:column; gap:4vh; align-self:flex-start; margin-top:-40px;">
       <form class="touch-form" action="contact.php" method="POST">
         <div class="touch-field">
           <label class="touch-label-field">Name</label>
