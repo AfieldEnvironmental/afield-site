@@ -1201,12 +1201,15 @@
   #dotNav { display: none !important; }
   #hamburger { display: flex !important; }
 
-  /*
-   * topFeather is a desktop-only gradient overlay for section transitions.
-   * On mobile it creates semi-transparent zones where scrolled content bleeds
-   * through — hide it and let the nav's solid background do the job alone.
-   */
-  #topFeather { display: none !important; }
+  /* topFeather on mobile: gradient fade-zone below the nav that hides
+     content gracefully as it scrolls past the logo (instead of the
+     text abruptly disappearing behind the solid logo block). Sits
+     between nav (z:20) and content; matches current section bg colour
+     via the existing updateFeather JS. */
+  #topFeather {
+    display: block !important;
+    height: calc(22vh + env(safe-area-inset-top, 0px)) !important;
+  }
 
   nav {
     /* sticky eliminates the iOS Safari fixed-element animation-lag gap entirely.
@@ -4832,6 +4835,24 @@ if(window.innerWidth <= 768){
     /* Also update the --bg CSS variable so elements that use var(--bg)
        (e.g. the mobile hamburger square) cycle with the page colour. */
     document.documentElement.style.setProperty('--bg', 'rgb('+rgbStr+')');
+
+    /* Hide the feather while the user is still on the landing hero —
+       otherwise it tints the top of the hero video mint. Fade it in
+       smoothly as the user scrolls into textPanel. */
+    var hero = document.getElementById('heroSection');
+    var textPanelEl = document.getElementById('textPanel');
+    if (hero && textPanelEl) {
+      var fadeStart = hero.offsetHeight * 0.4;
+      var fadeEnd   = textPanelEl.offsetTop - vh * 0.4;
+      var op;
+      if (scrollY <= fadeStart) op = 0;
+      else if (scrollY >= fadeEnd) op = 1;
+      else {
+        var ft = (scrollY - fadeStart) / (fadeEnd - fadeStart);
+        op = ft * ft * (3 - 2 * ft);
+      }
+      feather.style.opacity = op;
+    }
   }
   window.addEventListener('scroll', updateFeather, {passive:true});
   updateFeather();
