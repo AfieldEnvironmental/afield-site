@@ -1179,8 +1179,13 @@
   }
 
   /* Mint by default — matches the new landing-page colour. JS updates
-     per section as user scrolls. */
-  html, body { overflow-y: auto !important; height: auto !important; background: #b1ffcb; }
+     per section as user scrolls.
+     NOTE: do NOT set overflow-y on html/body here. On Android Chrome,
+     overflow-y:auto on html turns it into a scroll container, which
+     breaks touch-scroll gestures (page becomes essentially un-scrollable
+     by swipe). The browser default (overflow:visible) is correct for
+     document-level scrolling. */
+  html, body { height: auto !important; background: #b1ffcb; }
   body { background-color: #b1ffcb; transition: none !important; }
   * { text-align: left !important; }
 
