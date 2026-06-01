@@ -1201,14 +1201,13 @@
   #dotNav { display: none !important; }
   #hamburger { display: flex !important; }
 
-  /* topFeather on mobile: gradient fade-zone below the nav that hides
-     content gracefully as it scrolls past the logo (instead of the
-     text abruptly disappearing behind the solid logo block). Sits
-     between nav (z:20) and content; matches current section bg colour
-     via the existing updateFeather JS. */
+  /* topFeather on mobile: tight gradient fade-zone below the nav so
+     content gracefully disappears as it scrolls past the logo.
+     Height kept short so the fade only affects the strip immediately
+     under the nav — leaves the hero video mostly clean. */
   #topFeather {
     display: block !important;
-    height: calc(22vh + env(safe-area-inset-top, 0px)) !important;
+    height: calc(12vh + env(safe-area-inset-top, 0px)) !important;
   }
 
   nav {
@@ -4835,24 +4834,6 @@ if(window.innerWidth <= 768){
     /* Also update the --bg CSS variable so elements that use var(--bg)
        (e.g. the mobile hamburger square) cycle with the page colour. */
     document.documentElement.style.setProperty('--bg', 'rgb('+rgbStr+')');
-
-    /* Hide the feather while the user is still on the landing hero —
-       otherwise it tints the top of the hero video mint. Fade it in
-       smoothly as the user scrolls into textPanel. */
-    var hero = document.getElementById('heroSection');
-    var textPanelEl = document.getElementById('textPanel');
-    if (hero && textPanelEl) {
-      var fadeStart = hero.offsetHeight * 0.4;
-      var fadeEnd   = textPanelEl.offsetTop - vh * 0.4;
-      var op;
-      if (scrollY <= fadeStart) op = 0;
-      else if (scrollY >= fadeEnd) op = 1;
-      else {
-        var ft = (scrollY - fadeStart) / (fadeEnd - fadeStart);
-        op = ft * ft * (3 - 2 * ft);
-      }
-      feather.style.opacity = op;
-    }
   }
   window.addEventListener('scroll', updateFeather, {passive:true});
   updateFeather();
