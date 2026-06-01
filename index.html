@@ -1223,8 +1223,11 @@
     padding-right: 0 !important;
     padding-bottom: 0 !important;
     padding-left: 0 !important;
-    background: #b1ffcb !important;
-    transition: none;
+    /* Use --bg so the nav background cycles through the same
+       section colours as the page (mint → yellow → purple → orange)
+       instead of staying mint. Cross-fade timing matches the page bg. */
+    background: var(--bg, #b1ffcb) !important;
+    transition: background-color 0.35s ease;
     -webkit-transform: none;
     transform: none;
     will-change: auto;
