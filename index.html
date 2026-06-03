@@ -2823,6 +2823,50 @@
     line-height: 1.55;
     color: #1a1a0e;
   }
+
+  /* ──────────────────────────────────────────────────────────────
+     DYNAMIC RESIZE PRIORITY LADDER (desktop only)
+     Priority, biggest → smallest sacrificed first:
+       1. Video polygons   — protected, gentle slope
+       2. Giant headings   — moderate slope
+       3. Body copy column — steepest slope, hits floor first
+     Tuned so body column reaches its floor before heading shrinks,
+     and heading reaches its floor before video shrinks.
+     Mobile (≤768px) hides .fixed-heading + .fixed-video-pin, and
+     uses .cs-inner > div for body — so none of these vars apply
+     to mobile. Layout/position properties are untouched.
+     ────────────────────────────────────────────────────────────── */
+  :root {
+    --p-poly-w:       clamp(640px, 92vw, 1500px);
+    --p-heading-fs:   clamp(40px, 5.5vw + 8px, 110px);
+    /* Vertical band reserved at section bottom for the heading,
+       so body text/columns stop above it. ~2.2× line for 2-line
+       headings, plus the heading's own bottom inset of 5vw. */
+    --p-heading-zone: calc(var(--p-heading-fs) * 2.2 + 5vw);
+    --p-body-w:       clamp(220px, 22vw + 100px, 460px);
+    --p-body-fs:      clamp(14px, 0.35vw + 11px, 17px);
+  }
+
+  /* Headings: shrink moderately with viewport */
+  .fixed-heading { font-size: var(--p-heading-fs); }
+
+  /* Polygon videos: protected — stay big */
+  .fixed-video-pin { width: var(--p-poly-w); }
+
+  /* Wilding / Arts body column: width + font shrink fastest,
+     and max-height clears the heading zone so the scroll
+     container ends above the giant headline. */
+  #sectionWilding .cs-text,
+  #sectionArt .cs-text {
+    width: var(--p-body-w);
+    max-width: var(--p-body-w);
+    max-height: calc(100vh - 140px - var(--p-heading-zone));
+  }
+  #sectionWilding .cs-text p,
+  #sectionArt .cs-text p { font-size: var(--p-body-fs); }
+
+  /* Team: heading is bottom-right, reserve bottom space for it */
+  #sectionPeople .cs-inner { padding-bottom: var(--p-heading-zone); }
 </style>
 
 <!-- Up arrow (hidden, kept for JS compatibility) -->
