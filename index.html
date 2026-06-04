@@ -1224,10 +1224,11 @@
     padding-bottom: 0 !important;
     padding-left: 0 !important;
     /* Use --bg so the nav background cycles through the same
-       section colours as the page (mint → yellow → purple → orange)
-       instead of staying mint. Cross-fade timing matches the page bg. */
+       section colours as the page (mint → yellow → purple → orange).
+       No CSS transition: the JS scroll handler already smoothsteps the
+       colour every frame, and adding a transition here makes the nav
+       chase 0.35s behind the page bg on Android Chrome. */
     background: var(--bg, #b1ffcb) !important;
-    transition: background-color 0.35s ease;
     -webkit-transform: none;
     transform: none;
     will-change: auto;
@@ -1758,7 +1759,7 @@
   </nav>
 
   <!-- Mobile hamburger -->
-  <button id="hamburger" aria-label="Menu" onclick="(function(h,n){var open=n.style.display==='flex';n.style.display=open?'none':'flex';h.classList.toggle('open',!open);})(this,document.getElementById('mobileNav'));" style="display:none; position:fixed; top:max(14px, calc(env(safe-area-inset-top, 0px) + 10px)); right:20px; z-index:300; background:var(--bg, #b1ffcb); border:none; cursor:pointer; padding:12px 14px; flex-direction:column; gap:5px; -webkit-tap-highlight-color:transparent; transition:background-color 0.35s ease;">
+  <button id="hamburger" aria-label="Menu" onclick="(function(h,n){var open=n.style.display==='flex';n.style.display=open?'none':'flex';h.classList.toggle('open',!open);})(this,document.getElementById('mobileNav'));" style="display:none; position:fixed; top:max(14px, calc(env(safe-area-inset-top, 0px) + 10px)); right:20px; z-index:300; background:var(--bg, #b1ffcb); border:none; cursor:pointer; padding:12px 14px; flex-direction:column; gap:5px; -webkit-tap-highlight-color:transparent;">
     <span class="ham-line"></span>
     <span class="ham-line"></span>
     <span class="ham-line"></span>
@@ -2131,7 +2132,9 @@
     right: 28px;
     font-family: 'GT Cinetype', sans-serif;
     font-weight: 400;
-    font-size: clamp(36px, 9.5vh, 130px);
+    /* font-size lives in --p-heading-fs at the bottom of this <style>
+       (Dynamic Resize Priority Ladder), so all four detail-section
+       headings scale together. */
     letter-spacing: -0.03em;
     line-height: 1.0;
     color: #1a1a0e;
@@ -2181,7 +2184,8 @@
     right: 0;
     margin-left: auto;
     margin-right: auto;
-    width: clamp(600px, 100vw, 1600px);
+    /* width lives in --p-poly-w at the bottom of this <style>
+       (Dynamic Resize Priority Ladder). */
     bottom: 0;
     pointer-events: none;
     z-index: 2;
@@ -2847,26 +2851,28 @@
     --p-body-fs:      clamp(14px, 0.35vw + 11px, 17px);
   }
 
-  /* Headings: shrink moderately with viewport */
-  .fixed-heading { font-size: var(--p-heading-fs); }
+  @media (min-width: 769px) {
+    /* Headings: shrink moderately with viewport */
+    .fixed-heading { font-size: var(--p-heading-fs); }
 
-  /* Polygon videos: protected — stay big */
-  .fixed-video-pin { width: var(--p-poly-w); }
+    /* Polygon videos: protected — stay big */
+    .fixed-video-pin { width: var(--p-poly-w); }
 
-  /* Wilding / Arts body column: width + font shrink fastest,
-     and max-height clears the heading zone so the scroll
-     container ends above the giant headline. */
-  #sectionWilding .cs-text,
-  #sectionArt .cs-text {
-    width: var(--p-body-w);
-    max-width: var(--p-body-w);
-    max-height: calc(100vh - 140px - var(--p-heading-zone));
+    /* Body column on Wilding / Arts is currently sized by the inline
+       padding-right:68vw on .cs-inner, not by a dedicated container —
+       so width-scaling is implicit. --p-body-w / --p-body-fs are
+       reserved for when the body column is refactored into its own
+       element; until then only --p-heading-fs and --p-poly-w have
+       matching DOM targets. */
+
+    /* Team: heading is bottom-right, reserve bottom space for it.
+       Single-word "Team" only needs ~1 line — use a smaller multiplier
+       so we don't over-reserve. */
+    #sectionPeople {
+      --p-heading-zone: calc(var(--p-heading-fs) * 1.3 + 5vw);
+    }
+    #sectionPeople .cs-inner { padding-bottom: var(--p-heading-zone); }
   }
-  #sectionWilding .cs-text p,
-  #sectionArt .cs-text p { font-size: var(--p-body-fs); }
-
-  /* Team: heading is bottom-right, reserve bottom space for it */
-  #sectionPeople .cs-inner { padding-bottom: var(--p-heading-zone); }
 </style>
 
 <!-- Up arrow (hidden, kept for JS compatibility) -->
@@ -3249,6 +3255,8 @@
   }
 
   function applyBg(bg){
+    if (bg === applyBg._last) return;
+    applyBg._last = bg;
     document.body.style.backgroundColor = bg;
     document.documentElement.style.setProperty('--bg', bg);
   }
@@ -3390,6 +3398,10 @@
         colour = lerpColour(keys[fromIdx].colour, keys[toIdx].colour, t);
       }
     }
+    /* Bail if colour hasn't changed since the last frame — see the
+       same gate in updateFeather() for why this matters. */
+    if (colour === updateBg._last) return;
+    updateBg._last = colour;
     document.body.style.backgroundColor = colour;
     document.documentElement.style.setProperty('--bg', colour);
   }
@@ -4875,11 +4887,17 @@ if(window.innerWidth <= 768){
       }
     }
     var rgbStr = rgb[0]+','+rgb[1]+','+rgb[2];
+    /* Bail if the colour hasn't changed since the last frame. Without
+       this gate, scroll dispatches a style write every frame even when
+       the user is parked inside a section — and any element listening
+       to var(--bg) via a CSS `transition:` restarts its tween every
+       frame, causing visible lag on Android Chrome (nav lagged behind
+       the page bg by ~0.35s during fast scroll). */
+    if (rgbStr === updateFeather._last) return;
+    updateFeather._last = rgbStr;
     feather.style.background =
       'linear-gradient(to bottom,rgba('+rgbStr+',1) 0%,rgba('+rgbStr+',1) 40%,rgba('+rgbStr+',0.5) 70%,transparent 100%)';
     document.body.style.backgroundColor = 'rgb('+rgbStr+')';
-    /* Also update the --bg CSS variable so elements that use var(--bg)
-       (e.g. the mobile hamburger square) cycle with the page colour. */
     document.documentElement.style.setProperty('--bg', 'rgb('+rgbStr+')');
   }
   window.addEventListener('scroll', updateFeather, {passive:true});
