@@ -3585,6 +3585,57 @@
 
 
 <script>
+/* Pause videos that aren't on-screen for the current breakpoint.
+   iPad Safari has a ~4-stream hardware decoder budget; before this
+   gate, tablet (769-1100px) was decoding heroVideo + mobileHero
+   + 2× mobile-section-video simultaneously even though three were
+   display:none. (display:none does NOT pause <video> in any browser.)
+   Excess contention caused the visible polygon video to stall, show
+   black frames, or glitch — i.e. the "weird things in tablet mode"
+   the client was seeing. Single matchMedia gate keeps decode load
+   to just the videos actually visible at the current breakpoint.
+   The .fixed-video-pin videos (Wilding/Arts polygons) are already
+   pause-managed by the show/hide pipeline above, so we don't touch
+   them here. */
+(function(){
+  var mq = window.matchMedia('(max-width: 768px)');
+  function safePlay(v){ try { if (v) v.play(); } catch(e){} }
+  function safePause(v){ try { if (v) v.pause(); } catch(e){} }
+  function apply(){
+    var isMobile = mq.matches;
+    var heroDesktop = document.querySelector('#heroVideo video');
+    var heroMobile  = document.querySelector('#mobileHero video');
+    var msvWilding  = document.querySelector('#sectionWilding .mobile-section-video video');
+    var msvArt      = document.querySelector('#sectionArt .mobile-section-video video');
+    if (isMobile) {
+      safePause(heroDesktop);
+      safePlay(heroMobile);
+      safePlay(msvWilding);
+      safePlay(msvArt);
+    } else {
+      safePlay(heroDesktop);
+      safePause(heroMobile);
+      safePause(msvWilding);
+      safePause(msvArt);
+    }
+  }
+  if (mq.addEventListener) mq.addEventListener('change', apply);
+  else if (mq.addListener) mq.addListener(apply); /* older Safari */
+  /* Autoplay can fire AFTER our initial apply() (especially on slower
+     connections), un-pausing videos we just paused. Re-run apply()
+     whenever any of the gated videos starts playing — pausing the
+     wrong-breakpoint ones immediately. The play listener stays
+     attached, so any future re-fire (e.g. tab visibility change)
+     also re-applies. */
+  document.querySelectorAll('#heroVideo video, #mobileHero video, .mobile-section-video video').forEach(function(v){
+    v.addEventListener('play', apply);
+  });
+  apply();
+})();
+</script>
+
+
+<script>
 // Parallax scroll movement for floating shapes
 (function(){
   const s1 = document.getElementById('fshape1');
