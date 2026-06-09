@@ -2890,13 +2890,19 @@
       top: 0;
       left: 0;
       right: 0;
-      height: 200px;
+      /* Logo bottom sits at ~120px (28px top inset + 92px svg). Stops
+         here put the solid→fade transition at ~60% of height, so with
+         260px the solid zone runs 0–156px — fully covering the logo
+         plus a 36px buffer. Fade trails to ~260px for a gentle
+         dissolve into the page bg below. Stops match the ones in JS
+         (updateFeather()); if you change one, change the other. */
+      height: 260px;
       pointer-events: none;
       z-index: 8;
       background: linear-gradient(to bottom,
         rgba(177,255,203,1) 0%,
-        rgba(177,255,203,1) 40%,
-        rgba(177,255,203,0.5) 70%,
+        rgba(177,255,203,1) 60%,
+        rgba(177,255,203,0.5) 82%,
         rgba(177,255,203,0) 100%);
     }
   }
@@ -4971,8 +4977,11 @@ if(window.innerWidth <= 768){
        the page bg by ~0.35s during fast scroll). */
     if (rgbStr === updateFeather._last) return;
     updateFeather._last = rgbStr;
+    /* Stops match the CSS fallback in #topFeather rule above. Solid
+       band runs 0–60% of feather height so the logo (at y=28–120 on
+       desktop, smaller on mobile) sits fully inside the opaque zone. */
     feather.style.background =
-      'linear-gradient(to bottom,rgba('+rgbStr+',1) 0%,rgba('+rgbStr+',1) 40%,rgba('+rgbStr+',0.5) 70%,transparent 100%)';
+      'linear-gradient(to bottom,rgba('+rgbStr+',1) 0%,rgba('+rgbStr+',1) 60%,rgba('+rgbStr+',0.5) 82%,transparent 100%)';
     document.body.style.backgroundColor = 'rgb('+rgbStr+')';
     document.documentElement.style.setProperty('--bg', 'rgb('+rgbStr+')');
   }
