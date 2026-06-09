@@ -2872,6 +2872,33 @@
       --p-heading-zone: calc(var(--p-heading-fs) * 1.3 + 5vw);
     }
     #sectionPeople .cs-inner { padding-bottom: var(--p-heading-zone); }
+
+    /* ──────────────────────────────────────────────────────────────
+       TOP FEATHER — desktop clearance for the fixed logo
+       The nav (z:10) carries the logo, padded 28px from the top with
+       an 80px-tall SVG inside. Without a feather, body content (z:1–4)
+       scrolls UP through that zone and crashes visually against the
+       logo. The feather is a fixed gradient that's opaque across the
+       logo's vertical band and dissolves into the page bg below it,
+       so content fades cleanly before it can collide with the mark.
+       z-index 8 sits BELOW nav (z:10) — the logo always paints on top.
+       Background is JS-driven (updateFeather() in the colour-cycle
+       script); the static `background` below is a fallback for the
+       first paint, matching the mint landing bg. */
+    #topFeather {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 200px;
+      pointer-events: none;
+      z-index: 8;
+      background: linear-gradient(to bottom,
+        rgba(177,255,203,1) 0%,
+        rgba(177,255,203,1) 40%,
+        rgba(177,255,203,0.5) 70%,
+        rgba(177,255,203,0) 100%);
+    }
   }
 </style>
 
