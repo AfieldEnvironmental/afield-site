@@ -1486,8 +1486,14 @@
        NOTHING important is sliced off by container edges.
 
        transform-origin slightly RIGHT of centre matches where the focal
-       point lives in both source files. */
-    transform: translate(-50%, -50%) scale(2.3) !important;
+       point lives in both source files.
+
+       Extra -30px x-translate: the new (duaosajrr) video sources have
+       their subjects framed slightly right of where the previous masters
+       sat, so the right edge of each polygon was clipping people on the
+       right. Pulling the inner video 30px left re-centres the action
+       inside the polygon mask without resizing anything. */
+    transform: translate(calc(-50% - 30px), -50%) scale(2.3) !important;
     transform-origin: 60% center !important;
     width: 100% !important;
     height: 100% !important;
@@ -1874,7 +1880,7 @@
     <div id="mobileHero" style="display:none;">
       <!-- Video: larger now (was 44svh → 56svh) so it fills more of the mobile hero -->
       <div style="width:100vw; height:calc(var(--vh, 1vh) * 45); height:45svh; overflow:hidden; position:relative;">
-        <video autoplay loop muted playsinline disablepictureinpicture disableremoteplayback preload="auto" style="position:absolute; top:50%; left:50%; transform:translate(-66%,-50%); width:158%; height:158%; object-fit:cover; pointer-events:none;">
+        <video autoplay loop muted playsinline disablepictureinpicture disableremoteplayback preload="auto" style="position:absolute; top:50%; left:50%; transform:translate(calc(-66% - 30px),-50%); width:158%; height:158%; object-fit:cover; pointer-events:none;">
           <source src="https://res.cloudinary.com/duaosajrr/video/upload/v1780998050/Landing_Time-hevc-safari_ud5ypb.mp4" type='video/mp4; codecs="hvc1"'>
           <source src="https://res.cloudinary.com/duaosajrr/video/upload/v1780998921/Landing_Chrome_lleutn.webm" type="video/webm">
           <source src="https://res.cloudinary.com/duaosajrr/video/upload/f_mp4,q_auto/v1780998921/Landing_Chrome_lleutn.webm" type="video/mp4">
