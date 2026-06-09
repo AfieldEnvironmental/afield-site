@@ -2973,6 +2973,35 @@
         rgba(177,255,203,0.5) 82%,
         rgba(177,255,203,0) 100%);
     }
+
+    /* When the dot nav scrolls a section into view, leave room for the
+       feather so the section's first lines don't land inside the fade.
+       Value matches the feather height (220px) so the section's top
+       edge clears even the fade-out tail. Applies to scrollIntoView
+       declaratively, no JS needed. */
+    #heroSection,
+    #textPanel,
+    #sectionWilding,
+    #sectionArt,
+    #sectionValues,
+    #sectionPeople,
+    #sectionTouch {
+      scroll-margin-top: 220px;
+    }
+  }
+
+  /* Same idea on mobile: match the mobile feather height
+     (12vh + safe-area-inset-top, see rule at top of mobile @media). */
+  @media (max-width: 768px) {
+    #heroSection,
+    #textPanel,
+    #sectionWilding,
+    #sectionArt,
+    #sectionValues,
+    #sectionPeople,
+    #sectionTouch {
+      scroll-margin-top: calc(12vh + env(safe-area-inset-top, 0px));
+    }
   }
 </style>
 
