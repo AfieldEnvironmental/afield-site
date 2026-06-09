@@ -2892,11 +2892,12 @@
       right: 0;
       /* Logo bottom sits at ~120px (28px top inset + 92px svg). Stops
          here put the solid→fade transition at ~60% of height, so with
-         260px the solid zone runs 0–156px — fully covering the logo
-         plus a 36px buffer. Fade trails to ~260px for a gentle
-         dissolve into the page bg below. Stops match the ones in JS
+         220px the solid zone runs 0–132px — fully covering the logo
+         plus a 12px buffer. Fade trails to ~220px so the impact on
+         multi-column sections (Values, Team) stays light while the
+         logo keeps full clearance. Stops match the ones in JS
          (updateFeather()); if you change one, change the other. */
-      height: 260px;
+      height: 220px;
       pointer-events: none;
       z-index: 8;
       background: linear-gradient(to bottom,
