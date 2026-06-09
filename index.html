@@ -1473,6 +1473,9 @@
     margin-bottom: 6vw !important;
     overflow: hidden !important;
     position: relative !important;
+    /* Above #topFeather (z:11) so the polygon paints crisp when the
+       section enters from below. Below mobile nav (z:20). */
+    z-index: 12 !important;
     order: 2 !important;
   }
   .mobile-section-video video {
@@ -1636,6 +1639,12 @@
     height: auto;
     box-sizing: border-box;
     overflow: visible;
+    /* Above #topFeather (z:11) so the polygon doesn't get tinted by
+       the feather. Same pattern as the desktop fix in commit 272b0bf
+       (.fixed-video-pin -> z:9 above desktop feather z:8). Below
+       mobile nav z:20 / hamburger z:300, so they still paint on top. */
+    position: relative;
+    z-index: 12;
   }
   main#heroSection { min-height: auto !important; height: auto !important; position: relative !important; background: transparent !important; }
 
