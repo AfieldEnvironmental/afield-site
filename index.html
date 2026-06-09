@@ -1806,9 +1806,9 @@
       <!-- Safari: HEVC with alpha
            Chrome/Firefox: VP9 WebM
            Older browsers: H.264 fallback -->
-      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779901123/Wilding_4-hevc-safari_rlwahc.mp4" type='video/mp4; codecs="hvc1"'>
-      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779900793/Wilding_3-vp9-chrome_gsjutu.webm" type="video/webm">
-      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/f_mp4,q_auto/v1779900793/Wilding_3-vp9-chrome_gsjutu.webm" type="video/mp4">
+      <source src="https://res.cloudinary.com/duaosajrr/video/upload/v1780998076/Wilding_remap-hevc-safari_j5sni1.mp4" type='video/mp4; codecs="hvc1"'>
+      <source src="https://res.cloudinary.com/duaosajrr/video/upload/v1780998913/Comp_11_2_qnlqde.webm" type="video/webm">
+      <source src="https://res.cloudinary.com/duaosajrr/video/upload/f_mp4,q_auto/v1780998913/Comp_11_2_qnlqde.webm" type="video/mp4">
     </video>
   </div>
   <div id="fixedVideoArt" class="fixed-video-pin">
@@ -1816,9 +1816,9 @@
       <!-- Safari: HEVC with alpha channel (transparent bg around polygon)
            Chrome/Firefox: VP9 WebM (also new edit; alpha varies)
            Older browsers: H.264 fallback -->
-      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779985803/Arts_3-hevc-safari_h2aphu.mp4" type='video/mp4; codecs="hvc1"'>
-      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779986628/Art_chrome_v7juz9.webm" type="video/webm">
-      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/f_mp4,q_auto/v1779986628/Art_chrome_v7juz9.webm" type="video/mp4">
+      <source src="https://res.cloudinary.com/duaosajrr/video/upload/v1780998347/ARTS_GRANTS-hevc-safari_z7dqwt.mp4" type='video/mp4; codecs="hvc1"'>
+      <source src="https://res.cloudinary.com/duaosajrr/video/upload/v1780998919/Arts_Chrome_k0pjlr.webm" type="video/webm">
+      <source src="https://res.cloudinary.com/duaosajrr/video/upload/f_mp4,q_auto/v1780998919/Arts_Chrome_k0pjlr.webm" type="video/mp4">
     </video>
   </div>
 
@@ -1844,12 +1844,11 @@
              - Chrome / Firefox: skip HEVC (no decode), pick WebM (VP9)
              - Anything else: H.264 MP4 fallback
              Result: no flash of black, no double-fetch. -->
-        <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779985527/Hero_2-hevc-safari_oo8kk8.mp4" type='video/mp4; codecs="hvc1"'>
-        <!-- Non-Safari (Chrome/Firefox/Edge): Cloudinary auto-transcodes the
-             new HEVC source to H.264 MP4 (and to VP9 WebM via f_webm).
-             Same content as Safari now, no old Comp_7_1 left over. -->
-        <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1780008855/Comp_11_1_yzk2ux.webm" type="video/webm">
-        <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/f_mp4,q_auto/v1780008855/Comp_11_1_yzk2ux.webm" type="video/mp4">
+        <source src="https://res.cloudinary.com/duaosajrr/video/upload/v1780998050/Landing_Time-hevc-safari_ud5ypb.mp4" type='video/mp4; codecs="hvc1"'>
+        <!-- Non-Safari (Chrome/Firefox/Edge): VP9 WebM, with MP4 fallback
+             auto-transcoded on the fly by Cloudinary (f_mp4,q_auto). -->
+        <source src="https://res.cloudinary.com/duaosajrr/video/upload/v1780998921/Landing_Chrome_lleutn.webm" type="video/webm">
+        <source src="https://res.cloudinary.com/duaosajrr/video/upload/f_mp4,q_auto/v1780998921/Landing_Chrome_lleutn.webm" type="video/mp4">
       </video>
     </div>
     <!-- Mobile-only hero -->
@@ -1857,9 +1856,9 @@
       <!-- Video: larger now (was 44svh → 56svh) so it fills more of the mobile hero -->
       <div style="width:100vw; height:calc(var(--vh, 1vh) * 45); height:45svh; overflow:hidden; position:relative;">
         <video autoplay loop muted playsinline disablepictureinpicture disableremoteplayback preload="auto" style="position:absolute; top:50%; left:50%; transform:translate(-66%,-50%); width:158%; height:158%; object-fit:cover; pointer-events:none;">
-          <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779985527/Hero_2-hevc-safari_oo8kk8.mp4" type='video/mp4; codecs="hvc1"'>
-          <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1780008855/Comp_11_1_yzk2ux.webm" type="video/webm">
-          <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/f_mp4,q_auto/v1780008855/Comp_11_1_yzk2ux.webm" type="video/mp4">
+          <source src="https://res.cloudinary.com/duaosajrr/video/upload/v1780998050/Landing_Time-hevc-safari_ud5ypb.mp4" type='video/mp4; codecs="hvc1"'>
+          <source src="https://res.cloudinary.com/duaosajrr/video/upload/v1780998921/Landing_Chrome_lleutn.webm" type="video/webm">
+          <source src="https://res.cloudinary.com/duaosajrr/video/upload/f_mp4,q_auto/v1780998921/Landing_Chrome_lleutn.webm" type="video/mp4">
         </video>
       </div>
       <!-- Text: smaller hero copy (was clamp(46,13vw,72) → clamp(34,9.5vw,52)),
@@ -2925,9 +2924,9 @@
       <!-- Safari: HEVC with alpha
            Chrome/Firefox: VP9 WebM
            Older browsers: H.264 fallback -->
-      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779901123/Wilding_4-hevc-safari_rlwahc.mp4" type='video/mp4; codecs="hvc1"'>
-      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779900793/Wilding_3-vp9-chrome_gsjutu.webm" type="video/webm">
-      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/f_mp4,q_auto/v1779900793/Wilding_3-vp9-chrome_gsjutu.webm" type="video/mp4">
+      <source src="https://res.cloudinary.com/duaosajrr/video/upload/v1780998076/Wilding_remap-hevc-safari_j5sni1.mp4" type='video/mp4; codecs="hvc1"'>
+      <source src="https://res.cloudinary.com/duaosajrr/video/upload/v1780998913/Comp_11_2_qnlqde.webm" type="video/webm">
+      <source src="https://res.cloudinary.com/duaosajrr/video/upload/f_mp4,q_auto/v1780998913/Comp_11_2_qnlqde.webm" type="video/mp4">
     </video>
   </div>
   <div class="cs-inner" style="align-items:flex-start; padding-right:68vw; position:relative; z-index:3;">
@@ -2946,9 +2945,9 @@
   <h2 class="mobile-section-heading">Arts<br>Grants</h2>
   <div class="mobile-section-video">
     <video autoplay muted loop playsinline disablepictureinpicture disableremoteplayback preload="auto" style="pointer-events:none;">
-      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779985803/Arts_3-hevc-safari_h2aphu.mp4" type='video/mp4; codecs="hvc1"'>
-      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/v1779986628/Art_chrome_v7juz9.webm" type="video/webm">
-      <source src="https://res.cloudinary.com/ddvmt4tqe/video/upload/f_mp4,q_auto/v1779986628/Art_chrome_v7juz9.webm" type="video/mp4">
+      <source src="https://res.cloudinary.com/duaosajrr/video/upload/v1780998347/ARTS_GRANTS-hevc-safari_z7dqwt.mp4" type='video/mp4; codecs="hvc1"'>
+      <source src="https://res.cloudinary.com/duaosajrr/video/upload/v1780998919/Arts_Chrome_k0pjlr.webm" type="video/webm">
+      <source src="https://res.cloudinary.com/duaosajrr/video/upload/f_mp4,q_auto/v1780998919/Arts_Chrome_k0pjlr.webm" type="video/mp4">
     </video>
   </div>
   <div class="cs-inner" style="align-items:flex-start; padding-right:68vw; position:relative; z-index:3;">
