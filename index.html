@@ -2187,7 +2187,11 @@
        (Dynamic Resize Priority Ladder). */
     bottom: 0;
     pointer-events: none;
-    z-index: 2;
+    /* z-index 9 sits ABOVE the topFeather (z:8) so the polygon's top
+       edge stays crisp even when it pokes into the feather band, but
+       BELOW the nav (z:10) so the logo still wins where they overlap
+       horizontally on narrow desktop viewports. */
+    z-index: 9;
     opacity: 0;
     /* Soft cross-fade restored. The "stacking" we were chasing turned
        out to be intentional artwork in the video file itself — not a
