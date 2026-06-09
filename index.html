@@ -275,7 +275,11 @@
       top: 0;
       left: 0;
       right: 0;
-      z-index: 10;
+      /* z:11 sits above the hero heading (z:10) so the logo always
+         paints on top when "Creative responses..." scrolls toward the
+         top of the viewport. Bumped from 10 when #heroHeading needed
+         to be raised above #heroVideo (z:9, lifted above the feather). */
+      z-index: 11;
       /* Background floods notch zone — topFeather gradient sits above this on desktop */
       background: transparent;
       /* ONLY the safe-area inset here — pushes background up behind notch */
