@@ -2715,6 +2715,46 @@
     border-bottom: 1.5px solid rgba(26,26,14,0.9);
     padding-bottom: 14px;
   }
+  /* The form's deliberate focus cue is the underline thickening above.
+     Opt these inputs out of the global :focus-visible ring (added for
+     keyboard a11y on buttons / links) so the field reads as a clean
+     line, not a boxed input. The underline change is still a clear
+     focus indicator for keyboard users. */
+  .touch-input-field:focus,
+  .touch-input-field:focus-visible {
+    outline: none;
+  }
+
+  /* Inline field-level error message. Sits under the offending field,
+     small enough to read as a footnote, ink-warm red so it reads as
+     concern without screaming. aria-live="polite" on each instance
+     (added in JS) so screen readers announce them as they appear. */
+  .touch-form-error {
+    font-family: 'GT Cinetype', sans-serif;
+    font-size: clamp(12px, 0.9vw, 14px);
+    font-weight: 400;
+    line-height: 1.4;
+    color: #b34d2a;
+    margin-top: 6px;
+    min-height: 0;
+    opacity: 0;
+    transform: translateY(-2px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
+  }
+  .touch-form-error.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .touch-form-error { transition: none; transform: none; }
+  }
+  /* Invalid-field state: warm-red underline replaces the ink line until
+     the user starts editing. Lower priority than :focus so as soon as
+     they fix it, the focus underline takes over. */
+  .touch-input-field.is-invalid:not(:focus) {
+    border-bottom-color: #b34d2a;
+  }
 
   .touch-input-field::placeholder { opacity: 0.4; color: #1a1a0e; }
 
@@ -3228,7 +3268,7 @@
 
     <!-- Right: form -->
     <div style="flex:0 0 clamp(260px,34vw,500px); display:flex; flex-direction:column; gap:4vh; align-self:flex-start; margin-top:-40px;">
-      <form class="touch-form" action="https://formspree.io/f/xgobbadz" method="POST">
+      <form class="touch-form" action="https://formspree.io/f/xgobbadz" method="POST" novalidate>
         <!-- Formspree control fields:
              _subject sets the email subject line in the recipient's inbox.
              _honey is a hidden honeypot — bots fill every field, humans
@@ -3276,21 +3316,106 @@
       </form>
 
       <script>
-      /* AJAX submit for the contact form. Posts to Formspree with
-         Accept: application/json so Formspree returns JSON instead of
-         redirecting to its own thank-you page — keeps the user on
-         afield.org.uk. Button is disabled while pending so a slow
-         connection can't trigger double-submissions. */
+      /* AJAX submit + custom inline validation for the contact form.
+
+         Why custom validation: the browser's native required-field
+         tooltips can't be styled and look like OS chrome. The form
+         carries `novalidate` so the browser never shows those. We
+         enforce the same required-ness ourselves and render messages
+         in the form's own visual register (.touch-form-error class).
+
+         Validation checks (in this order so the user gets the most
+         actionable message first):
+           1. Name present
+           2. Email present + looks like an email
+           3. Message present
+           4. Marketing consent checked (the "you need to agree" case)
+
+         Errors are injected dynamically rather than baked into markup,
+         so we don't have to touch the existing fields. Each error
+         element gets aria-live="polite" so screen readers announce it.
+
+         Submit still posts to Formspree with Accept: application/json
+         (keeps the user on afield.org.uk). Button disables while in
+         flight to prevent double-submission. */
       (function(){
         var form = document.querySelector('.touch-form');
         if (!form) return;
         var btn = form.querySelector('.touch-submit-field');
         var status = form.querySelector('.touch-form-status');
         var defaultBtnText = btn ? btn.textContent : 'Send →';
+
+        /* Map: input element -> { errorEl, message-when-empty,
+           and an optional pattern check (e.g. email format). */
+        var checks = [
+          { selector: '[name="name"]',      missing: 'Please enter your name.' },
+          { selector: '[name="email"]',     missing: 'Please enter your email address.',
+            pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, patternFail: 'That email address doesn’t look right.' },
+          { selector: '[name="message"]',   missing: 'Please write a message.' },
+          { selector: '[name="marketing"]', missing: 'Please tick the box to agree before sending.', checkbox: true },
+        ];
+
+        /* Build & insert an error element below each tracked field once,
+           on init. Hidden by default; toggled via .is-visible. */
+        checks.forEach(function(c){
+          var el = form.querySelector(c.selector);
+          if (!el) return;
+          c.input = el;
+          var err = document.createElement('div');
+          err.className = 'touch-form-error';
+          err.setAttribute('aria-live', 'polite');
+          /* Marketing checkbox sits INSIDE its parent <label>; the error
+             belongs as a sibling of the label, not inside it. Other
+             fields' error goes right after the input. */
+          var anchor = c.checkbox ? el.closest('label').parentElement : el;
+          anchor.insertAdjacentElement('afterend', err);
+          c.errorEl = err;
+          /* Clear the error as soon as the user starts to fix it. */
+          var clearEv = c.checkbox ? 'change' : 'input';
+          el.addEventListener(clearEv, function(){
+            err.classList.remove('is-visible');
+            if (!c.checkbox) el.classList.remove('is-invalid');
+          });
+        });
+
+        function showError(c, msg){
+          if (!c.errorEl) return;
+          c.errorEl.textContent = msg;
+          c.errorEl.classList.add('is-visible');
+          if (!c.checkbox) c.input.classList.add('is-invalid');
+        }
+
+        function validate(){
+          var firstInvalid = null;
+          checks.forEach(function(c){
+            if (!c.input) return;
+            var val = c.checkbox ? c.input.checked : (c.input.value || '').trim();
+            var missing = c.checkbox ? !val : val.length === 0;
+            if (missing) {
+              showError(c, c.missing);
+              firstInvalid = firstInvalid || c;
+              return;
+            }
+            if (c.pattern && !c.pattern.test(val)) {
+              showError(c, c.patternFail);
+              firstInvalid = firstInvalid || c;
+            }
+          });
+          return firstInvalid;
+        }
+
         form.addEventListener('submit', async function(e){
           e.preventDefault();
-          if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
           if (status) { status.textContent = ''; status.style.color = '#1a1a0e'; }
+          var firstInvalid = validate();
+          if (firstInvalid) {
+            /* Focus the first offending field so keyboard users can
+               start fixing immediately. Checkboxes get focus too —
+               browsers handle focusing them sensibly. */
+            try { firstInvalid.input.focus({ preventScroll: false }); } catch(e){}
+            return;
+          }
+          if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
           try {
             var res = await fetch(form.action, {
               method: 'POST',
