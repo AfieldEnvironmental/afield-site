@@ -3228,7 +3228,14 @@
 
     <!-- Right: form -->
     <div style="flex:0 0 clamp(260px,34vw,500px); display:flex; flex-direction:column; gap:4vh; align-self:flex-start; margin-top:-40px;">
-      <form class="touch-form" action="contact.php" method="POST">
+      <form class="touch-form" action="https://formspree.io/f/xgobbadz" method="POST">
+        <!-- Formspree control fields:
+             _subject sets the email subject line in the recipient's inbox.
+             _honey is a hidden honeypot — bots fill every field, humans
+             never see this one, so any submission with _honey filled in
+             gets silently dropped by Formspree's spam filter. -->
+        <input type="hidden" name="_subject" value="New afield.org.uk enquiry"/>
+        <input type="text" name="_honey" tabindex="-1" autocomplete="off" style="position:absolute; left:-9999px; opacity:0; pointer-events:none;" aria-hidden="true"/>
         <div class="touch-field">
           <label class="touch-label-field" for="touchFormName">Name</label>
           <input id="touchFormName" class="touch-input-field" type="text" name="name" placeholder="Your name" autocomplete="name" required/>
@@ -3262,10 +3269,50 @@
             <input type="checkbox" name="marketing" required style="width:14px; height:14px; accent-color:#1a1a0e; cursor:pointer; margin-top:2px; flex-shrink:0;"> By clicking Send, you agree to share your name and email address for the purpose of keeping you updated about Afield's activities and programmes.
           </label>
         </div>
-        <div style="margin-top:clamp(16px,2vh,28px);">
+        <div style="margin-top:clamp(16px,2vh,28px); display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
           <button class="touch-submit-field" type="submit">Send →</button>
+          <span class="touch-form-status" aria-live="polite" style="font-family:'GT Cinetype',sans-serif; font-size:clamp(13px,1vw,16px); color:#1a1a0e; opacity:0.85;"></span>
         </div>
       </form>
+
+      <script>
+      /* AJAX submit for the contact form. Posts to Formspree with
+         Accept: application/json so Formspree returns JSON instead of
+         redirecting to its own thank-you page — keeps the user on
+         afield.org.uk. Button is disabled while pending so a slow
+         connection can't trigger double-submissions. */
+      (function(){
+        var form = document.querySelector('.touch-form');
+        if (!form) return;
+        var btn = form.querySelector('.touch-submit-field');
+        var status = form.querySelector('.touch-form-status');
+        var defaultBtnText = btn ? btn.textContent : 'Send →';
+        form.addEventListener('submit', async function(e){
+          e.preventDefault();
+          if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+          if (status) { status.textContent = ''; status.style.color = '#1a1a0e'; }
+          try {
+            var res = await fetch(form.action, {
+              method: 'POST',
+              body: new FormData(form),
+              headers: { 'Accept': 'application/json' }
+            });
+            if (res.ok) {
+              form.reset();
+              if (status) status.textContent = 'Message sent — thank you.';
+            } else {
+              var body = await res.json().catch(function(){ return {}; });
+              var msg = (body.errors && body.errors[0] && body.errors[0].message) || 'Something went wrong — please email hello@afield.org.uk.';
+              if (status) { status.textContent = msg; status.style.color = '#b34d2a'; }
+            }
+          } catch (err) {
+            if (status) { status.textContent = 'Network error — please email hello@afield.org.uk.'; status.style.color = '#b34d2a'; }
+          } finally {
+            if (btn) { btn.disabled = false; btn.textContent = defaultBtnText; }
+          }
+        });
+      })();
+      </script>
     </div>
 
   </div>
