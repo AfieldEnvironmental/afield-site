@@ -3048,6 +3048,79 @@
       scroll-margin-top: calc(12vh + env(safe-area-inset-top, 0px));
     }
   }
+
+  /* ──────────────────────────────────────────────────────────────
+     POLICY MODALS (Cookies + Privacy)
+     Shared helpers so each paragraph doesn't have to repeat the
+     full inline font/size/colour string. Used inside
+     #touch-cookies-content and #touch-privacy-content.
+     ────────────────────────────────────────────────────────────── */
+  .policy-eyebrow {
+    font-family: 'GT Cinetype', sans-serif;
+    font-size: clamp(11px, 0.85vw, 13px);
+    color: #1a1a0e;
+    opacity: 0.55;
+    margin: 0 0 2em 0;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .policy-p {
+    font-family: 'GT Cinetype', sans-serif;
+    font-size: clamp(15px, 1.1vw, 18px);
+    font-weight: 400;
+    line-height: 1.65;
+    color: #1a1a0e;
+    margin: 0 0 1.4em 0;
+  }
+  .policy-h {
+    font-family: 'GT Cinetype', sans-serif;
+    font-size: clamp(15px, 1.1vw, 18px);
+    font-weight: 700;
+    line-height: 1.4;
+    color: #1a1a0e;
+    margin: 1.8em 0 0.6em 0;
+  }
+  .policy-ul {
+    margin: 0 0 1.4em 0;
+    padding-left: 1.3em;
+  }
+  .policy-ul li {
+    font-family: 'GT Cinetype', sans-serif;
+    font-size: clamp(15px, 1.1vw, 18px);
+    line-height: 1.65;
+    color: #1a1a0e;
+    margin-bottom: 0.5em;
+  }
+  .policy-row {
+    margin: 0 0 1.6em 0;
+    padding: 1em 0 0 0;
+    border-top: 1px solid rgba(26, 26, 14, 0.12);
+  }
+  .policy-row p {
+    font-family: 'GT Cinetype', sans-serif;
+    font-size: clamp(14px, 1vw, 16px);
+    line-height: 1.55;
+    color: #1a1a0e;
+    margin: 0 0 0.4em 0;
+  }
+  .policy-row .policy-label {
+    font-weight: 700;
+    opacity: 0.75;
+  }
+  .policy-p a,
+  .policy-ul li a {
+    color: #1a1a0e;
+    text-decoration: underline;
+  }
+  .policy-footer {
+    font-family: 'GT Cinetype', sans-serif;
+    font-size: clamp(11px, 0.85vw, 13px);
+    color: #1a1a0e;
+    opacity: 0.5;
+    margin: 2.4em 0 0 0;
+    border-top: 1px solid rgba(26, 26, 14, 0.12);
+    padding-top: 1.2em;
+  }
 </style>
 
 <!-- Up arrow (hidden, kept for JS compatibility) -->
@@ -3477,15 +3550,151 @@
   <div id="touch-privacy-content" style="position:fixed; inset:0; z-index:50; background:#e4c9f9; overflow:hidden; transform:translateX(-100vw); transition:transform 0.69s cubic-bezier(0.22,1,0.36,1); pointer-events:none; visibility:hidden;">
     <button onclick="toggleTouchPolicy('privacy')" style="position:absolute; bottom:5vw; left:3vw; z-index:10; background:none; border:none; cursor:pointer; font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); font-weight:700; color:#1a1a0e; padding:0; display:flex; align-items:center; gap:6px;">← Back</button>
     <div style="position:absolute; top:5vw; left:50%; transform:translateX(-50%); width:clamp(280px,44vw,640px); bottom:calc(5vw + 60px); overflow-y:auto; scrollbar-width:none; padding-bottom:40px; box-sizing:border-box;">
-      <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(11px,0.85vw,13px); color:#1a1a0e; opacity:0.55; margin:0 0 2em 0; letter-spacing:0.04em; text-transform:uppercase;">Last updated: March 2026</p>
-      <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); line-height:1.65; color:#1a1a0e; margin:0 0 1.4em 0;">Afield Environmental (&ldquo;Afield&rdquo;) is a Charitable Incorporated Organisation, registration number ZC041916. Afield is committed to protecting and respecting your privacy. This policy covers data we collect from you during the course of our operations, including from our website at www.afield.org.uk. It explains how any personal data we collect from you, or that you provide to us, will be processed by us. This policy is not intended for children, and we will not knowingly collect personal data relating to anyone under the age of 18.</p>
-      <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); font-weight:700; line-height:1.65; color:#1a1a0e; margin:0 0 0.6em 0;">Contact</p>
-      <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); line-height:1.65; color:#1a1a0e; margin:0 0 1.4em 0;">For questions about your personal data, contact us at <a href="mailto:privacy@afield.org.uk" style="color:#1a1a0e;">privacy@afield.org.uk</a> or by post to Afield, 5 Brayford Square, London, E1 0SG.</p>
-      <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); font-weight:700; line-height:1.65; color:#1a1a0e; margin:0 0 0.6em 0;">How we collect information</p>
-      <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); line-height:1.65; color:#1a1a0e; margin:0 0 1.4em 0;">We collect data when you interact with us — by email, via forms on our website, over the phone, or in person. We may also automatically collect anonymous technical data about your equipment and browsing patterns.</p>
-      <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); font-weight:700; line-height:1.65; color:#1a1a0e; margin:0 0 0.6em 0;">Your rights</p>
-      <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(15px,1.1vw,18px); line-height:1.65; color:#1a1a0e; margin:0 0 1.4em 0;">Under UK GDPR you have the right to access, correct, erase, or restrict use of your personal data. You also have the right to complain to the Information Commissioner's Office (ICO) at www.ico.org.uk, registration number C1827123.</p>
-      <p style="font-family:'GT Cinetype',sans-serif; font-size:clamp(11px,0.85vw,13px); color:#1a1a0e; opacity:0.5; margin:0;">Afield Environmental, CIO no. ZC041916. ICO reg. C1827123.</p>
+      <p class="policy-eyebrow">Last updated and approved: March 2026</p>
+
+      <p class="policy-p">Afield Environmental (&ldquo;Afield&rdquo;) is a Charitable Incorporated Organisation, registration number ZC041916, referred to in this policy as &ldquo;we&rdquo;, &ldquo;us&rdquo; or &ldquo;our&rdquo;.</p>
+      <p class="policy-p">Afield is committed to protecting and respecting your privacy. This policy covers data we collect from you during the course of our operations, including from our website at www.afield.org.uk. It explains how any personal data we collect from you, or that you provide to us, will be processed by us. Processing of data includes storing it. The policy should be read alongside our website Cookie Policy.</p>
+      <p class="policy-p">Personal data means any information about a living individual from which that person can be identified (but not data where the identity has been removed, like anonymous data).</p>
+      <p class="policy-p">This policy is not intended for children, and we will not knowingly collect personal data relating to anyone under the age of 18.</p>
+      <p class="policy-p">We keep this policy under regular review and we may amend it from time to time to comply with law or for legitimate business purposes. Any future changes we make to this policy will be posted on our website and, where appropriate, notified to you by email. The most recent date it was updated is shown at the top of the policy.</p>
+
+      <p class="policy-h">Contact Details</p>
+      <p class="policy-p">Please read the following carefully and, if you have any questions regarding your personal data or its use, please contact us:</p>
+      <ul class="policy-ul">
+        <li>by email on <a href="mailto:privacy@afield.org.uk">privacy@afield.org.uk</a>;</li>
+        <li>by post to Afield, 5 Brayford Square, London, E1 0SG.</li>
+      </ul>
+
+      <p class="policy-h">Introduction</p>
+      <p class="policy-p">For the purposes of the Data Protection Act 2018 we are the controller of the personal data we collect for certain purposes as described in this privacy policy.</p>
+      <p class="policy-p">Afield is registered with the Information Commissioner&rsquo;s Office (ICO), the UK regulator for data protection issues (<a href="https://www.ico.org.uk" target="_blank" rel="noopener">www.ico.org.uk</a>) with registration number: C1827123. You have the right to make a complaint at any time to the ICO. We would, however, appreciate the chance to deal with your concerns before you approach the ICO so please contact us in the first instance.</p>
+
+      <p class="policy-h">What we do as a charity and why we do it</p>
+      <p class="policy-p">We want to be really clear about what we do and why we do it, because it sets the scene for how and why we collect and process personal data. Afield aims to respond creatively to environmental injustice by working with communities to rewild urban spaces; and supporting artists to undertake environmental research.</p>
+      <p class="policy-p">Where necessary we will collect and process personal information to enable us to: assess and award grants; provide access to restricted areas of our website; work with partners and individuals; and share information about the projects and campaigns that we are running. You can find more detail on what information we collect and how we use it below.</p>
+
+      <p class="policy-h">How we collect information</p>
+      <p class="policy-p">We collect data from you in a number of different ways, depending on how you interact with us. For example we may collect data from you:</p>
+      <ul class="policy-ul">
+        <li>By email</li>
+        <li>On our website, for example if you complete a form. Please also read our Cookie Policy.</li>
+        <li>Over the phone</li>
+        <li>In person</li>
+        <li>We may also automatically collect anonymous technical data about your equipment, browsing actions and patterns to help us optimise our website and other digital products.</li>
+      </ul>
+
+      <p class="policy-h">Information we collect and why</p>
+
+      <div class="policy-row">
+        <p><span class="policy-label">Data:</span> Your contact details including email addresses, names, telephone number, organisation and job title (if relevant).</p>
+        <p><span class="policy-label">When:</span> When you provide information to us, for example: at an event, via email, or via a form on our website.</p>
+        <p><span class="policy-label">How and why:</span> To analyse interest in Afield, and contact you about events you have expressed interest in.</p>
+        <p><span class="policy-label">Lawful basis:</span> Consent &mdash; you will be asked to consent if you want to receive this information.</p>
+      </div>
+
+      <div class="policy-row">
+        <p><span class="policy-label">Data:</span> Your contact details including email addresses, names, telephone number, organisation and job title (if relevant).</p>
+        <p><span class="policy-label">When:</span> When you apply for a grant, funding or partnership.</p>
+        <p><span class="policy-label">How and why:</span> To keep in touch with you during the progress of your application.</p>
+        <p><span class="policy-label">Lawful basis:</span> Legitimate interest &mdash; it is in our legitimate interest to be able to stay in touch with our applicants and partners.</p>
+      </div>
+
+      <div class="policy-row">
+        <p><span class="policy-label">Data:</span> Your protected characteristics (for example your gender, your ethnicity, or any disabilities that you might have).</p>
+        <p><span class="policy-label">When:</span> When you apply for a grant, funding or partnership, in line with our Equality, Inclusivity and Diversity Policy.</p>
+        <p><span class="policy-label">How and why:</span> Afield may use this data in order to take positive action in grant awarding decisions, in line with our Equality, Inclusivity and Diversity Policy.</p>
+        <p><span class="policy-label">Lawful basis:</span> Consent &mdash; we will only use these characteristics with your explicit consent.</p>
+      </div>
+
+      <div class="policy-row">
+        <p><span class="policy-label">Data:</span> Your self-assessed income level.</p>
+        <p><span class="policy-label">When:</span> When you apply for a grant, funding or partnership.</p>
+        <p><span class="policy-label">How and why:</span> Some grants are only offered to applicants who have self-assessed as being &lsquo;low income&rsquo;.</p>
+        <p><span class="policy-label">Lawful basis:</span> Consent &mdash; you will be asked to consent when you provide this information.</p>
+      </div>
+
+      <div class="policy-row">
+        <p><span class="policy-label">Data:</span> Your contact details including email addresses, names, telephone number, organisation and job title (if relevant).</p>
+        <p><span class="policy-label">When:</span> When you are awarded a grant, or make a funding or partnership agreement.</p>
+        <p><span class="policy-label">How and why:</span> To enable us to deliver our agreement to you as a grantee.</p>
+        <p><span class="policy-label">Lawful basis:</span> Perform a contract &mdash; we need to do this to provide our obligations as a grant maker, funder or partner.</p>
+      </div>
+
+      <div class="policy-row">
+        <p><span class="policy-label">Data:</span> Your identity, contact data (email address and/or password), technical data, profile, usage, marketing and communications and technical data.</p>
+        <p><span class="policy-label">When:</span> When you use the services on our website. For example if you log in to a protected area of our website.</p>
+        <p><span class="policy-label">How and why:</span> Your email address is our primary method to identify you in order to provide this access.</p>
+        <p><span class="policy-label">Lawful basis:</span> Consent &mdash; you will be asked to consent when you provide this information.</p>
+      </div>
+
+      <div class="policy-row">
+        <p><span class="policy-label">Data:</span> Your identity, contact data, email address, technical data, profile, usage, marketing and communications and technical data.</p>
+        <p><span class="policy-label">When:</span> When you subscribe to news, blogs, newsletters or contact emails.</p>
+        <p><span class="policy-label">How and why:</span> To provide you with information that you request from us (for example, notification of a new news post).</p>
+        <p><span class="policy-label">Lawful basis:</span> Consent &mdash; where you have consented to receiving communications.</p>
+      </div>
+
+      <div class="policy-row">
+        <p><span class="policy-label">Data:</span> Your identity, contact data, email address, technical, usage and profile data.</p>
+        <p><span class="policy-label">When:</span> When you use a form on our website or send us an email to provide feedback or raise a complaint.</p>
+        <p><span class="policy-label">How and why:</span> To deal with feedback or complaints about our website or service.</p>
+        <p><span class="policy-label">Lawful basis:</span> Legitimate interest &mdash; it is in our legitimate interests to deal with feedback and complaints.</p>
+      </div>
+
+      <div class="policy-row">
+        <p><span class="policy-label">Data:</span> Your identity, contact data (email address and/or password), technical data, profile data, usage, marketing and communications and technical data.</p>
+        <p><span class="policy-label">When:</span> When you use the services on our website.</p>
+        <p><span class="policy-label">How and why:</span> To respond to law enforcement or regulators about users of our site.</p>
+        <p><span class="policy-label">Lawful basis:</span> Legal or regulatory obligation &mdash; we need to do this so that we do not break the law.</p>
+      </div>
+
+      <p class="policy-h">Our lawful bases of processing</p>
+      <ul class="policy-ul">
+        <li>Where we need to perform a contract &mdash; that&rsquo;s the way the law puts it, but it&rsquo;s essentially using your personal data to carry out something we&rsquo;ve made a contract with you to do (for example, providing you with a grant).</li>
+        <li>Where it&rsquo;s necessary for our legitimate interests &mdash; this is where we or a third party have a legitimate interest in using your personal data, and your interests or fundamental rights don&rsquo;t override it (for example, if you provide feedback or make a complaint). You have the right to object to this processing if you wish, and if you wish to do so please see the &ldquo;Your Rights&rdquo; section below. Please bear in mind that if you object this may affect our ability to carry out the tasks identified in the table above for your benefit.</li>
+        <li>Where we have your consent to do so &mdash; this is where you clearly say to us it&rsquo;s OK to do something (for example, you ask us to send you news and updates in your preferences).</li>
+        <li>Where we need to comply with a legal or regulatory obligation &mdash; this one is probably self-explanatory, but if there&rsquo;s a law that says we need to keep or hand over some personal data, or if someone in authority asks us to, we&rsquo;ll follow the rules.</li>
+      </ul>
+
+      <p class="policy-h">Special category data</p>
+      <p class="policy-p">Special category data is sensitive personal data that requires greater protection and includes information about racial or ethnic origin, political opinions, religious or philosophical beliefs, trade union membership, genetic data, biometric data for unique identification, health data, and data concerning a person&rsquo;s sex life or sexual orientation. Afield may collect and use special category data for evidence-based, proportionate targeting of certain grants.</p>
+
+      <p class="policy-h">Keeping personal data secure</p>
+      <p class="policy-p">We have taken all appropriate technical, physical and organisational security measures to ensure that your data is protected against unauthorised access, use and disclosure. Unfortunately, the exchange of information via the internet is not completely secure. Although we will do our best to protect your personal data, we cannot guarantee the security of your data transmitted to our sites; any transmission is at your own risk.</p>
+      <p class="policy-p">If you are invited to choose a password (for example to access part of our website), you are advised to choose a non-guessable password and you will need to follow the password rules which are outlined when you create your account or change your password.</p>
+      <p class="policy-p">The servers where we store personal data are located in the UK. If we ever need to transfer personal data outside of the European Economic Area, we will take all steps reasonably necessary to ensure that your data is subject to appropriate safeguards, such as relying on a recognised adequacy decision or standard contractual clauses, and that it is treated securely and in accordance with this privacy policy. If you would like more information about these safeguards, please contact us at <a href="mailto:privacy@afield.org.uk">privacy@afield.org.uk</a>.</p>
+
+      <p class="policy-h">Disclosure of your information</p>
+      <p class="policy-p">We may disclose your personal information to any member of our group, which means to any subsidiaries, any ultimate holding company or its subsidiaries. We may disclose your personal information to third parties, including:</p>
+      <ul class="policy-ul">
+        <li>In the event that we sell or buy any business or assets, in which case we may disclose your personal data to the prospective seller or buyer of such business or assets.</li>
+        <li>If Afield Environmental, or substantially all of its assets, are acquired by a third party, in which case personal data held by it about its customers will be one of the transferred assets.</li>
+        <li>If we are under a duty to disclose or share your personal data in order to comply with any legal obligation, or in order to enforce or apply our terms of use and other agreements; or to protect the rights, property, or safety of Commonplace Digital Ltd, our customers, or others.</li>
+        <li>If we are asked to as part of them seeking to exercise or defend their legal rights (for example, as part of a planning application or a judicial review).</li>
+      </ul>
+
+      <p class="policy-h">Links to other websites</p>
+      <p class="policy-p">Our website includes links to other websites which we may not control. We cannot be responsible for the protection and privacy of any information that you provide while visiting those sites. These links are not an endorsement by Afield of the site to which it points, and they are not governed by this policy. When you leave our website, we encourage you to read the privacy policy of every website you visit.</p>
+
+      <p class="policy-h">How long we keep your information</p>
+      <p class="policy-p">We will only keep your information for as long as necessary to carry out the purposes for which we collected it. This will depend on the type of information and the types of legal and contractual obligations we must comply with. In the normal course of our activities we will not keep personal information that has not been used for more than 12 months.</p>
+
+      <p class="policy-h">Your rights</p>
+      <p class="policy-p">Under the General Data Protection Regulation you have the following rights:</p>
+      <ul class="policy-ul">
+        <li>The right to be informed &mdash; that&rsquo;s us telling you what we do with your personal data (which we do via this privacy policy, and when we collect consent).</li>
+        <li>The right of access &mdash; the right for you to ask us what information we hold about you and how it&rsquo;s used. You can find this out by emailing <a href="mailto:privacy@afield.org.uk">privacy@afield.org.uk</a>.</li>
+        <li>The right of rectification &mdash; that&rsquo;s an obligation on us in certain circumstances to correct your personal data if it&rsquo;s inaccurate or incomplete.</li>
+        <li>The right to erasure &mdash; that&rsquo;s an obligation on us in certain circumstances to delete or remove your personal data where there is no compelling reason for its continued processing (some people also call this right &lsquo;the right to be forgotten&rsquo;).</li>
+        <li>The right to restrict processing &mdash; that&rsquo;s an obligation on us in certain circumstances to stop actively processing your personal data.</li>
+        <li>The right to data portability &mdash; that&rsquo;s an obligation on us in certain circumstances to allow you to transfer your personal data from us to a third party.</li>
+        <li>The right to object &mdash; that&rsquo;s an obligation on us in certain circumstances to allow you to object to us processing your personal data where we do not have an overriding reason.</li>
+      </ul>
+      <p class="policy-p">Not all of these rights will be relevant to your interaction with Afield, but they are important rights and we want to make sure you know about them. If you wish to exercise any of the rights set out above, please contact us at <a href="mailto:privacy@afield.org.uk">privacy@afield.org.uk</a>.</p>
+      <p class="policy-p">When you contact us, on <a href="mailto:privacy@afield.org.uk">privacy@afield.org.uk</a> or via other means, we need to be sure it&rsquo;s you. We may need to ask you to confirm your identity &mdash; this is an important security measure so that we don&rsquo;t disclose personal data to any person who doesn&rsquo;t have the right to receive it.</p>
+      <p class="policy-p">We try to respond within a month (30 days), but if your request is complex or you&rsquo;ve made a number of different requests, it may take us longer. If that&rsquo;s the case, we&rsquo;ll keep you updated. Normally we do this work without charge, but if a request is unfounded, repetitive or excessive in our view, then we reserve the right to charge for producing the data. Alternatively, we could refuse to comply with your request in these circumstances.</p>
+
+      <p class="policy-footer">Afield Environmental, CIO no. ZC041916. ICO reg. C1827123.</p>
     </div>
   </div>
 
