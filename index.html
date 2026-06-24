@@ -1845,16 +1845,17 @@
 
   <!-- Fixed videos — pinned, fade with their section -->
   <div id="fixedVideoWilding" class="fixed-video-pin">
-    <!-- translateX(300px) on this video only: the Comp_14 source has its
-         polygon framed left-of-centre, so without compensation it sat on
-         top of the body copy. Pushing the inner video 300px right via
-         transform lands the polygon in roughly the same viewport position
-         as the Arts Grants polygon. Arts uses the same CSS structure but
-         without the translate, because that source frame is composed
-         right-of-centre. Transform on the inner <video> is safe (Safari
-         layer-cache issue from earlier was about transform on the .fixed-
+    <!-- The Comp_14/Comp_15 sources have their polygon framed left-of-
+         centre, so without compensation they sit over the body copy.
+         Earlier we used a fixed translateX(150px), which worked at
+         1440x but on wider viewports the polygon crept back over the
+         text. Switching to a clamp() so the translate scales with
+         viewport the same way --p-poly-w does, keeping the polygon's
+         proportional relationship to the text column at every desktop
+         width. Transform on the inner <video> is safe (Safari layer-
+         cache issue from earlier was about transform on the .fixed-
          video-pin container, not the inner element). -->
-    <video autoplay loop muted playsinline disablepictureinpicture disableremoteplayback preload="auto" style="width:100%; height:100%; object-fit:cover; object-position:65% center; transform:translateX(150px) scale(1.04); transform-origin:65% center; pointer-events:none;">
+    <video autoplay loop muted playsinline disablepictureinpicture disableremoteplayback preload="auto" style="width:100%; height:100%; object-fit:cover; object-position:65% center; transform:translateX(clamp(150px, 18vw, 360px)) scale(1.04); transform-origin:65% center; pointer-events:none;">
       <!-- Safari: HEVC with alpha
            Chrome/Firefox: VP9 WebM
            Older browsers: H.264 fallback -->
@@ -1864,11 +1865,11 @@
     </video>
   </div>
   <div id="fixedVideoArt" class="fixed-video-pin">
-    <!-- translateX(150px) matches the Wilding treatment (see 2dcc706):
-         the Comp_15 source frames its polygon left-of-centre, same as
-         Comp_14 did. Same shift here keeps the two grant pages visually
-         in step. -->
-    <video autoplay loop muted playsinline disablepictureinpicture disableremoteplayback preload="auto" style="width:100%; height:100%; object-fit:cover; object-position:65% center; transform:translateX(150px) scale(1.04); transform-origin:65% center; pointer-events:none;">
+    <!-- Matches the Wilding treatment: viewport-proportional translate
+         instead of a fixed 150px, so the polygon clears the body copy
+         column at every desktop width rather than only at the one
+         viewport we tuned for. -->
+    <video autoplay loop muted playsinline disablepictureinpicture disableremoteplayback preload="auto" style="width:100%; height:100%; object-fit:cover; object-position:65% center; transform:translateX(clamp(150px, 18vw, 360px)) scale(1.04); transform-origin:65% center; pointer-events:none;">
       <!-- Safari: HEVC with alpha channel (transparent bg around polygon)
            Chrome/Firefox: VP9 WebM (also new edit; alpha varies)
            Older browsers: H.264 fallback -->
