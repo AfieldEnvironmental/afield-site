@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Afield — word cycle export</title>
+
+<!--
+  ────────────────────────────────────────────────────────────────────
+  STANDALONE EXPORT PAGE FOR RECORDING THE WORD CYCLE
+  Open this file in a browser, then screen-record it for Instagram.
+
+  Sized for a Reel / Story at 1080×1920 by default. To get other
+  formats, append ?format=square (1080×1080) or ?format=portrait
+  (1080×1350) to the URL. Background defaults to mint; append
+  &bg=yellow / purple / orange to switch.
+
+  Recording on macOS:
+    1. Open this file in Chrome.
+    2. Resize the browser window so the canvas fully fills it (drag
+       the corner until the mint area touches the edges — the canvas
+       inside this page sizes itself to its own 1080×1920 viewBox).
+       Easier: zoom out (Cmd −) until the canvas is fully visible.
+    3. ⌘⇧5 → "Record Selected Portion" → drag the selection so it
+       only covers the mint canvas, not the browser chrome.
+    4. Hit Record. Wait at least 8.4 seconds (one full cycle through
+       the 7 words) before stopping. Two cycles gives Instagram more
+       runway to loop.
+    5. Stop. The MP4 lands on the desktop. Import to Instagram or
+       trim in QuickTime / Premiere first.
+
+  Recording for higher quality (optional):
+    Install OBS, set the canvas source to a Browser source at
+    1080×1920, point at this file, and record at 60fps. OBS gives
+    cleaner h.264 output than QuickTime.
+  ────────────────────────────────────────────────────────────────────
+-->
+
+<link rel="stylesheet" href="gt-cinetype.css">
+
+<style>
+  :root {
+    --canvas-w: 1080px;
+    --canvas-h: 1920px;
+    --bg: #b1ffcb;            /* mint default; overridden by ?bg= */
+    --ink: #1a1a0e;
+  }
+
+  /* Keep everything off the screen edges when the user has zoomed
+     out — they're recording the canvas, not the page chrome. */
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #222;          /* dark surround so the bright canvas pops */
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    font-family: 'GT Cinetype', system-ui, sans-serif;
+    color: #888;
+  }
+
+  /* The canvas itself. Fixed pixel size so the export is 1080×1920
+     regardless of the recording environment. Browsers will scale the
+     viewport to fit, but the internal pixels are stable. */
+  .canvas {
+    width: var(--canvas-w);
+    height: var(--canvas-h);
+    background: var(--bg);
+    position: relative;
+    overflow: hidden;
+    /* Visual aid for the user to know what they're recording. */
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.06);
+  }
+
+  /* The cycler window. The mask softens top + bottom so words appear
+     to slide in and out of view, matching the on-site behaviour. */
+  .cycler {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    -webkit-mask-image: linear-gradient(to bottom,
+      rgba(0,0,0,0) 0%,
+      rgba(0,0,0,1) 28%,
+      rgba(0,0,0,1) 72%,
+      rgba(0,0,0,0) 100%);
+            mask-image: linear-gradient(to bottom,
+      rgba(0,0,0,0) 0%,
+      rgba(0,0,0,1) 28%,
+      rgba(0,0,0,1) 72%,
+      rgba(0,0,0,0) 100%);
+  }
+
+  .track {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Same easing curve as the on-site cycler (#missionTrack). */
+    transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+    will-change: transform;
+  }
+
+  .word {
+    font-family: 'GT Cinetype', system-ui, sans-serif;
+    font-weight: 400;
+    /* Sized for 1080-wide canvases. Adjust if you change the canvas
+       size — clamp keeps it sensible when the canvas resizes too. */
+    font-size: 180px;
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    color: var(--ink);
+    opacity: 0.12;
+    transition: opacity 0.55s ease;
+    white-space: nowrap;
+  }
+
+  .word.active { opacity: 1; }
+
+  /* Format variants — toggled via ?format= URL param. */
+  body[data-format="square"]   { --canvas-w: 1080px; --canvas-h: 1080px; }
+  body[data-format="portrait"] { --canvas-w: 1080px; --canvas-h: 1350px; }
+  body[data-format="reel"]     { --canvas-w: 1080px; --canvas-h: 1920px; }
+
+  /* Background variants — toggled via ?bg= URL param. */
+  body[data-bg="yellow"] { --bg: #eafe8b; }
+  body[data-bg="purple"] { --bg: #e4c9f9; }
+  body[data-bg="orange"] { --bg: #ff925c; }
+  body[data-bg="mint"]   { --bg: #b1ffcb; }
+
+  /* Helper text below the canvas so the user remembers what they're
+     looking at without polluting the recorded area. */
+  .meta {
+    position: fixed;
+    bottom: 16px;
+    left: 16px;
+    font-size: 13px;
+    color: #aaa;
+    background: rgba(0,0,0,0.6);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-family: system-ui, sans-serif;
+  }
+</style>
+</head>
+
+<body data-format="reel" data-bg="mint">
+
+  <div class="canvas">
+    <div class="cycler">
+      <div class="track" id="track"></div>
+    </div>
+  </div>
+
+  <div class="meta">
+    1080×1920 reel · mint · 7 words × 1.2s = 8.4s per cycle
+  </div>
+
+<script>
+/* Word list copied verbatim from the on-site cycler (index.html line
+   ~4385). Keep these in sync if marketing updates them. */
+const WORDS = ['Purpose', 'Places', 'Wilding', 'Knowledge', 'Practices', 'Action', 'Art'];
+const INTERVAL = 1200;     /* matches on-site */
+
+/* URL params — let the page render differently without code changes. */
+const params = new URLSearchParams(location.search);
+const format = params.get('format');
+const bg     = params.get('bg');
+if (format) document.body.dataset.format = format;
+if (bg)     document.body.dataset.bg = bg;
+
+const track = document.getElementById('track');
+
+/* Build many copies so the translate-Y loop never reaches an end.
+   12 copies × 7 words = 84 lines; at 1200ms each that's 100s of
+   runway, far more than any recording. */
+const COPIES = 12;
+for (let c = 0; c < COPIES; c++) {
+  for (const w of WORDS) {
+    const el = document.createElement('div');
+    el.className = 'word';
+    el.textContent = w;
+    track.appendChild(el);
+  }
+}
+
+const els = track.querySelectorAll('.word');
+
+/* Centre the active word and dim neighbours, matching the on-site
+   look. Active stays at opacity 1, the line above + below at 0.12,
+   everything else 0. */
+function paint(idx){
+  const lineH = els[0].getBoundingClientRect().height;
+  /* Offset by 1 line so there's a ghost word above the active one
+     (consistent with the on-site cycler centring rule). */
+  track.style.transform = `translateY(-${(idx - 1) * lineH}px)`;
+  els.forEach((el, i) => {
+    const dist = i - idx;
+    el.classList.toggle('active', dist === 0);
+    el.style.opacity = dist === 0 ? '1' : Math.abs(dist) <= 1 ? '0.12' : '0';
+  });
+}
+
+/* Start halfway through the copies array so we can scroll both ways
+   without running out of words. */
+let i = Math.floor(els.length / 2);
+paint(i);
+setInterval(() => { i++; paint(i); }, INTERVAL);
+</script>
+
+</body>
+</html>
