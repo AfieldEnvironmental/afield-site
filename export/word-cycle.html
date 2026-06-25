@@ -207,6 +207,34 @@ canvas.width  = cfg.w;
 canvas.height = cfg.h;
 const ctx = canvas.getContext('2d');
 
+/* ───── Fit-to-width: pick the largest font size at which the widest
+   word still has clean side margins. Same idea as fitCyclerFont() in
+   the live site — words like KNOWLEDGE and PRACTICES would overflow
+   a 1080px canvas at the default 200px size, so we measure and scale
+   down once at startup. */
+const SIDE_MARGIN = 40;
+const maxTextWidth = cfg.w - SIDE_MARGIN * 2;
+
+function fitFontSize() {
+  let size = cfg.fontSize;
+  let widest = 0;
+  for (const w of WORDS) {
+    ctx.font = `400 ${size}px "GT Cinetype", sans-serif`;
+    widest = Math.max(widest, ctx.measureText(w.toUpperCase()).width);
+  }
+  if (widest > maxTextWidth) {
+    size = Math.floor(size * (maxTextWidth / widest));
+  }
+  return size;
+}
+/* Use this everywhere instead of cfg.fontSize. */
+cfg.fontSize = fitFontSize();
+/* Refit once after fonts.ready resolves, because the first
+   measurement happens against the fallback font and GT Cinetype's
+   character widths are different enough to matter (~6-12% on the
+   long words). */
+document.fonts.ready.then(() => { cfg.fontSize = fitFontSize(); });
+
 const specs = document.getElementById('specs');
 specs.innerHTML =
   `Export: <code>${cfg.w}×${cfg.h}</code> · ${WORDS.length} words × 1.2s × ${loops} loops = ${(totalMs/1000).toFixed(1)}s clip · 60fps`;
