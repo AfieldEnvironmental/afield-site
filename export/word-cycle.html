@@ -6,32 +6,35 @@
 
 <!--
   ────────────────────────────────────────────────────────────────────
-  STANDALONE EXPORT PAGE FOR RECORDING THE WORD CYCLE
-  Open this file in a browser, then screen-record it for Instagram.
+  WORD CYCLE → INSTAGRAM-READY MP4 (in-browser, no install needed)
 
-  Sized for a Reel / Story at 1080×1920 by default. To get other
-  formats, append ?format=square (1080×1080) or ?format=portrait
-  (1080×1350) to the URL. Background defaults to mint; append
-  &bg=yellow / purple / orange to switch.
+  Open this page, click "Generate video", wait ~18 seconds, and a
+  video file downloads to your Downloads folder. Drop it straight
+  into Instagram (works for both Reels and feed posts).
 
-  Recording on macOS:
-    1. Open this file in Chrome.
-    2. Resize the browser window so the canvas fully fills it (drag
-       the corner until the mint area touches the edges — the canvas
-       inside this page sizes itself to its own 1080×1920 viewBox).
-       Easier: zoom out (Cmd −) until the canvas is fully visible.
-    3. ⌘⇧5 → "Record Selected Portion" → drag the selection so it
-       only covers the mint canvas, not the browser chrome.
-    4. Hit Record. Wait at least 8.4 seconds (one full cycle through
-       the 7 words) before stopping. Two cycles gives Instagram more
-       runway to loop.
-    5. Stop. The MP4 lands on the desktop. Import to Instagram or
-       trim in QuickTime / Premiere first.
+  URL params:
+    ?format=reel        1080×1920   (Reel / Story, default)
+    ?format=square      1080×1080   (Feed post)
+    ?format=portrait    1080×1350   (4:5 feed)
+    &bg=mint            #b1ffcb     (default)
+    &bg=yellow          #eafe8b
+    &bg=purple          #e4c9f9
+    &bg=orange          #ff925c
+    &loops=2            number of full word loops captured (default 2)
 
-  Recording for higher quality (optional):
-    Install OBS, set the canvas source to a Browser source at
-    1080×1920, point at this file, and record at 60fps. OBS gives
-    cleaner h.264 output than QuickTime.
+  Notes on file format:
+  - Safari produces a real .mp4 file (H.264) — Instagram-native.
+  - Chrome / Firefox produce .webm (VP9). Instagram WILL still accept
+    these via the desktop uploader, but if you need a guaranteed-mp4
+    deliverable, open this page in Safari.
+
+  Notes on quality:
+  - The recording is at the exact pixel dimensions (1080×1920 etc.)
+    via canvas — no screen-capture upscaling artefacts.
+  - Frame rate 60fps. The capture runs the cycle through cleanly
+    twice so the resulting clip loops without a visible seam.
+  - The brand font (GT Cinetype) loads before recording starts;
+    that's why there's a moment of "Preparing..." after you click.
   ────────────────────────────────────────────────────────────────────
 -->
 
@@ -39,172 +42,363 @@
 
 <style>
   :root {
-    --canvas-w: 1080px;
-    --canvas-h: 1920px;
-    --bg: #b1ffcb;            /* mint default; overridden by ?bg= */
+    --bg: #b1ffcb;
     --ink: #1a1a0e;
   }
-
-  /* Keep everything off the screen edges when the user has zoomed
-     out — they're recording the canvas, not the page chrome. */
   html, body {
-    margin: 0;
-    padding: 0;
-    background: #222;          /* dark surround so the bright canvas pops */
+    margin: 0; padding: 0;
+    background: #1a1a0e;
     min-height: 100vh;
-    display: grid;
-    place-items: center;
-    font-family: 'GT Cinetype', system-ui, sans-serif;
-    color: #888;
+    color: #eee;
+    font-family: system-ui, -apple-system, sans-serif;
   }
-
-  /* The canvas itself. Fixed pixel size so the export is 1080×1920
-     regardless of the recording environment. Browsers will scale the
-     viewport to fit, but the internal pixels are stable. */
-  .canvas {
-    width: var(--canvas-w);
-    height: var(--canvas-h);
-    background: var(--bg);
-    position: relative;
-    overflow: hidden;
-    /* Visual aid for the user to know what they're recording. */
-    box-shadow: 0 0 0 1px rgba(0,0,0,0.06);
-  }
-
-  /* The cycler window. The mask softens top + bottom so words appear
-     to slide in and out of view, matching the on-site behaviour. */
-  .cycler {
-    position: absolute;
-    inset: 0;
-    display: grid;
-    place-items: center;
-    -webkit-mask-image: linear-gradient(to bottom,
-      rgba(0,0,0,0) 0%,
-      rgba(0,0,0,1) 28%,
-      rgba(0,0,0,1) 72%,
-      rgba(0,0,0,0) 100%);
-            mask-image: linear-gradient(to bottom,
-      rgba(0,0,0,0) 0%,
-      rgba(0,0,0,1) 28%,
-      rgba(0,0,0,1) 72%,
-      rgba(0,0,0,0) 100%);
-  }
-
-  .track {
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
     display: flex;
     flex-direction: column;
+    gap: 24px;
     align-items: center;
-    /* Same easing curve as the on-site cycler (#missionTrack). */
-    transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
-    will-change: transform;
   }
-
-  .word {
+  h1 {
+    margin: 0;
     font-family: 'GT Cinetype', system-ui, sans-serif;
     font-weight: 400;
-    /* Sized for 1080-wide canvases. Adjust if you change the canvas
-       size — clamp keeps it sensible when the canvas resizes too. */
-    font-size: 180px;
-    line-height: 1.0;
-    letter-spacing: -0.03em;
-    text-transform: uppercase;
-    color: var(--ink);
-    opacity: 0.12;
-    transition: opacity 0.55s ease;
-    white-space: nowrap;
+    font-size: 28px;
+    letter-spacing: -0.02em;
+    text-align: center;
   }
-
-  .word.active { opacity: 1; }
-
-  /* Format variants — toggled via ?format= URL param. */
-  body[data-format="square"]   { --canvas-w: 1080px; --canvas-h: 1080px; }
-  body[data-format="portrait"] { --canvas-w: 1080px; --canvas-h: 1350px; }
-  body[data-format="reel"]     { --canvas-w: 1080px; --canvas-h: 1920px; }
-
-  /* Background variants — toggled via ?bg= URL param. */
+  .preview-frame {
+    border: 1px solid #333;
+    background: var(--bg);
+    /* Preview shrunk to fit the page; the underlying canvas stays
+       at full export resolution. */
+    width: 320px;
+    aspect-ratio: var(--preview-aspect, 9 / 16);
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+  }
+  body[data-format="square"]   { --preview-aspect: 1 / 1; }
+  body[data-format="portrait"] { --preview-aspect: 4 / 5; }
+  body[data-format="reel"]     { --preview-aspect: 9 / 16; }
   body[data-bg="yellow"] { --bg: #eafe8b; }
   body[data-bg="purple"] { --bg: #e4c9f9; }
   body[data-bg="orange"] { --bg: #ff925c; }
   body[data-bg="mint"]   { --bg: #b1ffcb; }
 
-  /* Helper text below the canvas so the user remembers what they're
-     looking at without polluting the recorded area. */
-  .meta {
-    position: fixed;
-    bottom: 16px;
-    left: 16px;
-    font-size: 13px;
-    color: #aaa;
-    background: rgba(0,0,0,0.6);
-    padding: 6px 12px;
-    border-radius: 4px;
-    font-family: system-ui, sans-serif;
+  canvas {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: var(--bg);
   }
+  .controls {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    width: 100%;
+  }
+  button {
+    font-family: 'GT Cinetype', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    border: none;
+    padding: 14px 28px;
+    font-size: 16px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+  }
+  button:disabled { opacity: 0.5; cursor: wait; }
+  .status {
+    font-size: 13px;
+    opacity: 0.7;
+    min-height: 1.5em;
+    text-align: center;
+  }
+  .specs {
+    font-size: 12px;
+    opacity: 0.5;
+    line-height: 1.6;
+    text-align: center;
+  }
+  .specs code { background: rgba(255,255,255,0.08); padding: 1px 6px; border-radius: 3px; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+  .row a {
+    color: #eee;
+    text-decoration: none;
+    border: 1px solid #444;
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 3px;
+  }
+  .row a:hover { border-color: #888; }
+  .row a.active { background: rgba(255,255,255,0.1); border-color: #888; }
 </style>
 </head>
 
 <body data-format="reel" data-bg="mint">
 
-  <div class="canvas">
-    <div class="cycler">
-      <div class="track" id="track"></div>
-    </div>
-  </div>
+  <div class="wrap">
+    <h1>Word cycle → Instagram video</h1>
 
-  <div class="meta">
-    1080×1920 reel · mint · 7 words × 1.2s = 8.4s per cycle
+    <div class="row" id="format-row"></div>
+    <div class="row" id="bg-row"></div>
+
+    <div class="preview-frame">
+      <canvas id="canvas"></canvas>
+    </div>
+
+    <div class="controls">
+      <button id="generate">Generate video</button>
+      <div class="status" id="status">Ready.</div>
+    </div>
+
+    <div class="specs" id="specs"></div>
   </div>
 
 <script>
-/* Word list copied verbatim from the on-site cycler (index.html line
-   ~4385). Keep these in sync if marketing updates them. */
+/* ───── Config ──────────────────────────────────────────────────── */
 const WORDS = ['Purpose', 'Places', 'Wilding', 'Knowledge', 'Practices', 'Action', 'Art'];
-const INTERVAL = 1200;     /* matches on-site */
+const INTERVAL_MS = 1200;        /* one word per 1.2s — matches site */
+const FPS = 60;
+const FORMATS = {
+  reel:     { w: 1080, h: 1920, fontSize: 200 },
+  square:   { w: 1080, h: 1080, fontSize: 200 },
+  portrait: { w: 1080, h: 1350, fontSize: 200 },
+};
+const BGS = { mint: '#b1ffcb', yellow: '#eafe8b', purple: '#e4c9f9', orange: '#ff925c' };
 
-/* URL params — let the page render differently without code changes. */
 const params = new URLSearchParams(location.search);
-const format = params.get('format');
-const bg     = params.get('bg');
-if (format) document.body.dataset.format = format;
-if (bg)     document.body.dataset.bg = bg;
+const format = params.get('format') || 'reel';
+const bg     = params.get('bg')     || 'mint';
+const loops  = parseInt(params.get('loops') || '2', 10);
+const cfg    = FORMATS[format] || FORMATS.reel;
+const bgHex  = BGS[bg] || BGS.mint;
+const totalMs = WORDS.length * INTERVAL_MS * loops;
 
-const track = document.getElementById('track');
+document.body.dataset.format = format;
+document.body.dataset.bg = bg;
 
-/* Build many copies so the translate-Y loop never reaches an end.
-   12 copies × 7 words = 84 lines; at 1200ms each that's 100s of
-   runway, far more than any recording. */
-const COPIES = 12;
-for (let c = 0; c < COPIES; c++) {
-  for (const w of WORDS) {
-    const el = document.createElement('div');
-    el.className = 'word';
-    el.textContent = w;
-    track.appendChild(el);
+/* ───── Format / bg switch links ────────────────────────────────── */
+function buildRow(rowEl, key, options) {
+  for (const opt of options) {
+    const a = document.createElement('a');
+    const newParams = new URLSearchParams(location.search);
+    newParams.set(key, opt);
+    a.href = '?' + newParams.toString();
+    a.textContent = opt;
+    if (params.get(key) === opt || (!params.get(key) && opt === (key === 'format' ? 'reel' : 'mint'))) {
+      a.classList.add('active');
+    }
+    rowEl.appendChild(a);
   }
 }
+buildRow(document.getElementById('format-row'), 'format', ['reel', 'square', 'portrait']);
+buildRow(document.getElementById('bg-row'),     'bg',     ['mint', 'yellow', 'purple', 'orange']);
 
-const els = track.querySelectorAll('.word');
+/* ───── Canvas setup at the EXPORT resolution ──────────────────── */
+const canvas = document.getElementById('canvas');
+canvas.width  = cfg.w;
+canvas.height = cfg.h;
+const ctx = canvas.getContext('2d');
 
-/* Centre the active word and dim neighbours, matching the on-site
-   look. Active stays at opacity 1, the line above + below at 0.12,
-   everything else 0. */
-function paint(idx){
-  const lineH = els[0].getBoundingClientRect().height;
-  /* Offset by 1 line so there's a ghost word above the active one
-     (consistent with the on-site cycler centring rule). */
-  track.style.transform = `translateY(-${(idx - 1) * lineH}px)`;
-  els.forEach((el, i) => {
-    const dist = i - idx;
-    el.classList.toggle('active', dist === 0);
-    el.style.opacity = dist === 0 ? '1' : Math.abs(dist) <= 1 ? '0.12' : '0';
-  });
+const specs = document.getElementById('specs');
+specs.innerHTML =
+  `Export: <code>${cfg.w}×${cfg.h}</code> · ${WORDS.length} words × 1.2s × ${loops} loops = ${(totalMs/1000).toFixed(1)}s clip · 60fps`;
+
+/* ───── Easing — same shape as the on-site cubic-bezier ────────── */
+function easeInOutCubic(t){
+  return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2;
 }
 
-/* Start halfway through the copies array so we can scroll both ways
-   without running out of words. */
-let i = Math.floor(els.length / 2);
-paint(i);
-setInterval(() => { i++; paint(i); }, INTERVAL);
+/* ───── Frame draw ─────────────────────────────────────────────── */
+function drawFrame(timeMs) {
+  /* Wrap so frames after totalMs keep showing the last state. */
+  const t = Math.min(timeMs, totalMs);
+
+  /* Background */
+  ctx.fillStyle = bgHex;
+  ctx.fillRect(0, 0, cfg.w, cfg.h);
+
+  /* Where are we in the word sequence? */
+  const wordIndexFloat = t / INTERVAL_MS;
+  const wordIndex      = Math.floor(wordIndexFloat);
+  /* Position within the current word's life (0 → 1). The transition
+     happens in the first 50% of each word; the second 50% holds the
+     active word steady. Matches the on-site feel. */
+  const phase = wordIndexFloat - wordIndex;
+  const transitionPhase = Math.min(phase / 0.5, 1);
+  const eased = easeInOutCubic(transitionPhase);
+
+  /* Layout: centered active word, ghosts above/below at line height. */
+  const lineH = cfg.fontSize * 1.0;
+  const centerY = cfg.h / 2;
+
+  ctx.font = `400 ${cfg.fontSize}px "GT Cinetype", sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#1a1a0e';
+
+  /* Draw a window of words around the active index. Mask top + bottom
+     fade is built into the per-line opacity calculation, so neighbours
+     beyond ±2 lines stop drawing. */
+  for (let offset = -3; offset <= 3; offset++) {
+    const widx = ((wordIndex + offset) % WORDS.length + WORDS.length) % WORDS.length;
+    const word = WORDS[widx].toUpperCase();
+
+    /* Apparent position: slides upward as eased advances. At eased=0
+       offset 0 is centred; at eased=1 offset 0 has moved up by lineH
+       (so the offset-1 word is now centred). */
+    const y = centerY + (offset * lineH) - (eased * lineH);
+
+    /* Opacity rules:
+       - the word at "centred when eased=0" (offset 0) fades from 1→0.12
+       - the word at "centred when eased=1" (offset 1) fades from 0.12→1
+       - offset -1 fades from 0.12 → 0
+       - offset 2  fades from 0    → 0.12
+       - everything else 0
+       Matches the dim-immediate-neighbours, hide-everything-else rule
+       in #missionTrack on the live site. */
+    let opacity;
+    if (offset === 0)       opacity = 1    - eased * (1 - 0.12);
+    else if (offset === 1)  opacity = 0.12 + eased * (1 - 0.12);
+    else if (offset === -1) opacity = 0.12 - eased * 0.12;
+    else if (offset === 2)  opacity = 0    + eased * 0.12;
+    else opacity = 0;
+
+    /* Soft top/bottom mask: linear-gradient(0% transparent → 28%
+       opaque → 72% opaque → 100% transparent). Apply as a multiplier
+       to opacity so words fade in/out as they enter/leave the window. */
+    const yNorm = y / cfg.h;
+    let maskMul = 1;
+    if (yNorm < 0.28)      maskMul = Math.max(0, yNorm / 0.28);
+    else if (yNorm > 0.72) maskMul = Math.max(0, (1 - yNorm) / 0.28);
+    opacity *= maskMul;
+
+    if (opacity <= 0.001) continue;
+    ctx.globalAlpha = opacity;
+    ctx.fillText(word, cfg.w / 2, y);
+  }
+  ctx.globalAlpha = 1;
+}
+
+/* ───── Live preview loop ──────────────────────────────────────── */
+let previewStart = performance.now();
+let previewTickId = 0;
+let previewMode = 'preview'; /* 'preview' or 'record' */
+
+function previewTick(now) {
+  if (previewMode !== 'preview') return;
+  const t = (now - previewStart) % totalMs;
+  drawFrame(t);
+  previewTickId = requestAnimationFrame(previewTick);
+}
+
+/* Kick off the preview immediately. The first few frames may render
+   with a fallback font if GT Cinetype hasn't decoded yet — that's
+   fine for preview. The Record button waits for fonts.ready before
+   starting capture, so the saved file is always in the brand font.
+
+   Heads-up: requestAnimationFrame is throttled or paused entirely
+   when the tab isn't visible (browser default behaviour). Keep this
+   tab focused while recording, otherwise the captured frames will
+   come through stale and the clip will look frozen partway through. */
+previewTickId = requestAnimationFrame(previewTick);
+document.fonts.load(`400 ${cfg.fontSize}px "GT Cinetype"`).catch(()=>{});
+
+/* ───── Record ─────────────────────────────────────────────────── */
+const btn = document.getElementById('generate');
+const status = document.getElementById('status');
+
+function pickMimeType() {
+  /* Prefer MP4 (Safari's native). Fall back to WebM (Chrome/Firefox). */
+  const candidates = [
+    'video/mp4;codecs=h264',
+    'video/mp4',
+    'video/webm;codecs=vp9',
+    'video/webm;codecs=vp8',
+    'video/webm',
+  ];
+  for (const m of candidates) {
+    if (window.MediaRecorder && MediaRecorder.isTypeSupported(m)) return m;
+  }
+  return '';
+}
+
+btn.addEventListener('click', async () => {
+  btn.disabled = true;
+  status.textContent = 'Preparing fonts…';
+
+  const mime = pickMimeType();
+  if (!mime) {
+    status.textContent = 'This browser doesn’t support video recording. Try Safari or Chrome.';
+    btn.disabled = false;
+    return;
+  }
+  const ext = mime.startsWith('video/mp4') ? 'mp4' : 'webm';
+
+  /* Block on the brand font so the captured clip ships in GT Cinetype,
+     not a fallback. document.fonts.ready resolves once every face has
+     loaded or errored — we want it both ways so we don't hang forever
+     on a missing font. */
+  await Promise.race([
+    document.fonts.ready,
+    new Promise(r => setTimeout(r, 3000)),
+  ]).catch(()=>{});
+
+  /* Switch the preview loop off so it doesn't fight the record loop
+     for time on the canvas. */
+  previewMode = 'record';
+  if (previewTickId) cancelAnimationFrame(previewTickId);
+
+  const stream = canvas.captureStream(FPS);
+  const recorder = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 8_000_000 });
+  const chunks = [];
+  recorder.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
+  recorder.onstop = () => {
+    const blob = new Blob(chunks, { type: mime.split(';')[0] });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `afield-word-cycle-${format}-${bg}.${ext}`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+
+    status.textContent = `Saved: ${a.download} (${(blob.size / 1024 / 1024).toFixed(1)} MB)`;
+    btn.disabled = false;
+
+    /* Restart the preview so the user can verify and re-record if
+       needed without reloading the page. */
+    previewMode = 'preview';
+    previewStart = performance.now();
+    previewTickId = requestAnimationFrame(previewTick);
+  };
+
+  /* Run the animation from t=0 for exactly totalMs, recording each
+     frame at the canvas's native resolution. */
+  const recordStart = performance.now();
+  let stopped = false;
+
+  function recordTick(now) {
+    const elapsed = now - recordStart;
+    drawFrame(elapsed);
+    if (elapsed >= totalMs && !stopped) {
+      stopped = true;
+      recorder.stop();
+      return;
+    }
+    requestAnimationFrame(recordTick);
+  }
+
+  recorder.start(200);
+  status.textContent = 'Recording…';
+  requestAnimationFrame(recordTick);
+});
 </script>
 
 </body>
