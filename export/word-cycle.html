@@ -148,6 +148,7 @@
 
     <div class="row" id="format-row"></div>
     <div class="row" id="bg-row"></div>
+    <div class="row" id="align-row"></div>
 
     <div class="preview-frame">
       <canvas id="canvas"></canvas>
@@ -176,6 +177,7 @@ const BGS = { mint: '#b1ffcb', yellow: '#eafe8b', purple: '#e4c9f9', orange: '#f
 const params = new URLSearchParams(location.search);
 const format = params.get('format') || 'reel';
 const bg     = params.get('bg')     || 'mint';
+const align  = params.get('align')  || 'center';
 const loops  = parseInt(params.get('loops') || '2', 10);
 const cfg    = FORMATS[format] || FORMATS.reel;
 const bgHex  = BGS[bg] || BGS.mint;
@@ -183,8 +185,10 @@ const totalMs = WORDS.length * INTERVAL_MS * loops;
 
 document.body.dataset.format = format;
 document.body.dataset.bg = bg;
+document.body.dataset.align = align;
 
 /* ───── Format / bg switch links ────────────────────────────────── */
+const DEFAULTS = { format: 'reel', bg: 'mint', align: 'center' };
 function buildRow(rowEl, key, options) {
   for (const opt of options) {
     const a = document.createElement('a');
@@ -192,7 +196,7 @@ function buildRow(rowEl, key, options) {
     newParams.set(key, opt);
     a.href = '?' + newParams.toString();
     a.textContent = opt;
-    if (params.get(key) === opt || (!params.get(key) && opt === (key === 'format' ? 'reel' : 'mint'))) {
+    if (params.get(key) === opt || (!params.get(key) && opt === DEFAULTS[key])) {
       a.classList.add('active');
     }
     rowEl.appendChild(a);
@@ -200,6 +204,7 @@ function buildRow(rowEl, key, options) {
 }
 buildRow(document.getElementById('format-row'), 'format', ['reel', 'square', 'portrait']);
 buildRow(document.getElementById('bg-row'),     'bg',     ['mint', 'yellow', 'purple', 'orange']);
+buildRow(document.getElementById('align-row'),  'align',  ['left', 'center', 'right']);
 
 /* ───── Canvas setup at the EXPORT resolution ──────────────────── */
 const canvas = document.getElementById('canvas');
@@ -268,9 +273,16 @@ function drawFrame(timeMs) {
   const centerY = cfg.h / 2;
 
   ctx.font = `400 ${cfg.fontSize}px "GT Cinetype", sans-serif`;
-  ctx.textAlign = 'center';
+  ctx.textAlign = align;     /* 'left' | 'center' | 'right' */
   ctx.textBaseline = 'middle';
   ctx.fillStyle = '#1a1a0e';
+  /* Canvas textAlign 'left' anchors at the X coord; we pass the
+     opposite edge of the canvas + margin for each alignment so the
+     visible text starts/ends/centres where you'd expect. */
+  const xAnchor =
+      align === 'left'  ? SIDE_MARGIN
+    : align === 'right' ? cfg.w - SIDE_MARGIN
+    :                     cfg.w / 2;
 
   /* Draw a window of words around the active index. Mask top + bottom
      fade is built into the per-line opacity calculation, so neighbours
@@ -310,7 +322,7 @@ function drawFrame(timeMs) {
 
     if (opacity <= 0.001) continue;
     ctx.globalAlpha = opacity;
-    ctx.fillText(word, cfg.w / 2, y);
+    ctx.fillText(word, xAnchor, y);
   }
   ctx.globalAlpha = 1;
 }
@@ -399,7 +411,7 @@ btn.addEventListener('click', async () => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `afield-word-cycle-${format}-${bg}.${ext}`;
+    a.download = `afield-word-cycle-${format}-${bg}-${align}.${ext}`;
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 2000);
 
