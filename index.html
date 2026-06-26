@@ -1900,18 +1900,24 @@
     </div>
     <!-- Desktop hero video -->
     <div id="heroVideo" style="position:absolute; left:0; top:0; bottom:0; right:0; z-index:9; overflow:hidden; background:transparent;">
-      <video autoplay loop muted playsinline disablepictureinpicture disableremoteplayback preload="auto" style="position:absolute;top:50%;left:calc(50% + 50px);transform:translate(-50%,-50%) scale(1.13);width:100%;height:100%;object-fit:contain;pointer-events:none;">
+      <!-- Placement copied from #fixedVideoWilding so the polygon lands
+           in the same viewport position as the grant pages.
+           translateX(150px) + scale(1.04) + object-position:65% center
+           are the same trio used there; the poly-float @keyframes
+           re-states this transform with translateY and rotate added,
+           so the polygon breathes here too. -->
+      <video autoplay loop muted playsinline disablepictureinpicture disableremoteplayback preload="auto" style="width:100%; height:100%; object-fit:cover; object-position:65% center; transform:translateX(150px) scale(1.04); transform-origin:65% center; pointer-events:none;">
         <!-- Source order = browser-picks-first-it-can-play. The `type` attribute
              with codec hint stops the browser fetching files it can't decode:
              - Safari: hvc1 HEVC (efficient, native)
              - Chrome / Firefox: skip HEVC (no decode), pick WebM (VP9)
              - Anything else: H.264 MP4 fallback
              Result: no flash of black, no double-fetch. -->
-        <source src="https://res.cloudinary.com/duaosajrr/video/upload/v1780998050/Landing_Time-hevc-safari_ud5ypb.mp4" type='video/mp4; codecs="hvc1"'>
+        <source src="https://res.cloudinary.com/duaosajrr/video/upload/v1782314548/Comp_14_1-hevc-safari_pdg5h7.mp4" type='video/mp4; codecs="hvc1"'>
         <!-- Non-Safari (Chrome/Firefox/Edge): VP9 WebM, with MP4 fallback
              auto-transcoded on the fly by Cloudinary (f_mp4,q_auto). -->
-        <source src="https://res.cloudinary.com/duaosajrr/video/upload/v1780998921/Landing_Chrome_lleutn.webm" type="video/webm">
-        <source src="https://res.cloudinary.com/duaosajrr/video/upload/f_mp4,q_auto/v1780998921/Landing_Chrome_lleutn.webm" type="video/mp4">
+        <source src="https://res.cloudinary.com/duaosajrr/video/upload/v1782314542/Comp_14_3_dpn5hv.webm" type="video/webm">
+        <source src="https://res.cloudinary.com/duaosajrr/video/upload/f_mp4,q_auto/v1782314542/Comp_14_3_dpn5hv.webm" type="video/mp4">
       </video>
     </div>
     <!-- Mobile-only hero -->
@@ -1919,9 +1925,9 @@
       <!-- Video: larger now (was 44svh → 56svh) so it fills more of the mobile hero -->
       <div style="width:100vw; height:calc(var(--vh, 1vh) * 45); height:45svh; overflow:hidden; position:relative;">
         <video autoplay loop muted playsinline disablepictureinpicture disableremoteplayback preload="auto" style="position:absolute; top:50%; left:50%; transform:translate(-66%,-50%); width:158%; height:158%; object-fit:cover; pointer-events:none;">
-          <source src="https://res.cloudinary.com/duaosajrr/video/upload/v1780998050/Landing_Time-hevc-safari_ud5ypb.mp4" type='video/mp4; codecs="hvc1"'>
-          <source src="https://res.cloudinary.com/duaosajrr/video/upload/v1780998921/Landing_Chrome_lleutn.webm" type="video/webm">
-          <source src="https://res.cloudinary.com/duaosajrr/video/upload/f_mp4,q_auto/v1780998921/Landing_Chrome_lleutn.webm" type="video/mp4">
+          <source src="https://res.cloudinary.com/duaosajrr/video/upload/v1782314548/Comp_14_1-hevc-safari_pdg5h7.mp4" type='video/mp4; codecs="hvc1"'>
+          <source src="https://res.cloudinary.com/duaosajrr/video/upload/v1782314542/Comp_14_3_dpn5hv.webm" type="video/webm">
+          <source src="https://res.cloudinary.com/duaosajrr/video/upload/f_mp4,q_auto/v1782314542/Comp_14_3_dpn5hv.webm" type="video/mp4">
         </video>
       </div>
       <!-- Text: smaller hero copy (was clamp(46,13vw,72) → clamp(34,9.5vw,52)),
@@ -2287,16 +2293,23 @@
      normal static position.
      ────────────────────────────────────────────────────────────── */
   @keyframes poly-float {
-    0%, 100% { transform: translateX(150px) translateY(0)    scale(1.04); }
-    50%      { transform: translateX(150px) translateY(-10px) scale(1.04); }
+    /* translateY drifts up 10px then back; rotate tilts -2.5deg → +2.5deg
+       across the cycle so the polygon rocks slightly as it floats.
+       Order matters: translate first, then rotate (around transform-
+       origin), then scale, so the rotation is centred on the polygon's
+       focal point rather than the corner. */
+    0%, 100% { transform: translateX(150px) translateY(0)     rotate(-2.5deg) scale(1.04); }
+    50%      { transform: translateX(150px) translateY(-10px) rotate( 2.5deg) scale(1.04); }
   }
   #fixedVideoWilding video,
-  #fixedVideoArt video {
+  #fixedVideoArt video,
+  #heroVideo video {
     animation: poly-float 12s ease-in-out infinite;
   }
   @media (prefers-reduced-motion: reduce) {
     #fixedVideoWilding video,
-    #fixedVideoArt video {
+    #fixedVideoArt video,
+    #heroVideo video {
       animation: none;
     }
   }
