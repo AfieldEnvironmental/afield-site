@@ -2268,6 +2268,39 @@
     transition: opacity 0.4s ease-out;
   }
 
+  /* ──────────────────────────────────────────────────────────────
+     Polygon float — subtle vertical drift on the Wilding + Arts
+     polygons so they breathe rather than sitting stock-still. The
+     keyframes preserve the existing translateX(150px) + scale(1.04)
+     transform on the inner <video> and add a 10px vertical
+     oscillation over 12 seconds. ease-in-out keeps the motion
+     sinusoidal at the turnaround points.
+
+     Why the keyframes inline the full transform: a CSS animation's
+     transform overrides whatever's currently on the element for the
+     duration of the animation. So we need to re-state translateX and
+     scale here, otherwise the polygon would snap to translateY-only
+     and lose its 150px-right offset and 1.04x scale.
+
+     Honours prefers-reduced-motion: the animation is suppressed for
+     users who request reduced motion; the polygon then sits in its
+     normal static position.
+     ────────────────────────────────────────────────────────────── */
+  @keyframes poly-float {
+    0%, 100% { transform: translateX(150px) translateY(0)    scale(1.04); }
+    50%      { transform: translateX(150px) translateY(-10px) scale(1.04); }
+  }
+  #fixedVideoWilding video,
+  #fixedVideoArt video {
+    animation: poly-float 12s ease-in-out infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #fixedVideoWilding video,
+    #fixedVideoArt video {
+      animation: none;
+    }
+  }
+
   .fixed-video-pin.visible {
     opacity: 1;
     transition: opacity 0.55s ease-in 0.25s;
