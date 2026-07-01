@@ -1903,9 +1903,7 @@
       <!-- Placement copied from #fixedVideoWilding so the polygon lands
            in the same viewport position as the grant pages.
            translateX(150px) + scale(1.04) + object-position:65% center
-           are the same trio used there; the poly-float @keyframes
-           re-states this transform with translateY and rotate added,
-           so the polygon breathes here too. -->
+           are the same trio used there. -->
       <video autoplay loop muted playsinline disablepictureinpicture disableremoteplayback preload="auto" style="width:100%; height:100%; object-fit:cover; object-position:65% center; transform:translateX(150px) scale(1.04); transform-origin:65% center; pointer-events:none;">
         <!-- Source order = browser-picks-first-it-can-play. The `type` attribute
              with codec hint stops the browser fetching files it can't decode:
@@ -2272,46 +2270,6 @@
        Outgoing fades first, incoming starts after a 0.25s delay so the
        brief overlap window is short. */
     transition: opacity 0.4s ease-out;
-  }
-
-  /* ──────────────────────────────────────────────────────────────
-     Polygon float — subtle vertical drift on the Wilding + Arts
-     polygons so they breathe rather than sitting stock-still. The
-     keyframes preserve the existing translateX(150px) + scale(1.04)
-     transform on the inner <video> and add a 10px vertical
-     oscillation over 12 seconds. ease-in-out keeps the motion
-     sinusoidal at the turnaround points.
-
-     Why the keyframes inline the full transform: a CSS animation's
-     transform overrides whatever's currently on the element for the
-     duration of the animation. So we need to re-state translateX and
-     scale here, otherwise the polygon would snap to translateY-only
-     and lose its 150px-right offset and 1.04x scale.
-
-     Honours prefers-reduced-motion: the animation is suppressed for
-     users who request reduced motion; the polygon then sits in its
-     normal static position.
-     ────────────────────────────────────────────────────────────── */
-  @keyframes poly-float {
-    /* translateY drifts up 10px then back; rotate tilts -2.5deg → +2.5deg
-       across the cycle so the polygon rocks slightly as it floats.
-       Order matters: translate first, then rotate (around transform-
-       origin), then scale, so the rotation is centred on the polygon's
-       focal point rather than the corner. */
-    0%, 100% { transform: translateX(150px) translateY(0)     rotate(-2.5deg) scale(1.04); }
-    50%      { transform: translateX(150px) translateY(-10px) rotate( 2.5deg) scale(1.04); }
-  }
-  #fixedVideoWilding video,
-  #fixedVideoArt video,
-  #heroVideo video {
-    animation: poly-float 12s ease-in-out infinite;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    #fixedVideoWilding video,
-    #fixedVideoArt video,
-    #heroVideo video {
-      animation: none;
-    }
   }
 
   .fixed-video-pin.visible {
