@@ -1469,14 +1469,15 @@
   }
   .mobile-section-video {
     display: block !important;
-    /* Wider than viewport + negative left margin = visually shifted left
-       by ~50px while still covering the full viewport width (overflow
-       clipped by parent's overflow-x:clip on body/html). */
-    width: calc(100% + 50px) !important;
+    /* Full viewport width, no horizontal bias. Previous rules widened
+       the box to 100%+50px and shifted it -50px left to compensate for
+       an old source-frame composition; the current Arts / Wilding
+       sources have their polygon centred and don't need the shift. */
+    width: 100% !important;
     max-width: none !important;
-    margin-left: -50px !important;
-    /* Bounding box bumped up to 120vw (was 75vw) so the polygon at
-       scale(2.3) on the inner video isn't clipped at top/bottom. */
+    margin-left: 0 !important;
+    /* Bounding box height at 120vw so the polygon at scale(2.3) on
+       the inner video isn't clipped at top/bottom. */
     height: 120vw !important;
     max-height: none !important;
     margin-bottom: 6vw !important;
@@ -1491,26 +1492,20 @@
     position: absolute !important;
     top: 50% !important;
     left: 50% !important;
-    /* object-fit:contain (not cover) preserves the ENTIRE video frame —
-       no part of the polygon artwork ever gets cropped by the video-fit
-       step. Then transform:scale brings it back up to the size the user
-       wanted. Net effect: polygon at ~same visual size as before, but
-       NOTHING important is sliced off by container edges.
+    /* Compensation for polygon-not-centred-in-source: the current
+       Arts / Wilding sources compose their polygon slightly right of
+       the source's true centre. Pulling the video ~75px left with
+       object-position at 40% lines the polygon up with the container
+       centre visually.
 
-       transform-origin slightly RIGHT of centre matches where the focal
-       point lives in both source files.
-
-       Extra -30px x-translate: the new (duaosajrr) video sources have
-       their subjects framed slightly right of where the previous masters
-       sat, so the right edge of each polygon was clipping people on the
-       right. Pulling the inner video 30px left re-centres the action
-       inside the polygon mask without resizing anything. */
-    transform: translate(calc(-50% - 30px), -50%) scale(2.3) !important;
-    transform-origin: 60% center !important;
+       Long-term fix is a source re-export with the polygon composed
+       at 50% of the frame — see HANDOVER.md. */
+    transform: translate(calc(-50% - 75px), -50%) scale(2.3) !important;
+    transform-origin: 50% center !important;
     width: 100% !important;
     height: 100% !important;
     object-fit: contain !important;
-    object-position: 60% center !important;
+    object-position: 40% center !important;
     background: transparent !important;
   }
   #sectionWilding, #sectionArt { min-height: auto !important; display: flex !important; flex-direction: column !important; }
@@ -1845,22 +1840,12 @@
 
   <!-- Fixed videos — pinned, fade with their section -->
   <div id="fixedVideoWilding" class="fixed-video-pin">
-    <!-- The Comp_14/Comp_15 sources frame their polygon left-of-centre
-         in the source frame; this fixed 150px translate compensates so
-         the polygon lands roughly centred in the viewport at common
-         desktop widths.
-
-         History: tried a viewport-proportional clamp(150px, 18vw, 360px)
-         for a brief moment so the polygon would clear the body text on
-         very wide viewports — but the client read that as "the polygon
-         keeps drifting right as I resize". Reverted to the flat 150px
-         so the polygon's apparent position is the same at every window
-         size (the .fixed-video-pin container is already centered, so a
-         constant-pixel translate yields a constant-pixel offset).
-
-         Transform on the inner <video> is safe (Safari layer-cache
-         issue from earlier was about transform on the .fixed-video-pin
-         container, not the inner element). -->
+    <!-- Wilding + Arts polygons share the same inline video style:
+         translateX(150px) + scale(1.04) + object-position:65% center.
+         The source frames themselves have the polygon composed left-
+         of-centre, and the 150px translate lands it roughly centred
+         in the viewport. Container is already centred via left:0/
+         right:0/margin:auto on .fixed-video-pin. -->
     <video autoplay loop muted playsinline disablepictureinpicture disableremoteplayback preload="auto" style="width:100%; height:100%; object-fit:cover; object-position:65% center; transform:translateX(150px) scale(1.04); transform-origin:65% center; pointer-events:none;">
       <!-- Safari: HEVC with alpha
            Chrome/Firefox: VP9 WebM
@@ -1922,7 +1907,7 @@
     <div id="mobileHero" style="display:none;">
       <!-- Video: larger now (was 44svh → 56svh) so it fills more of the mobile hero -->
       <div style="width:100vw; height:calc(var(--vh, 1vh) * 45); height:45svh; overflow:hidden; position:relative;">
-        <video autoplay loop muted playsinline disablepictureinpicture disableremoteplayback preload="auto" style="position:absolute; top:50%; left:50%; transform:translate(-66%,-50%); width:158%; height:158%; object-fit:cover; pointer-events:none;">
+        <video autoplay loop muted playsinline disablepictureinpicture disableremoteplayback preload="auto" style="position:absolute; top:50%; left:50%; transform:translate(-68%,-50%); width:158%; height:158%; object-fit:cover; pointer-events:none;">
           <source src="https://res.cloudinary.com/duaosajrr/video/upload/v1782907640/Landing_1-hevc-safari_q3n04b.mp4" type='video/mp4; codecs="hvc1"'>
           <source src="https://res.cloudinary.com/duaosajrr/video/upload/v1782907640/Landing_1-vp9-chrome_qstpd4.webm" type="video/webm">
           <source src="https://res.cloudinary.com/duaosajrr/video/upload/f_mp4,q_auto/v1782907640/Landing_1-vp9-chrome_qstpd4.webm" type="video/mp4">
