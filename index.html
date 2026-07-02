@@ -1862,10 +1862,11 @@
     </video>
   </div>
   <div id="fixedVideoArt" class="fixed-video-pin">
-    <!-- Matches the Wilding treatment: object-position:50% + no
-         horizontal translate so the polygon sits on the viewport
-         centre on both grant pages. -->
-    <video autoplay loop muted playsinline disablepictureinpicture disableremoteplayback preload="auto" style="width:100%; height:100%; object-fit:cover; object-position:50% center; transform:scale(1.04); transform-origin:center center; pointer-events:none;">
+    <!-- Arts_2 source has the polygon composed slightly left of the
+         Wilding polygon's source position, so a +80px translate
+         lines Arts up horizontally with Wilding across the grant
+         pages. Same scale(1.04) as Wilding otherwise. -->
+    <video autoplay loop muted playsinline disablepictureinpicture disableremoteplayback preload="auto" style="width:100%; height:100%; object-fit:cover; object-position:50% center; transform:translateX(80px) scale(1.04); transform-origin:center center; pointer-events:none;">
       <!-- Safari: HEVC with alpha channel (transparent bg around polygon)
            Chrome/Firefox: VP9 WebM (also new edit; alpha varies)
            Older browsers: H.264 fallback -->
@@ -1893,11 +1894,10 @@
       <!-- object-fit:contain guarantees the whole polygon is always
            visible regardless of viewport aspect ratio. cover would
            crop the polygon's sides on portrait or square viewports
-           (the source is 16:9 landscape). scale(1.5) boosts the
-           polygon size so it still fills a meaningful portion of
-           the hero on portrait viewports where contain would
-           otherwise letterbox it to a narrow band. -->
-      <video autoplay loop muted playsinline disablepictureinpicture disableremoteplayback preload="auto" style="width:100%; height:100%; object-fit:contain; object-position:50% center; transform:scale(1.5); transform-origin:center center; pointer-events:none;">
+           (the source is 16:9 landscape). scale(1.2) sizes the
+           polygon so it fills a meaningful portion of the hero
+           without dominating it. -->
+      <video autoplay loop muted playsinline disablepictureinpicture disableremoteplayback preload="auto" style="width:100%; height:100%; object-fit:contain; object-position:50% center; transform:scale(1.2); transform-origin:center center; pointer-events:none;">
         <!-- Source order = browser-picks-first-it-can-play. The `type` attribute
              with codec hint stops the browser fetching files it can't decode:
              - Safari: hvc1 HEVC (efficient, native)
