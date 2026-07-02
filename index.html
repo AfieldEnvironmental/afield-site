@@ -1876,9 +1876,15 @@
     </video>
   </div>
 
-  <main id="heroSection">
+  <!-- height + margin-bottom trick: the hero is 80px taller than
+       the viewport so the polygon's bottom vertex isn't clipped
+       when the hero video is scaled up, but the negative margin
+       pulls the next section back up so overall layout doesn't
+       shift. overflow:hidden stays, which keeps the mission
+       cycler etc. clipped correctly when they're out of scope. -->
+  <main id="heroSection" style="height:calc(100vh + 80px); margin-bottom:-80px;">
     <!-- Hero heading — bottom-left -->
-    <div id="heroHeading" style="position:absolute; bottom:5vw; left:3vw; z-index:3;">
+    <div id="heroHeading" style="position:absolute; bottom:calc(5vw + 80px); left:3vw; z-index:3;">
       <h1 style="font-family:'GT Cinetype',sans-serif; font-size:clamp(44px,9.5vh,128px); font-weight:400; letter-spacing:-0.03em; line-height:1.08; color:#1a1a0e; text-transform:none; margin:0; white-space:nowrap;">
         <span class="hero-line" style="display:block; overflow:hidden;"><span class="hero-line-inner" style="display:block; animation: heroLineIn 0.7s 0.05s cubic-bezier(0.4,0,0.2,1) both;">Creative</span></span>
         <span class="hero-line" style="display:block; overflow:hidden;"><span class="hero-line-inner" style="display:block; animation: heroLineIn 0.7s 0.18s cubic-bezier(0.4,0,0.2,1) both;">responses to</span></span>
