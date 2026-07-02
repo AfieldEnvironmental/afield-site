@@ -1492,21 +1492,27 @@
     position: absolute !important;
     top: 50% !important;
     left: 50% !important;
-    /* Compensation for polygon-not-centred-in-source: the current
-       Arts / Wilding sources compose their polygon slightly right of
-       the source's true centre. Pulling the video ~75px left with
-       object-position at 40% lines the polygon up with the container
-       centre visually.
-
-       Long-term fix is a source re-export with the polygon composed
-       at 50% of the frame — see HANDOVER.md. */
-    transform: translate(calc(-50% - 75px), -50%) scale(2.3) !important;
+    /* Base rule — per-section transforms below tune each polygon.
+       The Wilding + Arts source frames compose their polygons at
+       different positions within the 3840x2160 frame, so a single
+       translate can't centre both. Long-term fix is a re-export
+       with the polygon at 50% of the source — see HANDOVER.md. */
     transform-origin: 50% center !important;
     width: 100% !important;
     height: 100% !important;
     object-fit: contain !important;
-    object-position: 40% center !important;
+    object-position: 50% center !important;
     background: transparent !important;
+  }
+  /* Wilding source: polygon composed right-of-centre in the frame —
+     pull the video ~75px left so the polygon lands on container centre. */
+  #sectionWilding .mobile-section-video video {
+    transform: translate(calc(-50% - 75px), -50%) scale(2.3) !important;
+  }
+  /* Arts source: polygon composed roughly on-centre in the frame —
+     no horizontal shift, just the shared scale(2.3). */
+  #sectionArt .mobile-section-video video {
+    transform: translate(-50%, -50%) scale(2.3) !important;
   }
   #sectionWilding, #sectionArt { min-height: auto !important; display: flex !important; flex-direction: column !important; }
   #sectionWilding .mobile-section-video, #sectionArt .mobile-section-video { order: 1 !important; }
