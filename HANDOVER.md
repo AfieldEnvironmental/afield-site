@@ -89,4 +89,14 @@ The Get in touch form posts to **Formspree** (`https://formspree.io/f/xgobbadz`)
 - Privacy policy has one phrase ("Commonplace Digital Ltd" in the Disclosure section) that reads like a template leftover from another organisation — should probably be "Afield Environmental". Legal call.
 - Hydration toggle + three DISABLED sub-sections (see top of this doc). Needed only when the team wants Airtable to be the live source.
 - Site Config Value field (see above).
-- The desktop hero video is currently the Wilding asset (Comp_14 pair). Swap to a landing-specific asset when one's available.
+
+## Imagery (July 2026: static images, no more video)
+
+All polygon imagery is now static transparent PNGs on Cloudinary, with the polygon composed at the centre of a 3840x2160 frame:
+
+- WILDING `image/upload/v1784115426/AFIELD-WEB---WILDING_vi2w0s.png` — used by the desktop hero, desktop Wilding pin, mobile hero, and mobile Wilding section.
+- ARTS `image/upload/v1784115429/AFIELD-WEB---ARTS_lrd3wx.png` — used by the desktop Arts pin and mobile Arts section.
+
+The site requests them through `f_auto,q_auto,w_2560` so Cloudinary serves AVIF/WebP at a sensible size. To swap an image: re-export with the polygon centred in a 16:9 frame, upload to Cloudinary, and replace the URL in every slot that uses it (search the HTML for the old public ID). Keep the polygon centred in the frame — all slots use plain central alignment with no positional compensation.
+
+The old `<video>` management JS (pause pipeline, iPad decode gate, codec probe) is still in the file but inert; it null-guards and no-ops with no videos present, and works again if video ever returns.
