@@ -3850,7 +3850,7 @@
     var keys = [];
     for(var i = 0; i < bgSectionIds.length; i++){
       var el = document.getElementById(bgSectionIds[i]);
-      if(el) keys.push({ top: el.offsetTop, colour: bgColours[bgSectionIds[i]], id: bgSectionIds[i] });
+      if(el) keys.push({ top: el.offsetTop, colour: bgColours[bgSectionIds[i]], id: bgSectionIds[i], el: el });
     }
     if(!keys.length) return;
 
@@ -3879,6 +3879,18 @@
       var endFactor   = isTouch ? 0.40 : 0.15;
       var transStart = keys[toIdx].top - vh * startFactor;
       var transEnd   = keys[toIdx].top - vh * endFactor;
+      /* Menu / dot-nav clicks land the scroll at (section top -
+         scroll-margin-top). On shorter viewports that landing point
+         used to sit INSIDE this blend window, so a nav jump parked
+         the page on an in-between blend — the lime→lilac midpoint
+         reads as beige — while hand-scrolling carried on past
+         transEnd and got the true colour. Clamp the blend to
+         complete 30px above the nav landing point so both routes
+         arrive at the same section colour. */
+      var navLand = keys[toIdx].top -
+        (parseFloat(getComputedStyle(keys[toIdx].el).scrollMarginTop) || 0);
+      if (transEnd > navLand - 30) transEnd = navLand - 30;
+      if (transStart > transEnd - 60) transStart = transEnd - 60;
       if(scrollY <= transStart){
         colour = keys[fromIdx].colour;
       } else if(scrollY >= transEnd){
@@ -5407,7 +5419,7 @@ if(window.innerWidth <= 768){
     var keys = [];
     for(var i = 0; i < sections.length; i++){
       var el = document.getElementById(sections[i].id);
-      if(el) keys.push({ top: el.offsetTop, rgb: parseRgbStr(sections[i].colour), id: sections[i].id });
+      if(el) keys.push({ top: el.offsetTop, rgb: parseRgbStr(sections[i].colour), id: sections[i].id, el: el });
     }
     if(!keys.length) return;
 
@@ -5428,6 +5440,13 @@ if(window.innerWidth <= 768){
       var endFactor   = isTouch ? 0.40 : 0.15;
       var transStart = keys[toIdx].top - vh * startFactor;
       var transEnd   = keys[toIdx].top - vh * endFactor;
+      /* Same nav-landing clamp as updateBg: menu clicks land at
+         (top - scroll-margin-top); the blend must be complete by
+         then or a nav jump parks on an in-between blend colour. */
+      var navLand = keys[toIdx].top -
+        (parseFloat(getComputedStyle(keys[toIdx].el).scrollMarginTop) || 0);
+      if (transEnd > navLand - 30) transEnd = navLand - 30;
+      if (transStart > transEnd - 60) transStart = transEnd - 60;
       if(scrollY <= transStart){
         rgb = keys[fromIdx].rgb;
       } else if(scrollY >= transEnd){
