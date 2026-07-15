@@ -1488,31 +1488,21 @@
     z-index: 12 !important;
     order: 2 !important;
   }
-  .mobile-section-video video {
+  .mobile-section-video img {
     position: absolute !important;
     top: 50% !important;
     left: 50% !important;
-    /* Base rule — per-section transforms below tune each polygon.
-       The Wilding + Arts source frames compose their polygons at
-       different positions within the 3840x2160 frame, so a single
-       translate can't centre both. Long-term fix is a re-export
-       with the polygon at 50% of the source — see HANDOVER.md. */
+    /* Static images (July 2026 re-export) compose the polygon at
+       the centre of the 3840x2160 frame, so plain centring works —
+       no per-section compensation needed. scale(2.3) sizes the
+       polygon (~29% of the source width) to fill the container. */
+    transform: translate(-50%, -50%) scale(2.3) !important;
     transform-origin: 50% center !important;
     width: 100% !important;
     height: 100% !important;
     object-fit: contain !important;
     object-position: 50% center !important;
     background: transparent !important;
-  }
-  /* Wilding source: polygon composed right-of-centre in the frame —
-     pull the video ~75px left so the polygon lands on container centre. */
-  #sectionWilding .mobile-section-video video {
-    transform: translate(calc(-50% - 75px), -50%) scale(2.3) !important;
-  }
-  /* Arts source: polygon composed roughly on-centre in the frame —
-     no horizontal shift, just the shared scale(2.3). */
-  #sectionArt .mobile-section-video video {
-    transform: translate(-50%, -50%) scale(2.3) !important;
   }
   #sectionWilding, #sectionArt { min-height: auto !important; display: flex !important; flex-direction: column !important; }
   #sectionWilding .mobile-section-video, #sectionArt .mobile-section-video { order: 1 !important; }
@@ -1845,35 +1835,18 @@
   <h2 id="fixedHeadingPeople" class="fixed-heading" style="white-space:nowrap;">Team</h2>
 
   <!-- Fixed videos — pinned, fade with their section -->
+  <!-- Static images (July 2026): the client swapped the alpha videos
+       for transparent PNGs with the polygon composed at the CENTRE
+       of the 3840x2160 frame, so both grant pages use identical
+       plain centring — no translate compensation anywhere.
+       f_auto,q_auto,w_2560 lets Cloudinary serve AVIF/WebP at a
+       sensible size; the SAME URL is reused on the mobile hero +
+       mobile sections so each asset downloads once. -->
   <div id="fixedVideoWilding" class="fixed-video-pin">
-    <!-- Both grant videos centre their polygon in the viewport. The
-         .fixed-video-pin container is already centred via left:0/
-         right:0/margin:auto, and object-position:50% center + no
-         horizontal translate keeps the polygon on the container
-         centre. Body text on the left shows through the alpha
-         channel behind the polygon. -->
-    <video autoplay loop muted playsinline disablepictureinpicture disableremoteplayback preload="auto" style="width:100%; height:100%; object-fit:cover; object-position:50% center; transform:scale(1.04); transform-origin:center center; pointer-events:none;">
-      <!-- Safari: HEVC with alpha
-           Chrome/Firefox: VP9 WebM
-           Older browsers: H.264 fallback -->
-      <source src="https://res.cloudinary.com/duaosajrr/video/upload/v1782989969/Landing-hevc-safari_ibwmry.mp4" type='video/mp4; codecs="hvc1"'>
-      <source src="https://res.cloudinary.com/duaosajrr/video/upload/v1782990005/Landing-vp9-chrome_jmyi0c.webm" type="video/webm">
-      <source src="https://res.cloudinary.com/duaosajrr/video/upload/f_mp4,q_auto/v1782990005/Landing-vp9-chrome_jmyi0c.webm" type="video/mp4">
-    </video>
+    <img src="https://res.cloudinary.com/duaosajrr/image/upload/f_auto,q_auto,w_2560/v1784115426/AFIELD-WEB---WILDING_vi2w0s.png" alt="Two people crouching in a field, examining wild plants" decoding="async" style="width:100%; height:100%; object-fit:cover; object-position:50% center; pointer-events:none;">
   </div>
   <div id="fixedVideoArt" class="fixed-video-pin">
-    <!-- Arts_2 source has the polygon composed slightly left of the
-         Wilding polygon's source position, so a +80px translate
-         lines Arts up horizontally with Wilding across the grant
-         pages. Same scale(1.04) as Wilding otherwise. -->
-    <video autoplay loop muted playsinline disablepictureinpicture disableremoteplayback preload="auto" style="width:100%; height:100%; object-fit:cover; object-position:50% center; transform:translateX(80px) scale(1.04); transform-origin:center center; pointer-events:none;">
-      <!-- Safari: HEVC with alpha channel (transparent bg around polygon)
-           Chrome/Firefox: VP9 WebM (also new edit; alpha varies)
-           Older browsers: H.264 fallback -->
-      <source src="https://res.cloudinary.com/duaosajrr/video/upload/v1782990066/Arts_2-hevc-safari_iaygjz.mp4" type='video/mp4; codecs="hvc1"'>
-      <source src="https://res.cloudinary.com/duaosajrr/video/upload/v1782990151/Arts_2-vp9-chrome_vn1zya.webm" type="video/webm">
-      <source src="https://res.cloudinary.com/duaosajrr/video/upload/f_mp4,q_auto/v1782990151/Arts_2-vp9-chrome_vn1zya.webm" type="video/mp4">
-    </video>
+    <img src="https://res.cloudinary.com/duaosajrr/image/upload/f_auto,q_auto,w_2560/v1784115429/AFIELD-WEB---ARTS_lrd3wx.png" alt="An artist standing among tree branches and blossom" decoding="async" style="width:100%; height:100%; object-fit:cover; object-position:50% center; pointer-events:none;">
   </div>
 
   <!-- overflow:clip + overflow-clip-margin extends the clip region
@@ -1897,35 +1870,21 @@
     </div>
     <!-- Desktop hero video -->
     <div id="heroVideo" style="position:absolute; left:0; top:0; bottom:0; right:0; z-index:9; overflow:hidden; background:transparent;">
-      <!-- object-fit:contain guarantees the whole polygon is always
-           visible regardless of viewport aspect ratio. cover would
-           crop the polygon's sides on portrait or square viewports
-           (the source is 16:9 landscape). scale(1.2) sizes the
-           polygon so it fills a meaningful portion of the hero
-           without dominating it. -->
-      <video autoplay loop muted playsinline disablepictureinpicture disableremoteplayback preload="auto" style="width:100%; height:100%; object-fit:contain; object-position:50% center; transform:scale(1.2); transform-origin:center center; pointer-events:none;">
-        <!-- Source order = browser-picks-first-it-can-play. The `type` attribute
-             with codec hint stops the browser fetching files it can't decode:
-             - Safari: hvc1 HEVC (efficient, native)
-             - Chrome / Firefox: skip HEVC (no decode), pick WebM (VP9)
-             - Anything else: H.264 MP4 fallback
-             Result: no flash of black, no double-fetch. -->
-        <source src="https://res.cloudinary.com/duaosajrr/video/upload/v1782989969/Landing-hevc-safari_ibwmry.mp4" type='video/mp4; codecs="hvc1"'>
-        <!-- Non-Safari (Chrome/Firefox/Edge): VP9 WebM, with MP4 fallback
-             auto-transcoded on the fly by Cloudinary (f_mp4,q_auto). -->
-        <source src="https://res.cloudinary.com/duaosajrr/video/upload/v1782990005/Landing-vp9-chrome_jmyi0c.webm" type="video/webm">
-        <source src="https://res.cloudinary.com/duaosajrr/video/upload/f_mp4,q_auto/v1782990005/Landing-vp9-chrome_jmyi0c.webm" type="video/mp4">
-      </video>
+      <!-- Static image (July 2026), polygon centred in the source.
+           object-fit:contain guarantees the whole polygon is always
+           visible regardless of viewport aspect ratio; scale(1.2)
+           sizes it to fill a meaningful portion of the hero.
+           fetchpriority=high: this is the desktop LCP image. -->
+      <img src="https://res.cloudinary.com/duaosajrr/image/upload/f_auto,q_auto,w_2560/v1784115426/AFIELD-WEB---WILDING_vi2w0s.png" alt="Two people crouching in a field, examining wild plants" fetchpriority="high" style="width:100%; height:100%; object-fit:contain; object-position:50% center; transform:scale(1.2); transform-origin:center center; pointer-events:none;">
     </div>
     <!-- Mobile-only hero -->
     <div id="mobileHero" style="display:none;">
       <!-- Video: larger now (was 44svh → 56svh) so it fills more of the mobile hero -->
       <div style="width:100vw; height:calc(var(--vh, 1vh) * 45); height:45svh; overflow:hidden; position:relative;">
-        <video autoplay loop muted playsinline disablepictureinpicture disableremoteplayback preload="auto" style="position:absolute; top:50%; left:50%; transform:translate(-68%,-50%); width:158%; height:158%; object-fit:cover; pointer-events:none;">
-          <source src="https://res.cloudinary.com/duaosajrr/video/upload/v1782989969/Landing-hevc-safari_ibwmry.mp4" type='video/mp4; codecs="hvc1"'>
-          <source src="https://res.cloudinary.com/duaosajrr/video/upload/v1782990005/Landing-vp9-chrome_jmyi0c.webm" type="video/webm">
-          <source src="https://res.cloudinary.com/duaosajrr/video/upload/f_mp4,q_auto/v1782990005/Landing-vp9-chrome_jmyi0c.webm" type="video/mp4">
-        </video>
+        <!-- Static image (July 2026), polygon centred in the source —
+             plain translate(-50%,-50%) centring, no compensation.
+             fetchpriority=high: this is the mobile LCP image. -->
+        <img src="https://res.cloudinary.com/duaosajrr/image/upload/f_auto,q_auto,w_2560/v1784115426/AFIELD-WEB---WILDING_vi2w0s.png" alt="Two people crouching in a field, examining wild plants" fetchpriority="high" style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:158%; height:158%; object-fit:cover; pointer-events:none;">
       </div>
       <!-- Text: smaller hero copy (was clamp(46,13vw,72) → clamp(34,9.5vw,52)),
            tighter margin so Continue sits closer beneath. -->
@@ -3158,14 +3117,7 @@
   <!-- Mobile-only heading and video -->
   <h2 class="mobile-section-heading">Wilding<br>Grants</h2>
   <div class="mobile-section-video">
-    <video autoplay muted loop playsinline disablepictureinpicture disableremoteplayback preload="auto" style="pointer-events:none;">
-      <!-- Safari: HEVC with alpha
-           Chrome/Firefox: VP9 WebM
-           Older browsers: H.264 fallback -->
-      <source src="https://res.cloudinary.com/duaosajrr/video/upload/v1782989969/Landing-hevc-safari_ibwmry.mp4" type='video/mp4; codecs="hvc1"'>
-      <source src="https://res.cloudinary.com/duaosajrr/video/upload/v1782990005/Landing-vp9-chrome_jmyi0c.webm" type="video/webm">
-      <source src="https://res.cloudinary.com/duaosajrr/video/upload/f_mp4,q_auto/v1782990005/Landing-vp9-chrome_jmyi0c.webm" type="video/mp4">
-    </video>
+    <img src="https://res.cloudinary.com/duaosajrr/image/upload/f_auto,q_auto,w_2560/v1784115426/AFIELD-WEB---WILDING_vi2w0s.png" alt="Two people crouching in a field, examining wild plants" loading="lazy" decoding="async" style="pointer-events:none;">
   </div>
   <div class="cs-inner" style="align-items:flex-start; padding-right:68vw; position:relative; z-index:3;">
     <div style="width:100%;">
@@ -3182,11 +3134,7 @@
   <!-- Mobile-only heading and video -->
   <h2 class="mobile-section-heading">Arts<br>Grants</h2>
   <div class="mobile-section-video">
-    <video autoplay muted loop playsinline disablepictureinpicture disableremoteplayback preload="auto" style="pointer-events:none;">
-      <source src="https://res.cloudinary.com/duaosajrr/video/upload/v1782990066/Arts_2-hevc-safari_iaygjz.mp4" type='video/mp4; codecs="hvc1"'>
-      <source src="https://res.cloudinary.com/duaosajrr/video/upload/v1782990151/Arts_2-vp9-chrome_vn1zya.webm" type="video/webm">
-      <source src="https://res.cloudinary.com/duaosajrr/video/upload/f_mp4,q_auto/v1782990151/Arts_2-vp9-chrome_vn1zya.webm" type="video/mp4">
-    </video>
+    <img src="https://res.cloudinary.com/duaosajrr/image/upload/f_auto,q_auto,w_2560/v1784115429/AFIELD-WEB---ARTS_lrd3wx.png" alt="An artist standing among tree branches and blossom" loading="lazy" decoding="async" style="pointer-events:none;">
   </div>
   <div class="cs-inner" style="align-items:flex-start; padding-right:68vw; position:relative; z-index:3;">
     <div style="width:100%;">
