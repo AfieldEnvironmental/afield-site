@@ -1884,13 +1884,13 @@
            object-fit:contain guarantees the whole polygon is always
            visible regardless of viewport aspect ratio; scale(1.2)
            sizes it to fill a meaningful portion of the hero.
-           The translateX is 0 at >=1440px wide (approved look
-           unchanged) and grows as the window narrows, easing the
-           polygon right so the nowrap H1 ("environmental") never
-           runs into the photo on narrower desktops. The hero's
-           overflow-clip-margin absorbs the shifted spill.
-           fetchpriority=high: this is the desktop LCP image. -->
-      <img src="https://res.cloudinary.com/duaosajrr/image/upload/f_auto,q_auto,w_2560/v1784115426/AFIELD-WEB---WILDING_vi2w0s.png" alt="Two people crouching in a field, examining wild plants" fetchpriority="high" style="width:100%; height:100%; object-fit:contain; object-position:50% center; transform:translateX(clamp(0px, calc((1440px - 100vw) * 0.35), 180px)) scale(1.2); transform-origin:center center; pointer-events:none;">
+           translateX(200px) sits the polygon right-of-centre so it
+           clears the nowrap H1 at every desktop width (this element
+           is display:none on mobile, where #mobileHero takes over).
+           The hero's overflow-clip-margin absorbs the shifted
+           spill. fetchpriority=high: this is the desktop LCP
+           image. -->
+      <img src="https://res.cloudinary.com/duaosajrr/image/upload/f_auto,q_auto,w_2560/v1784115426/AFIELD-WEB---WILDING_vi2w0s.png" alt="Two people crouching in a field, examining wild plants" fetchpriority="high" style="width:100%; height:100%; object-fit:contain; object-position:50% center; transform:translateX(200px) scale(1.2); transform-origin:center center; pointer-events:none;">
     </div>
     <!-- Mobile-only hero -->
     <div id="mobileHero" style="display:none;">
