@@ -1842,11 +1842,21 @@
        f_auto,q_auto,w_2560 lets Cloudinary serve AVIF/WebP at a
        sensible size; the SAME URL is reused on the mobile hero +
        mobile sections so each asset downloads once. -->
+  <!-- object-fit:contain (not cover) so the polygon's rendered size
+       tracks the pin's --p-poly-w (92vw) from the Dynamic Resize
+       Priority Ladder and SHRINKS with the window — cover sized the
+       polygon off the fixed box height, which kept it ~470px wide at
+       every window width and crashed it into the body-copy column
+       (text ends at 32vw) on narrower desktops. scale(1.3)
+       compensates contain's smaller baseline so the polygon looks
+       identical to the old cover treatment at >=1400px wide; the
+       pin's overflow:hidden crops the scaled photo's spill exactly
+       like cover did. -->
   <div id="fixedVideoWilding" class="fixed-video-pin">
-    <img src="https://res.cloudinary.com/duaosajrr/image/upload/f_auto,q_auto,w_2560/v1784115426/AFIELD-WEB---WILDING_vi2w0s.png" alt="Two people crouching in a field, examining wild plants" decoding="async" style="width:100%; height:100%; object-fit:cover; object-position:50% center; pointer-events:none;">
+    <img src="https://res.cloudinary.com/duaosajrr/image/upload/f_auto,q_auto,w_2560/v1784115426/AFIELD-WEB---WILDING_vi2w0s.png" alt="Two people crouching in a field, examining wild plants" decoding="async" style="width:100%; height:100%; object-fit:contain; object-position:50% center; transform:scale(1.3); transform-origin:center center; pointer-events:none;">
   </div>
   <div id="fixedVideoArt" class="fixed-video-pin">
-    <img src="https://res.cloudinary.com/duaosajrr/image/upload/f_auto,q_auto,w_2560/v1784115429/AFIELD-WEB---ARTS_lrd3wx.png" alt="An artist standing among tree branches and blossom" decoding="async" style="width:100%; height:100%; object-fit:cover; object-position:50% center; pointer-events:none;">
+    <img src="https://res.cloudinary.com/duaosajrr/image/upload/f_auto,q_auto,w_2560/v1784115429/AFIELD-WEB---ARTS_lrd3wx.png" alt="An artist standing among tree branches and blossom" decoding="async" style="width:100%; height:100%; object-fit:contain; object-position:50% center; transform:scale(1.3); transform-origin:center center; pointer-events:none;">
   </div>
 
   <!-- overflow:clip + overflow-clip-margin extends the clip region
@@ -1874,8 +1884,13 @@
            object-fit:contain guarantees the whole polygon is always
            visible regardless of viewport aspect ratio; scale(1.2)
            sizes it to fill a meaningful portion of the hero.
+           The translateX is 0 at >=1440px wide (approved look
+           unchanged) and grows as the window narrows, easing the
+           polygon right so the nowrap H1 ("environmental") never
+           runs into the photo on narrower desktops. The hero's
+           overflow-clip-margin absorbs the shifted spill.
            fetchpriority=high: this is the desktop LCP image. -->
-      <img src="https://res.cloudinary.com/duaosajrr/image/upload/f_auto,q_auto,w_2560/v1784115426/AFIELD-WEB---WILDING_vi2w0s.png" alt="Two people crouching in a field, examining wild plants" fetchpriority="high" style="width:100%; height:100%; object-fit:contain; object-position:50% center; transform:scale(1.2); transform-origin:center center; pointer-events:none;">
+      <img src="https://res.cloudinary.com/duaosajrr/image/upload/f_auto,q_auto,w_2560/v1784115426/AFIELD-WEB---WILDING_vi2w0s.png" alt="Two people crouching in a field, examining wild plants" fetchpriority="high" style="width:100%; height:100%; object-fit:contain; object-position:50% center; transform:translateX(clamp(0px, calc((1440px - 100vw) * 0.35), 180px)) scale(1.2); transform-origin:center center; pointer-events:none;">
     </div>
     <!-- Mobile-only hero -->
     <div id="mobileHero" style="display:none;">
