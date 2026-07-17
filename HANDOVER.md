@@ -100,3 +100,48 @@ All polygon imagery is now static transparent PNGs on Cloudinary, with the polyg
 The site requests them through `f_auto,q_auto,w_2560` so Cloudinary serves AVIF/WebP at a sensible size. To swap an image: re-export with the polygon centred in a 16:9 frame, upload to Cloudinary, and replace the URL in every slot that uses it (search the HTML for the old public ID). Keep the polygon centred in the frame — all slots use plain central alignment with no positional compensation.
 
 The old `<video>` management JS (pause pipeline, iPad decode gate, codec probe) is still in the file but inert; it null-guards and no-ops with no videos present, and works again if video ever returns.
+
+## Transfer of ownership checklist
+
+Everything the site depends on, who holds it today, and the exact step that moves it. Order matters where noted.
+
+### 1. GitHub (code + hosting) — currently: Chris admin on `AfieldEnvironmental/afield-site`
+1. Client staff create GitHub accounts (with 2FA) and are added as **Owners** of the `AfieldEnvironmental` org (org Settings → People). If the org itself was created under Chris's account, transfer org ownership rather than the repo — the Pages URL, Actions history and settings all stay put.
+2. Verify the client can see repo → Settings → Pages (custom domain shows `afield.org.uk`) and Settings → Secrets and variables → Actions (`AIRTABLE_TOKEN`, `AIRTABLE_BASE`).
+3. In the org's Settings → Pages → **Verified domains**, verify `afield.org.uk` (adds a TXT record at GoDaddy). This stops anyone else claiming the domain on Pages if the site is ever unpublished.
+4. After steps 5–6 below, Chris removes himself from the org.
+
+### 2. Airtable (content) — currently: base `apptFgYvzapkeUvov` in Chris's workspace, token in GitHub Secrets is Chris's PAT
+1. Share the base with a client admin, then **move the base into the client's own Airtable workspace** (base menu → Move base). URLs and IDs don't change.
+2. A client admin creates their own Personal Access Token at airtable.com/create/tokens with scopes `data.records:read` (+ `data.records:write` if they'll run the sync scripts) restricted to this base.
+3. Replace `AIRTABLE_TOKEN` in GitHub repo Secrets with the new token; run the workflow manually (Actions → Build and Deploy → Run workflow) to confirm a green build.
+4. Chris revokes his old PAT. **Do this last** — revoking first breaks the hourly rebuild.
+
+### 3. Domain — currently: `afield.org.uk` in Chris's GoDaddy account
+1. Client creates a GoDaddy account; Chris initiates **Move domain to another GoDaddy account** (Domain Settings → Transfer → within GoDaddy; free, instant-ish).
+2. DNS records that must survive the move (they copy across automatically, but verify): four A records `185.199.108.153` / `.109.153` / `.110.153` / `.111.153` on `@`, CNAME `www` → `afieldenvironmental.github.io`, plus the Pages verification TXT from step 1.3.
+3. Nothing to change in the repo — `CNAME` file already says `afield.org.uk`.
+
+### 4. Cloudinary (imagery) — currently: account `duaosajrr`, owned by Chris
+The live site hot-links images from this account, so the account must stay alive under client control. Simplest: change the account's email + password to a client-owned inbox (Settings → Account). The URLs (and therefore the site) don't change. The free tier covers current usage comfortably.
+
+### 5. Formspree (contact form) — currently: form `xgobbadz` under Chris's login
+Two options:
+- **Clean break (recommended):** client creates their own Formspree account, makes a new form pointing at `hello@afield.org.uk`, and the form ID is swapped in `index.html` (one string: search `formspree.io/f/`). Submissions history stays with the old form.
+- Or hand over the existing login and change its email.
+
+### 6. Leftovers to delete once transferred
+- `netlify.toml` + `netlify/` — vestiges of the old Netlify deploy; the site is GitHub Pages now. Safe to remove.
+- Any local clones/tokens on Madalena machines.
+
+## Adding new pages via Airtable (requested by the team)
+
+**What's realistic:** the main page is a hand-choreographed scroll experience (background colour lerp, pinned imagery, per-section animation) — new *sections* of that page can't be added from a spreadsheet. But standalone **content pages** (news, project write-ups, policy pages — title + text + images at the site's fonts/colours, with the site nav and footer) absolutely can, and the pipeline for it already half-exists.
+
+**How it works (build-time page generation — no client-side rendering, good for SEO and speed):**
+1. Add a **Pages** table in Airtable: `Title`, `Slug` (e.g. `news-2026-launch`), `Body` (long text using the same `[P]` / `[LI]` markers as Grants), optional `Image URL`, `Published` (checkbox), `Order`.
+2. Extend the build (`scripts/fetch-airtable.js`, which already runs in GitHub Actions on every push **and hourly**) with a step that renders each Published row through a small HTML template into `/<slug>/index.html`.
+3. The hourly cron means a new row appears on the live site within the hour; the Actions "Run workflow" button publishes it immediately.
+4. v1: pages are reachable by URL (`afield.org.uk/<slug>/`) and from a generated list (e.g. in the footer). v2 (optional): marker comments in `index.html` that the build replaces with nav links, so new pages appear in the menu automatically.
+
+**What it needs before it can be built:** one template design decision (a simple single-column page in the site's type/colours, like the privacy policy layout), and the Pages table created in the Airtable UI (the API can't create tables with this token type). Roughly half a day of build work.
