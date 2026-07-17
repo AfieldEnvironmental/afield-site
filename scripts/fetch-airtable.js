@@ -10,7 +10,13 @@ const path = require('path');
 
 /* The script tries to sort by an "Order" column first; if a table doesn't
    have that column Airtable returns 422 and we retry without the sort. */
-const TABLES = ['Site Config', 'Grants', 'Values', 'Team', 'Cycler Words'];
+const TABLES = ['Site Config', 'Grants', 'Values', 'Team', 'Cycler Words', 'Pages'];
+
+/* Tables the base may not have yet. If one of these is missing the
+   build carries on with zero records instead of failing — so the
+   Pages feature (scripts/build-pages.js) can ship before the client
+   creates the "Pages" table in the Airtable UI. */
+const OPTIONAL_TABLES = ['Pages'];
 const TOKEN  = process.env.AIRTABLE_TOKEN;
 const BASE   = process.env.AIRTABLE_BASE;
 
@@ -45,8 +51,19 @@ async function fetchTable(name) {
   const data = {};
   for (const name of TABLES) {
     process.stdout.write('  fetching "' + name + '"... ');
-    data[name] = await fetchTable(name);
-    console.log('✓ ' + ((data[name].records || []).length) + ' records');
+    try {
+      data[name] = await fetchTable(name);
+      console.log('✓ ' + ((data[name].records || []).length) + ' records');
+    } catch (err) {
+      /* Airtable answers 404 (TABLE_NOT_FOUND) or 403 for tables the
+         token can't see. Optional tables degrade to empty. */
+      if (OPTIONAL_TABLES.includes(name) && /: (403|404) /.test(err.message)) {
+        data[name] = { records: [] };
+        console.log('· not found (optional) — continuing with 0 records');
+      } else {
+        throw err;
+      }
+    }
   }
 
   const outDir = path.join(__dirname, '..', 'data');

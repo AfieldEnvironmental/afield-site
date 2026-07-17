@@ -38,6 +38,12 @@ jobs:
           AIRTABLE_BASE:  ${{ secrets.AIRTABLE_BASE }}
         run: node scripts/fetch-airtable.js
 
+      # Renders /<slug>/index.html for every Published row in the
+      # Airtable "Pages" table (plus a /pages/ listing). No secrets
+      # needed — it reads the data/airtable.json written above.
+      - name: Build Airtable pages
+        run: node scripts/build-pages.js
+
       - name: Configure Pages
         uses: actions/configure-pages@v5
 

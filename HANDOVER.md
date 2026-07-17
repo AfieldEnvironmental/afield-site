@@ -134,14 +134,26 @@ Two options:
 - `netlify.toml` + `netlify/` — vestiges of the old Netlify deploy; the site is GitHub Pages now. Safe to remove.
 - Any local clones/tokens on Madalena machines.
 
-## Adding new pages via Airtable (requested by the team)
+## Adding new pages via Airtable — BUILT, needs one Airtable step
 
-**What's realistic:** the main page is a hand-choreographed scroll experience (background colour lerp, pinned imagery, per-section animation) — new *sections* of that page can't be added from a spreadsheet. But standalone **content pages** (news, project write-ups, policy pages — title + text + images at the site's fonts/colours, with the site nav and footer) absolutely can, and the pipeline for it already half-exists.
+**Scope:** the main page is a hand-choreographed scroll experience — new *sections* of it can't come from a spreadsheet. What this feature adds is standalone **content pages** (news, project write-ups, announcements) in the site's fonts and colours, generated at build time as plain static HTML (fast, indexable, no client-side rendering).
 
-**How it works (build-time page generation — no client-side rendering, good for SEO and speed):**
-1. Add a **Pages** table in Airtable: `Title`, `Slug` (e.g. `news-2026-launch`), `Body` (long text using the same `[P]` / `[LI]` markers as Grants), optional `Image URL`, `Published` (checkbox), `Order`.
-2. Extend the build (`scripts/fetch-airtable.js`, which already runs in GitHub Actions on every push **and hourly**) with a step that renders each Published row through a small HTML template into `/<slug>/index.html`.
-3. The hourly cron means a new row appears on the live site within the hour; the Actions "Run workflow" button publishes it immediately.
-4. v1: pages are reachable by URL (`afield.org.uk/<slug>/`) and from a generated list (e.g. in the footer). v2 (optional): marker comments in `index.html` that the build replaces with nav links, so new pages appear in the menu automatically.
+**The one thing the team must do first** — create a table called **`Pages`** in the Airtable base (the API can't create tables), with EXACTLY these field names:
 
-**What it needs before it can be built:** one template design decision (a simple single-column page in the site's type/colours, like the privacy policy layout), and the Pages table created in the Airtable UI (the API can't create tables with this token type). Roughly half a day of build work.
+| Field | Type | Notes |
+|---|---|---|
+| `Title` | Single line text | required |
+| `Slug` | Single line text | required — becomes the URL: `afield.org.uk/<slug>/`. Lowercase letters, numbers, hyphens (anything else is stripped) |
+| `Body` | Long text | required — same `[P]` paragraph / `[LI]` bullet markers as the Grants copy |
+| `Image URL` | URL | optional — full-width image under the title (use a Cloudinary URL) |
+| `Published` | Checkbox | the page only builds when ticked |
+| `Order` | Number | optional — sort order on the `/pages/` listing |
+
+**How publishing works after that:**
+1. Add a row, tick Published.
+2. The site rebuilds hourly (GitHub Actions cron), so the page is live at `afield.org.uk/<slug>/` within the hour — or immediately via GitHub → Actions → Build and Deploy → **Run workflow**.
+3. Every published page is also linked from `afield.org.uk/pages/`. To surface one on the main site, paste its URL wherever it's wanted (or link it from another page's Body).
+
+**Where the code lives:** `scripts/build-pages.js` (the generator + the page template, commented) runs as the "Build Airtable pages" step in `.github/workflows/deploy.yml`, reading the `data/airtable.json` that `fetch-airtable.js` writes. Until the `Pages` table exists, the fetch treats it as optional and the build stays green. Fonts for generated pages are the shared `assets/gt-cinetype.css`. Un-ticking Published removes the page at the next build (the deploy artifact is rebuilt from scratch every run).
+
+Safety rails built in: slugs are sanitised, duplicates and reserved names (`assets`, `data`, `scripts`, `pages`, …) are skipped with a warning in the build log, and page content is HTML-escaped.
