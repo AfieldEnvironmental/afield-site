@@ -318,6 +318,27 @@
       overflow: visible;
     }
 
+    /* Four stacked logo artworks, crossfaded per section by
+       applyLogo(). Height matches the old inline svg (92px);
+       aspect-ratio comes from the supplied files' viewBox. */
+    .logo-stack {
+      position: relative;
+      display: block;
+      height: 92px;
+      aspect-ratio: 393.68 / 319.43;
+    }
+    .logo-stack img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .logo-stack img.active {
+      opacity: 1;
+    }
+
     .nav-links {
       display: flex;
       gap: 40px;
@@ -1007,7 +1028,8 @@
 
 
   /* ── LOGO HOVER ── */
-  .logo svg {
+  .logo svg,
+  .logo .logo-stack {
     transition: filter 0.3s ease, transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   .logo:hover svg {
@@ -1083,7 +1105,8 @@
     0%, 100% { transform: scale(1) rotate(0deg); }
     50%       { transform: scale(1.03) rotate(0.5deg); }
   }
-  body.state-0 .logo svg {
+  body.state-0 .logo svg,
+  body.state-0 .logo .logo-stack {
     animation: logoBreathe 6s ease-in-out infinite;
   }
 
@@ -1267,8 +1290,8 @@
     padding: 8px 4vw !important;
   }
   nav.scrolled .nav-inner { padding: 8px 5vw !important; }
-  .logo svg { height: 54px !important; transition: height 0.3s ease; }
-  nav.scrolled .logo svg { height: 40px !important; }
+  .logo svg, .logo .logo-stack { height: 54px !important; transition: height 0.3s ease; }
+  nav.scrolled .logo svg, nav.scrolled .logo .logo-stack { height: 40px !important; }
   .ham-line { display: block; width: 22px; height: 1.5px; background: #1a1a0e; transition: all 0.3s ease; }
   /* When the menu is open the dedicated #mobileNavClose X handles closing,
      so hide the hamburger to avoid two overlapping X marks at top-right. */
@@ -1744,30 +1767,24 @@
   <nav>
     <!-- nav-inner: carries content padding; nav itself only has safe-area-inset-top -->
     <div class="nav-inner">
-      <!-- LOGO -->
-      <a class="logo" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">
-        <svg id="logoSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 92.5 75.8" style="height:92px;width:auto;display:block;overflow:visible;">
-          <defs>
-            <linearGradient id="logoGrad" x1="100%" y1="0%" x2="0%" y2="100%">
-              <stop id="logoStop1" offset="0%" stop-color="#ff6b35" stop-opacity="1"/>
-              <stop id="logoStop2" offset="100%" stop-color="#ff6b35" stop-opacity="0"/>
-            </linearGradient>
-          </defs>
-          <!-- Solid blocker behind the gradient — fill is updated by JS to
-               match the current section's bg colour, so page content
-               doesn't show through the transparent parts of the gradient. -->
-          <polygon id="logoBlocker" points="75.4 19.8 63.4 .8 .9 22 2.4 58.1 26.2 65.4 58 75 91.6 45.3 75.4 19.8" fill="#b1ffcb"/>
-          <!-- Shape with gradient fill (on top of the blocker) -->
-          <polygon points="75.4 19.8 63.4 .8 .9 22 2.4 58.1 26.2 65.4 58 75 91.6 45.3 75.4 19.8" fill="url(#logoGrad)"/>
-          <!-- Text paths -->
-          <path d="M20.9,42.5l-.2.5-.8.9-1.5.6h-.7l-.9-.3-.4-.2-.6-.9v-.5l.2-.6.8-.8,1.3-.4h.9l1.1.3.5.3.4.4v.7h0ZM23.4,43v-5.5l-.7-1.7-1.9-1.3-1.6-.4h-2.2l-1.6.5-1.1.7-.9.9,1.8,1.8.7-.6.6-.4.8-.3h1.5l1,.3.8.5.2.5v1h0c0,0-1.6-.6-1.6-.6h-1.6l-2.3.6-1.8,1.8-.4,1.6v1.5l1.4,2,1.2.7,1.6.5h1.5l2.2-1.1.3-.3,1,1.5,2-1.5-1-1.5v-1.3h0Z"/>
-          <polygon points="31.1 28.7 29.1 29.3 27.7 31.4 27.7 34.6 25.5 34.6 25.5 37.1 27.7 37.1 27.7 46.8 30.2 46.8 30.2 37.1 33.2 37.1 33.2 34.6 30.2 34.6 30.2 32.1 30.7 31.5 31.3 31.2 31.8 31.2 33.8 31.7 34.5 29.2 32.1 28.7 31.1 28.7"/>
-          <polygon points="36.5 36.2 36.5 38.8 36.5 46.8 39 46.8 39 34.3 36.5 34.3 36.5 36.2"/>
-          <rect x="36.1" y="28.9" width="3.3" height="3.4"/>
-          <path d="M44.1,39.4l.2-.8,1-1.4,1.2-.6h1.3l1.2.7,1,1.4.3.8h-6.1ZM50.6,35.3l-2.4-1.2h-2.1l-2.4,1.2-1.6,2.1-.5,1.8v2.7l.5,1.7,1.6,2.1,2.4,1.2h2l2.1-.5,1.8-1.2-1.3-2-1.5.9-1.4.4h-1.2l-1.2-.6-1-1.4-.2-.6h8.7v-2.9l-.6-1.6-1.6-2.1h0Z"/>
-          <polygon points="55.1 31.9 55.1 34.3 55.1 46.8 57.7 46.8 57.7 28.9 55.1 28.9 55.1 31.9"/>
-          <path d="M68.4,39.4v3.3l-.6.9-1.3.9h-1.3l-1.3-.6-1-1.4-.2-.8v-2.1l.2-.9,1-1.4,1.2-.7h1.4l.8.3.8.5.4.5v1.6h0ZM68.4,34.8h-.2c0-.1-1.4-.7-1.4-.7h-2.1l-2.4,1.2-1.6,2.1-.5,1.8v2.7l.5,1.7,1.6,2.2,2.5,1.2h2.2l1.4-.9v.7h2.5v-17.9h-2.5v5.9h0Z"/>
-        </svg>
+      <!-- LOGO — July 2026: swapped from the recolour-a-gradient inline
+           SVG to the client's four supplied logo artworks, one per page
+           background (the gradient fades are baked into the files):
+             mint bg     → blue logo    (landing, arts grants)
+             yellow bg   → orange logo  (purpose, values)
+             lavender bg → mint logo    (wilding grants, team)
+             orange bg   → yellow logo  (get in touch)
+           All four are stacked; applyLogo() (in the scroll observer
+           script) crossfades .active as the section changes. The old
+           logoBlocker is no longer needed — the topFeather's solid band
+           already keeps page content out of the logo zone. -->
+      <a class="logo" href="#" aria-label="Afield — back to top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">
+        <span class="logo-stack">
+          <img data-bg="mint" class="active" src="assets/logo-on-mint.svg" alt="">
+          <img data-bg="yellow" src="assets/logo-on-yellow.svg" alt="">
+          <img data-bg="lavender" src="assets/logo-on-lavender.svg" alt="">
+          <img data-bg="orange" src="assets/logo-on-orange.svg" alt="">
+        </span>
       </a>
 
       <!-- NAV LINKS -->
@@ -3165,24 +3182,10 @@
 
 <div id="sectionWildingDetail" style="position:fixed; inset:0; z-index:50; background:#EAFE8B; overflow:visible; pointer-events:none; display:none; opacity:0; transition:opacity 0.5s ease;">
 
-  <!-- Logo top-left — 80px matching Our Mission -->
+  <!-- Logo top-left — 80px matching Our Mission. Panel bg is yellow,
+       so this uses the orange logo artwork (July 2026 logo files). -->
   <div style="position:absolute; top:28px; left:3vw; z-index:10;">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 92.5 75.8" style="height:80px;width:auto;display:block;cursor:pointer;" onclick="var d=this.closest('[id]'); if(d&&d.id){window.hideDetail(d.id);} setTimeout(function(){window.scrollTo({top:0,behavior:'smooth'});},420);">
-        <defs>
-          <linearGradient id="detailLogoGrad" x1="100%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#ff6b35" stop-opacity="1"/>
-            <stop offset="100%" stop-color="#ff6b35" stop-opacity="0"/>
-          </linearGradient>
-        </defs>
-        <polygon points="75.4 19.8 63.4 .8 .9 22 2.4 58.1 26.2 65.4 58 75 91.6 45.3 75.4 19.8" fill="url(#detailLogoGrad)"/>
-        <path d="M20.9,42.5l-.2.5-.8.9-1.5.6h-.7l-.9-.3-.4-.2-.6-.9v-.5l.2-.6.8-.8,1.3-.4h.9l1.1.3.5.3.4.4v.7h0ZM23.4,43v-5.5l-.7-1.7-1.9-1.3-1.6-.4h-2.2l-1.6.5-1.1.7-.9.9,1.8,1.8.7-.6.6-.4.8-.3h1.5l1,.3.8.5.2.5v1h0c0,0-1.6-.6-1.6-.6h-1.6l-2.3.6-1.8,1.8-.4,1.6v1.5l1.4,2,1.2.7,1.6.5h1.5l2.2-1.1.3-.3,1,1.5,2-1.5-1-1.5v-1.3h0Z"/>
-        <polygon points="31.1 28.7 29.1 29.3 27.7 31.4 27.7 34.6 25.5 34.6 25.5 37.1 27.7 37.1 27.7 46.8 30.2 46.8 30.2 37.1 33.2 37.1 33.2 34.6 30.2 34.6 30.2 32.1 30.7 31.5 31.3 31.2 31.8 31.2 33.8 31.7 34.5 29.2 32.1 28.7 31.1 28.7"/>
-        <polygon points="36.5 36.2 36.5 38.8 36.5 46.8 39 46.8 39 34.3 36.5 34.3 36.5 36.2"/>
-        <rect x="36.1" y="28.9" width="3.3" height="3.4"/>
-        <path d="M44.1,39.4l.2-.8,1-1.4,1.2-.6h1.3l1.2.7,1,1.4.3.8h-6.1ZM50.6,35.3l-2.4-1.2h-2.1l-2.4,1.2-1.6,2.1-.5,1.8v2.7l.5,1.7,1.6,2.1,2.4,1.2h2l2.1-.5,1.8-1.2-1.3-2-1.5.9-1.4.4h-1.2l-1.2-.6-1-1.4-.2-.6h8.7v-2.9l-.6-1.6-1.6-2.1h0Z"/>
-        <polygon points="55.1 31.9 55.1 34.3 55.1 46.8 57.7 46.8 57.7 28.9 55.1 28.9 55.1 31.9"/>
-        <path d="M68.4,39.4v3.3l-.6.9-1.3.9h-1.3l-1.3-.6-1-1.4-.2-.8v-2.1l.2-.9,1-1.4,1.2-.7h1.4l.8.3.8.5.4.5v1.6h0ZM68.4,34.8h-.2c0-.1-1.4-.7-1.4-.7h-2.1l-2.4,1.2-1.6,2.1-.5,1.8v2.7l.5,1.7,1.6,2.2,2.5,1.2h2.2l1.4-.9v.7h2.5v-17.9h-2.5v5.9h0Z"/>
-      </svg>
+    <img src="assets/logo-on-yellow.svg" alt="Afield" style="height:80px;width:auto;display:block;cursor:pointer;" onclick="var d=this.closest('[id]'); if(d&amp;&amp;d.id){window.hideDetail(d.id);} setTimeout(function(){window.scrollTo({top:0,behavior:'smooth'});},420);">
   </div>
 
   <!-- Back button — bottom-left, same style as Read more -->
@@ -3219,24 +3222,10 @@
 
 <div id="sectionArtDetail" style="position:fixed; inset:0; z-index:50; background:#EAFE8B; overflow:visible; pointer-events:none; display:none; opacity:0; transition:opacity 0.5s ease;">
 
-  <!-- Logo top-left — 80px matching Our Mission -->
+  <!-- Logo top-left — 80px matching Our Mission. Panel bg is yellow,
+       so this uses the orange logo artwork (July 2026 logo files). -->
   <div style="position:absolute; top:28px; left:3vw; z-index:10;">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 92.5 75.8" style="height:80px;width:auto;display:block;cursor:pointer;" onclick="var d=this.closest('[id]'); if(d&&d.id){window.hideDetail(d.id);} setTimeout(function(){window.scrollTo({top:0,behavior:'smooth'});},420);">
-        <defs>
-          <linearGradient id="detailLogoGrad2" x1="100%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#ff6b35" stop-opacity="1"/>
-            <stop offset="100%" stop-color="#ff6b35" stop-opacity="0"/>
-          </linearGradient>
-        </defs>
-        <polygon points="75.4 19.8 63.4 .8 .9 22 2.4 58.1 26.2 65.4 58 75 91.6 45.3 75.4 19.8" fill="url(#detailLogoGrad2)"/>
-        <path d="M20.9,42.5l-.2.5-.8.9-1.5.6h-.7l-.9-.3-.4-.2-.6-.9v-.5l.2-.6.8-.8,1.3-.4h.9l1.1.3.5.3.4.4v.7h0ZM23.4,43v-5.5l-.7-1.7-1.9-1.3-1.6-.4h-2.2l-1.6.5-1.1.7-.9.9,1.8,1.8.7-.6.6-.4.8-.3h1.5l1,.3.8.5.2.5v1h0c0,0-1.6-.6-1.6-.6h-1.6l-2.3.6-1.8,1.8-.4,1.6v1.5l1.4,2,1.2.7,1.6.5h1.5l2.2-1.1.3-.3,1,1.5,2-1.5-1-1.5v-1.3h0Z"/>
-        <polygon points="31.1 28.7 29.1 29.3 27.7 31.4 27.7 34.6 25.5 34.6 25.5 37.1 27.7 37.1 27.7 46.8 30.2 46.8 30.2 37.1 33.2 37.1 33.2 34.6 30.2 34.6 30.2 32.1 30.7 31.5 31.3 31.2 31.8 31.2 33.8 31.7 34.5 29.2 32.1 28.7 31.1 28.7"/>
-        <polygon points="36.5 36.2 36.5 38.8 36.5 46.8 39 46.8 39 34.3 36.5 34.3 36.5 36.2"/>
-        <rect x="36.1" y="28.9" width="3.3" height="3.4"/>
-        <path d="M44.1,39.4l.2-.8,1-1.4,1.2-.6h1.3l1.2.7,1,1.4.3.8h-6.1ZM50.6,35.3l-2.4-1.2h-2.1l-2.4,1.2-1.6,2.1-.5,1.8v2.7l.5,1.7,1.6,2.1,2.4,1.2h2l2.1-.5,1.8-1.2-1.3-2-1.5.9-1.4.4h-1.2l-1.2-.6-1-1.4-.2-.6h8.7v-2.9l-.6-1.6-1.6-2.1h0Z"/>
-        <polygon points="55.1 31.9 55.1 34.3 55.1 46.8 57.7 46.8 57.7 28.9 55.1 28.9 55.1 31.9"/>
-        <path d="M68.4,39.4v3.3l-.6.9-1.3.9h-1.3l-1.3-.6-1-1.4-.2-.8v-2.1l.2-.9,1-1.4,1.2-.7h1.4l.8.3.8.5.4.5v1.6h0ZM68.4,34.8h-.2c0-.1-1.4-.7-1.4-.7h-2.1l-2.4,1.2-1.6,2.1-.5,1.8v2.7l.5,1.7,1.6,2.2,2.5,1.2h2.2l1.4-.9v.7h2.5v-17.9h-2.5v5.9h0Z"/>
-      </svg>
+    <img src="assets/logo-on-yellow.svg" alt="Afield" style="height:80px;width:auto;display:block;cursor:pointer;" onclick="var d=this.closest('[id]'); if(d&amp;&amp;d.id){window.hideDetail(d.id);} setTimeout(function(){window.scrollTo({top:0,behavior:'smooth'});},420);">
   </div>
 
   <!-- Back button — bottom-left, same style as Read more -->
@@ -3719,47 +3708,36 @@
 
 <script>
 (function(){
-  // ── LOGO COLOURS PER SECTION ──
-  var logoStop1 = document.getElementById('logoStop1');
-  var logoStop2 = document.getElementById('logoStop2');
-  /* SWAPPED heroSection ↔ textPanel for client: landing page now mint
-     (was yellow), Purpose page now yellow (was mint). Logo trigger
-     colours swapped to match — the logo on landing now uses the
-     #5ee5f5 cyan that previously belonged to Purpose. */
-  var logoColours = {
-    'heroSection':    '#5ee5f5',
-    'textPanel':      '#ff6b35',
-    'sectionWilding': '#ff6b35',
-    'sectionArt':     '#e2cefe',
-    'sectionValues':  '#ff6b35',
-    'sectionPeople':  '#b8f5b1',
-    'sectionTouch':   '#b8f5b1',
+  // ── LOGO VARIANT PER SECTION ──
+  /* July 2026: the logo is now one of four supplied artworks
+     (assets/logo-on-*.svg), chosen by the section's background —
+     the gradient fades are baked into the files. All four sit
+     stacked in the nav (.logo-stack); applyLogo() crossfades the
+     .active one as the section changes. */
+  var logoVariants = {
+    'heroSection':    'mint',      /* blue logo   */
+    'textPanel':      'yellow',    /* orange logo */
+    'sectionWilding': 'lavender',  /* mint logo   */
+    'sectionArt':     'mint',      /* blue logo   */
+    'sectionValues':  'yellow',    /* orange logo */
+    'sectionPeople':  'lavender',  /* mint logo   */
+    'sectionTouch':   'orange',    /* yellow logo */
   };
-  var bgColours = {
-    'heroSection':    '#b1ffcb',  /* mint   — Landing */
-    'textPanel':      '#EAFE8B',  /* yellow — Purpose */
-    'sectionWilding': '#e4c9f9',  /* purple — Wilding */
-    'sectionArt':     '#b1ffcb',  /* mint   — Art */
-    'sectionValues':  '#EAFE8B',  /* yellow — Values */
-    'sectionPeople':  '#e4c9f9',  /* purple — Team */
-    'sectionTouch':   '#ff925c',  /* orange — Get in touch */
-  };
+  var logoImgs = document.querySelectorAll('.logo-stack img');
+  function applyLogo(sectionId){
+    var v = logoVariants[sectionId] || 'mint';
+    if (v === applyLogo._last) return;
+    applyLogo._last = v;
+    logoImgs.forEach(function(img){
+      img.classList.toggle('active', img.getAttribute('data-bg') === v);
+    });
+  }
+  /* (bgColours for the background lerp is declared further down,
+     next to updateBg — the logo no longer needs its own copy.) */
   var dotIndices = {
     'heroSection':0,'textPanel':1,'sectionWilding':2,
     'sectionArt':3,'sectionValues':4,'sectionPeople':5,'sectionTouch':6
   };
-
-  function applyLogoFilter(colour){
-    if(logoStop1){ logoStop1.setAttribute('stop-color',colour); logoStop1.setAttribute('stop-opacity','1'); }
-    if(logoStop2){ logoStop2.setAttribute('stop-color',colour); logoStop2.setAttribute('stop-opacity','0'); }
-  }
-
-  /* Updates the solid blocker polygon behind the gradient so page
-     content doesn't show through the gradient's transparent fade. */
-  var logoBlocker = document.getElementById('logoBlocker');
-  function applyLogoBlocker(bg){
-    if(logoBlocker) logoBlocker.setAttribute('fill', bg);
-  }
 
   function applyBg(bg){
     if (bg === applyBg._last) return;
@@ -3817,8 +3795,7 @@
       if(dist < bestDist){ bestDist = dist; best = id; }
     });
     if(best){
-      applyLogoFilter(logoColours[best]);
-      applyLogoBlocker(bgColours[best]);
+      applyLogo(best);
       updateDots(dotIndices[best]);
       document.body.className = document.body.className.replace(/state-\d+/g,'').trim();
       document.body.classList.add('state-' + dotIndices[best]);
@@ -3985,8 +3962,7 @@
 
   // Init (landing is mint)
   applyBg('#b1ffcb');
-  applyLogoFilter('#5ee5f5');
-  applyLogoBlocker('#b1ffcb');
+  applyLogo('heroSection');
   updateDots(0);
   onScroll();
 })();
