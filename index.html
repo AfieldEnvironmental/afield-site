@@ -5498,6 +5498,23 @@ if(window.innerWidth <= 768){
     });
   }
 
+  /* Match an Airtable record to its DOM slot by comparing the record's
+     Name against each slot's rendered label text first — this survives
+     the client reordering rows in Airtable. Falls back to the record's
+     array position if no text match is found — this survives a label
+     being renamed/corrected in Airtable. Used by Values + Team below;
+     Grants doesn't need this since it already matches on a Type field
+     rather than row position. */
+  function matchSlot(items, labelSelector, name, index) {
+    if (name) {
+      for (var k = 0; k < items.length; k++) {
+        var label = items[k].querySelector(labelSelector);
+        if (label && label.textContent.trim() === name.trim()) return items[k];
+      }
+    }
+    return items[index] || null;
+  }
+
   // Convert [P] paragraph and [LI] list markers back into HTML
   function toHTML(text) {
     if (!text) return '';
@@ -5609,27 +5626,41 @@ if(window.innerWidth <= 768){
       }
     });
 
-    /* ── 3. VALUES ── */
+    /* ── 3. VALUES — matched by name, falls back to position ── */
     var valueItems = document.querySelectorAll('.value-item');
     (results[2].records || []).forEach(function (r, i) {
       var f = r.fields;
-      if (!valueItems[i]) return;
-      var h = valueItems[i].querySelector('.value-heading');
-      var p = valueItems[i].querySelector('.value-body');
+      var item = matchSlot(valueItems, '.value-heading', f.Name, i);
+      if (!item) return;
+      var h = item.querySelector('.value-heading');
+      var p = item.querySelector('.value-body');
       if (h && f.Name)        h.textContent = f.Name;
       if (p && f.Description) p.textContent = f.Description;
     });
 
-    /* ── 4. TEAM ── */
+    /* ── 4. TEAM — matched by name, falls back to position ──
+       Previously matched Airtable record i -> bioItems[i] purely by
+       array index, and only ever overwrote existing <p class="bio-body">
+       elements — never removed extras. The first time this ran against
+       the client's Airtable (Team table order: Joana, Liz, Mike — vs the
+       HTML's Liz, Mike, Joana), Joana's single-paragraph bio landed in
+       Liz's old 3-paragraph DOM slot: her own paragraph correctly
+       overwrote the first <p>, but Liz's other two paragraphs — including
+       a personal M.E. diagnosis disclosure — were left behind under
+       Joana's name. matchSlot() fixes the mismatch; the trim loop below
+       removes any paragraphs a record doesn't supply, so leftovers from
+       a previous occupant of a DOM slot can never survive a hydration
+       pass again. */
     var bioItems = document.querySelectorAll('.bio-item');
     (results[3].records || []).forEach(function (r, i) {
       var f = r.fields;
-      if (!bioItems[i]) return;
-      var name = bioItems[i].querySelector('.bio-name');
+      var item = matchSlot(bioItems, '.bio-name', f.Name, i);
+      if (!item) return;
+      var name = item.querySelector('.bio-name');
       if (name && f.Name) name.textContent = f.Name;
       if (f.Bio) {
         var parts   = f.Bio.split('[P]').map(function (s) { return s.trim(); }).filter(Boolean);
-        var bioPs   = bioItems[i].querySelectorAll('.bio-body');
+        var bioPs   = item.querySelectorAll('.bio-body');
         // If Airtable has more paragraphs than the HTML, add them
         parts.forEach(function (text, j) {
           if (bioPs[j]) {
@@ -5639,9 +5670,14 @@ if(window.innerWidth <= 768){
             np.className = 'bio-body';
             np.style.marginTop = '1em';
             np.textContent = text;
-            bioItems[i].appendChild(np);
+            item.appendChild(np);
           }
         });
+        // If Airtable has fewer paragraphs than the HTML slot originally
+        // held, remove the leftovers rather than leaving stale content.
+        for (var k = bioPs.length - 1; k >= parts.length; k--) {
+          bioPs[k].remove();
+        }
       }
     });
 
