@@ -4,24 +4,26 @@ Snapshot of state on hand-off. The site is live and approved as-is.
 
 ## How content flows
 
-The site is currently rendered **entirely from the HTML** in `index.html`. There is an Airtable hydration script in the page (around line 5500), but it has an early `return;` (line ~5618) that bypasses it.
+**As of July 2026, Airtable is live** — the hydration script (around line 5500) fetches `data/airtable.json` (built by GitHub Actions from Airtable on every push and every hourly cron) and overwrites the matching HTML on page load:
 
 ```
-HTML (index.html, hardcoded)    →   what visitors see
-Airtable (apptFgYvzapkeUvov)    →   editorial source of truth, NOT currently rendering on the site
+Airtable (client's own base)   →   editorial source of truth
+data/airtable.json             →   built hourly by GitHub Actions (scripts/fetch-airtable.js)
+HTML (index.html, hardcoded)   →   the fallback / first-paint content, overwritten by the above
 ```
 
-This intentional disconnect means the client can edit Airtable freely without the live site changing visually. To make Airtable edits go live, the in-house team needs to:
+**Live today:** Grants (card + detail copy for both Wilding and Arts), Values (heading + body), Team (name + bio).
 
-1. Remove the `return;` on the line numbered around 5618 (the surrounding comment explains).
-2. Fix the three "DISABLED" sub-sections nearby (mission-text overwrite, video URL override, cycler-words DOM) — each has a comment in the code explaining what broke and what to be careful of.
-3. Add a `Value` field to the Airtable **Site Config** table (see below).
+**Still inert, on purpose:**
+- **Site Config** (contact email, values intro, etc.) — the hydration code is wired up (`cfg[r.fields.Name]`) but the table has no `Value` field yet. Add a `Value` field (Long text) to the Site Config table in the Airtable UI — the API can't create fields — and those become live too.
+- **Mission text** (Purpose page copy) — deliberately left commented out in the script. The current HTML has a 4-paragraph structure; the old override code assumed 2 and would collapse it. Needs rewriting to split on `[P]` markers like the Grants/Team fields do before it's safe to enable.
+- **Cycler words** (Purpose, Places, Wilding, Knowledge, Practices, Action, Art) — deliberately left disabled. The old override code rebuilt the cycler's DOM after the animation script had already wired up event listeners to the original elements, silently breaking the animation. Needs the cycler script rearchitected to wait for Airtable before building, not just an uncomment.
 
-Until those three steps land, Airtable is a read-only mirror of the HTML.
+Editing an existing Grants/Values/Team record in Airtable now shows on the site within the hour (or immediately via Actions → Build and Deploy → Run workflow) — same as the Pages feature below.
 
 ## Airtable schema state
 
-Base: `apptFgYvzapkeUvov`
+Base: `appTfw3Y7rfwEUJsi` (the client's own workspace — see "Transfer of ownership" below for how this superseded the original `apptFgYvzapkeUvov`)
 
 All tables now match the current HTML thanks to the sync script (`scripts/sync-airtable-from-html.py`). Specifics:
 

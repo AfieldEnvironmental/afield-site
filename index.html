@@ -5525,16 +5525,18 @@ if(window.innerWidth <= 768){
     get('Cycler Words')
   ]).then(function (results) {
 
-    /* ── ALL AIRTABLE OVERRIDES DISABLED — content is now hand-edited in
-       HTML directly. Client wants HTML to win for everything. To re-enable
-       Airtable-driven content, remove the early return below. The fetch
-       still runs (data/airtable.json still gets generated) so we can
-       re-enable any time without changing the build pipeline. */
-    return;
+    /* ── AIRTABLE IS NOW THE LIVE SOURCE (July 2026) — re-enabled per
+       client request so their own Airtable edits show on the site.
+       Grants / Values / Team below are live. Site Config stays inert
+       until the "Value" field is added to that table in the Airtable
+       UI (the API can't create fields) — see HANDOVER.md. Mission-text
+       override and the cycler-words block below remain disabled; both
+       have real structural bugs noted in their own comments and need
+       a proper fix, not just an uncomment, before they're safe to run. */
 
     /* ── 1. SITE CONFIG ── */
     var cfg = {};
-    (results[0].records || []).forEach(function (r) { cfg[r.fields.Key] = r.fields.Value; });
+    (results[0].records || []).forEach(function (r) { cfg[r.fields.Name] = r.fields.Value; });
 
     /* Mission text override DISABLED — Purpose copy is now hand-edited
        in the HTML (4-paragraph structure that the old single-paragraph
