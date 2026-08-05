@@ -2490,7 +2490,12 @@
     /* 3 columns now (was 2). minmax(0, 1fr) lets them share space evenly
        and respect the page padding instead of capping at a fixed max. */
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: clamp(16px, 2.5vw, 48px);
+    /* Row gap increased beyond column gap — with 5+ team members
+       wrapping to a second grid row (Airtable can add people now,
+       see hydration script), the plain single `gap` value read as
+       too tight between rows. Column spacing unchanged. */
+    column-gap: clamp(16px, 2.5vw, 48px);
+    row-gap: clamp(60px, 8vw, 120px);
     width: 100%;
   }
 
