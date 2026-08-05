@@ -5500,11 +5500,16 @@ if(window.innerWidth <= 768){
 
   /* Match an Airtable record to its DOM slot by comparing the record's
      Name against each slot's rendered label text first — this survives
-     the client reordering rows in Airtable. Falls back to the record's
-     array position if no text match is found — this survives a label
-     being renamed/corrected in Airtable. Used by Values + Team below;
-     Grants doesn't need this since it already matches on a Type field
-     rather than row position. */
+     the client reordering rows in Airtable. If `index` is passed and no
+     name match is found, falls back to that array position — this
+     survives a label being renamed/corrected in Airtable, but is only
+     safe for a FIXED-SIZE list (Values: always Bold/Caring/Imaginative/
+     Just, never grows). Grants doesn't need this at all since it already
+     matches on a Type field rather than row position. Team (below) calls
+     this WITHOUT an index — team headcount grows, so a positional
+     fallback there risks a brand-new hire's record landing on an
+     unrelated existing colleague's slot purely because they happen to
+     share a row number after an insert shifted everyone's position. */
   function matchSlot(items, labelSelector, name, index) {
     if (name) {
       for (var k = 0; k < items.length; k++) {
@@ -5512,7 +5517,7 @@ if(window.innerWidth <= 768){
         if (label && label.textContent.trim() === name.trim()) return items[k];
       }
     }
-    return items[index] || null;
+    return (index === undefined ? null : items[index]) || null;
   }
 
   // Convert [P] paragraph and [LI] list markers back into HTML
@@ -5638,24 +5643,40 @@ if(window.innerWidth <= 768){
       if (p && f.Description) p.textContent = f.Description;
     });
 
-    /* ── 4. TEAM — matched by name, falls back to position ──
-       Previously matched Airtable record i -> bioItems[i] purely by
-       array index, and only ever overwrote existing <p class="bio-body">
-       elements — never removed extras. The first time this ran against
-       the client's Airtable (Team table order: Joana, Liz, Mike — vs the
-       HTML's Liz, Mike, Joana), Joana's single-paragraph bio landed in
-       Liz's old 3-paragraph DOM slot: her own paragraph correctly
-       overwrote the first <p>, but Liz's other two paragraphs — including
-       a personal M.E. diagnosis disclosure — were left behind under
-       Joana's name. matchSlot() fixes the mismatch; the trim loop below
-       removes any paragraphs a record doesn't supply, so leftovers from
-       a previous occupant of a DOM slot can never survive a hydration
-       pass again. */
-    var bioItems = document.querySelectorAll('.bio-item');
-    (results[3].records || []).forEach(function (r, i) {
+    /* ── 4. TEAM — matched by name; unmatched records get a NEW slot ──
+       matchSlot() is called WITHOUT an index here (see its comment) —
+       team headcount grows, so positional fallback isn't safe. Records
+       that don't match an existing .bio-name now get a brand-new
+       .bio-item appended to .people-grid, instead of being silently
+       skipped. That silent-skip was the actual bug reported: the client
+       added two new hires (Henrietta Simson, Peter Lewis) in Airtable
+       and neither appeared, because the old code could only ever
+       overwrite one of the three hardcoded slots — there was no path
+       that created a slot for a name the HTML had never heard of.
+
+       New items deliberately don't get the reveal-on-scroll class: that
+       IntersectionObserver (a separate, earlier script) does one static
+       querySelectorAll + observe() pass before this async hydration
+       resolves, so an element added afterwards would never be observed
+       and — since reveal-on-scroll defaults to opacity:0 until the
+       observer adds .revealed — would stay invisible forever. Rendering
+       immediately with no fade-in is a fair trade for actually showing
+       up at all. */
+    var bioItems   = document.querySelectorAll('.bio-item');
+    var peopleGrid = document.querySelector('.people-grid');
+    (results[3].records || []).forEach(function (r) {
       var f = r.fields;
-      var item = matchSlot(bioItems, '.bio-name', f.Name, i);
-      if (!item) return;
+      if (!f.Name) return;
+      var item = matchSlot(bioItems, '.bio-name', f.Name);
+      if (!item) {
+        if (!peopleGrid) return;
+        item = document.createElement('div');
+        item.className = 'bio-item';
+        var h3 = document.createElement('h3');
+        h3.className = 'bio-name';
+        item.appendChild(h3);
+        peopleGrid.appendChild(item);
+      }
       var name = item.querySelector('.bio-name');
       if (name && f.Name) name.textContent = f.Name;
       if (f.Bio) {
